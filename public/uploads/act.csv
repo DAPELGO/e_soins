@@ -1,0 +1,62 @@
+﻿act1;Accouchement assisté à l'aide d'instruments/produits (dystocique);900;csps
+act2;Accouchement normal (eutocique);900;csps
+act3;AMIU;1500;csps
+act4;Consultation curative infirmière /SFE & ME;200;csps
+act5;Consultation de la femme enceinte malade;200;csps
+act6;Consultation prénatale;100;csps
+act7;Délivrance artificielle/Révision utérine;500;csps
+act8;Dépistage des lésions précancéreuses du col à IVA/IVL;500;csps
+act9;Extraction de corps étranger de l’oreille;500;csps
+act10;Incision d’abcès;300;csps
+act11;Injection en ambulatoire (IM, IV, SC);100;csps
+act12;Lavage d’oreille;300;csps
+act13;Mise en observation par jour;100;csps
+act14;Pansement et petite chirurgie;100;csps
+act15;Suture par point;300;csps
+act16;Test rapide Albumine/ sucre/ paludisme;200;csps
+act17;Consultation nourrissons sains;300;csps
+act18;Consultation post-natale;250;csps
+act19;Consultation pour PF;200;csps
+act20;Insertion/retrait de DIU;875;csps
+act21;Insertion/retrait implants;500;csps
+act22;Accouchement dystocique;1000;cma
+act23;Accouchement eutocique;900;cma
+act24;AMIU;2000;cma
+act25;Circoncision enfant pour Phymosis serré;1000;cma
+act26;Consultation curative infirmière;300;cma
+act27;Consultation curative infirmière spécialiste (AS);500;cma
+act28;Consultation directe du médecin généraliste (CMG);1000;cma
+act29;Consultation Maïeuticien/ Sage-femme;300;cma
+act30;Consultation prénatale (CPN);100;cma
+act31;Délivrance artificielle/ Révision utérine;1000;cma
+act32;Dépistage des lésions précancéreuses du col à IVA/IVL;500;cma
+act33;12 Évacuation sanitaire vers le CMA 120/km;120;cma
+act34;Extraction de corps étranger;500;cma
+act35;Forfait soins infirmiers pendant l’hospitalisation;500;cma
+act36;Hospitalisation par jour;500;cma
+act37;Incision d’abcès;300;cma
+act38;Injection en ambulatoire (IM, IV, SC);100;cma
+act39;Lavage d'oreille;300;cma
+act40;Pansement (forfait);100;cma
+act41;Ponction d’ascite;500;cma
+act42;Ponction pleurale;500;cma
+act43;Ponction sus pubienne;500;cma
+act44;Pose de sonde urinaire et ablation sonde urinaire;500;cma
+act45;Suture par point;300;cma
+act46;Consultation pour PF;200;cma
+act47;Insertion d’implant;750;cma
+act48;Retrait d’implant;750;cma
+act49;Insertion DIU;1000;cma
+act50;Retrait DIU;1000;cma
+act51;Hémoculture + Antibiogramme;5000;cma
+act52;Ions (sodium, potassium, calcium, magnésium, chlore, phosphore, bicarbonate...);3500;cma
+act53;Injection de produits contraceptifs;100;cma
+act54;Créatininémie;2000;cma
+act55;Glycémie;1000;cma
+act56;Goutte épaisse;500;cma
+act57;GS/Rh;1000;cma
+act58;NFS;3000;cma
+act59;RPR/BW/VDRL;2000;cma
+act60;SDW;2500;cma
+act61;Taux d’hémoglobine/d’hématocrite (TXHB);1000;cma
+act62;VS;500;cma
