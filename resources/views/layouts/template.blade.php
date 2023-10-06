@@ -216,43 +216,70 @@
 
             // ENREGISTRER CONSULTATION
             $("#save-form").click(function(){
-                var consultation_type = $('input[name="patient_type"]:checked').val();
-                var cout_mise_en_observation = $("#observation_montant").val();
-                var cout_tatol_ex = $("#total_account_examen").text();
-                var cout_total_act = $("#total_account_acte").text();
-                var cout_total_prod = $("#total_account_product").text();
-                var registre_number = $("#registre_number").val();
-                var serie_number = $("#serie_number").val();
+                // GENERAL
+                var nom_patient = $("#nom_patient").val();
+                var village_patient = $("#village_patient").val();
+                var birth_date_unknow = $("#birth_date_unknow").val();
+                var birth_date_item = $("#birth_date_item").val();
+                var sexe_patient = $("#sexe_patient").val();
+                var mother_name = $("#mother_name").val();
+                var num_telephone = $("#num_telephone").val();
                 var consultation_date = $("#consultation_date").val();
-                // var csps = $("#").val();
-                // var district = $("#").val();
-                // var drs = $("#").val();
-                var liste_ex = $("#code_examen").val();
-                // var nomAgent = $("#").val();
-                // var nomPatient = $("#").val();
-                var num_ordonance = $("#ordonnance_number").val();
-                // var qualification = $("#").val();
-                // var screen_act_type = $("#").val();
-                var liste_prod = $("#code_product").val();
-                var liste_act = $("#code_acte").val();
-                var quantity_prod = $("#quantity_product").val();
-                var quantity_act = $("#quantity_acte").val();
-                var quantity_ex = $("#quantity_examen").val();
-                var patient_id = $("#patient_id").val();
+                var serie_number = $("#serie_number").val();
+                var registre_number = $("#registre_number").val();
+                var patient_type = $("#patient_type").val();
                 var type_prestation = $("#type_prestation").val();
+                // PRODUCT
+                var num_ordonance = $("#ordonnance_number").val();
+                var liste_prod = $("#code_product").val();
+                var quantity_prod = $("#quantity_product").val();
+                var total_account_product = $("#total_account_product").text();
+                var cout_total_prod = $("#total_account_product").text();
+                // ACTE
+                var liste_act = $("#code_acte").val();
+                var quantity_act = $("#quantity_acte").val();
+                var total_account_acte = $("#total_account_actee").val();
+                var cout_total_act = $("#total_account_acte").text();
+                // EXAMEN
+                var liste_ex = $("#code_examen").val();
+                var quantity_ex = $("#quantity_examen").val();
+                var total_account_examen = $("#total_account_examenamen").val();
+                var cout_tatol_ex = $("#total_account_examen").text();
+                // OBSERVATION
+                var type_observation = $("#type_observation").val();
                 var nbre_jours = $("#nbre_jours").val();
+                var cout_mise_en_observation = $("#observation_montant").val();
+                // EVACUATION
                 var nbre_kilometre = $("#nbre_kilometre").val();
+                var cout_evacuation = $("#cout_evacuation").val();
+                // GERANT / PRESCRIPTEUR
+                var name_prescripteur = $("#name_prescripteur").val();
+                var contact_prescripteur = $("#contact_prescripteur").val();
+                var name_gerant = $("#name_gerant").val();
+                var contact_gerant = $("#contact_gerant").val();
 
                 // alert("submit success");
                 $.ajax({
                         url: "{{ route('consultation.store') }}",
                         type: 'POST',
-                        data: {"_token": "{{ csrf_token() }}",consultation_type:consultation_type, cout_mise_en_observation:cout_mise_en_observation,
-                            cout_tatol_ex:cout_tatol_ex, cout_total_act:cout_total_act, cout_total_prod:cout_total_prod,
-                            registre_number:registre_number, serie_number:serie_number, consultation_date:consultation_date,
-                            liste_ex:liste_ex, num_ordonance:num_ordonance, liste_prod:liste_prod, liste_act:liste_act,
-                            quantity_prod:quantity_prod, quantity_act:quantity_act, quantity_ex:quantity_ex, patient_id:patient_id,
-                            type_prestation:type_prestation, nbre_jours:nbre_jours, nbre_kilometre:nbre_kilometre
+                        data: {"_token": "{{ csrf_token() }}",
+                            // GENERAL
+                            nom_patient:nom_patient, village_patient:village_patient, birth_date_unknow:birth_date_unknow, birth_date_item:birth_date_item,
+                            sexe_patient:sexe_patient, mother_name:mother_name, num_telephone:num_telephone, consultation_date:consultation_date,
+                            serie_number:serie_number, registre_number:registre_number, patient_type:patient_type, type_prestation:type_prestation,
+                            // PRODUCT
+                            num_ordonance:num_ordonance, liste_prod:liste_prod, quantity_prod:quantity_prod, total_account_product:total_account_product, cout_total_prod:cout_total_prod,
+                            // ACTE
+                            liste_act:liste_act, quantity_act:quantity_act, total_account_acte, cout_total_act:cout_total_act,
+                            // EXAMEN
+                            liste_ex:liste_ex, quantity_ex:quantity_ex, total_account_examen:total_account_examen, cout_tatol_ex:cout_tatol_ex,
+                            // OBSERVATION
+                            type_observation:type_observation, nbre_jours:nbre_jours, cout_mise_en_observation:cout_mise_en_observation,
+                            // EVACUATION
+                            nbre_kilometre:nbre_kilometre, cout_evacuation
+                            // GERANT / PRESCRIPTEUR
+                            name_prescripteur:name_prescripteur, contact_prescripteur:contact_prescripteur, name_gerant:name_gerant, contact_gerant:contact_gerant
+
                         },
                         error:function(){alert("Erreur");},
                         success: function () {

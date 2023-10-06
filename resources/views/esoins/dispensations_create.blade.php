@@ -1,6 +1,6 @@
 @extends('layouts.template')
 @section('page_title', 'ECOM | Add Category')
-@section('factures', 'active')
+@section('consultation', 'active')
 @section('content')
 <div class="row">
     <div class="col-lg-12">
@@ -43,13 +43,17 @@
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
-                                                    <label class="col-form-label col-form-label-sm" for="name">Nom et prénom du patient</label>
-                                                    <input class="form-control input-border-bt" id="name" type="text" name="name" />
+                                                    <label class="col-form-label col-form-label-sm" for="nom_patient">Nom et prénom du patient</label>
+                                                    <input class="form-control input-border-bt" id="nom_patient" type="text" name="nom_patient" />
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="col-form-label col-form-label-sm" for="village_patient">Village / secteur</label>
                                                     <input class="form-control input-border-bt" id="village_patient" type="text" name="village_patient" />
                                                 </div>
+                                                {{-- <div class="mb-3">
+                                                    <label class="col-form-label col-form-label-sm" for="age">Age du patient ?</label>
+                                                    <input class="form-control input-border-bt" id="age" type="number" name="age" />
+                                                </div> --}}
                                                 <div class="mb-3">
                                                     <label class="col-form-label col-form-label-sm" for="age">Quel est l'âge du patient ?</label>
                                                     <input class="form-control input-border-bt" id="age" min="1" type="number" name="age" />
@@ -118,14 +122,14 @@
                                                             <label class="form-check-label mb-0" for="patient_type">{{ $typeprestation->libelle }}</label>
                                                         </div>
                                                     @endforeach
-                                                    <div class="invalid-feedback">Veuillez choisir une prestation !</div>
+                                                    <div class="invalid-feedback">Veuillez choisir une cible !</div>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="type_prestation">Type de prestation</label>
+                                                    <label class="col-form-label col-form-label-sm" for="type_prestation">Type de prestation</label>
                                                     <select class="form-select" id="type_prestation" name="type_prestation">
                                                         <option value="">Selectionner type de prestation...</option>
                                                     </select>
-                                                    <div class="invalid-feedback">Veuillez selectionner un type une prestation !</div>
+                                                    <div class="invalid-feedback">Veuillez selectionner une prestation !</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -136,13 +140,13 @@
                                     <form class="needs-validation" id="wizardValidationForm2" novalidate="novalidate" data-wizard-form="2">
                                         <input type="hidden" id="code_product">
                                         <input type="hidden" id="quantity_product">
-                                        <input type="hidden" id="amount_product">
                                         <input type="hidden" id="index_product">
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="col-form-label col-form-label-sm" for="ordonnance_number">Numéro d'ordonnance</label>
                                                     <input class="form-control input-border-bt" id="ordonnance_number" type="text" placeholder="00000001" name="ordonnance_number" />
+                                                    <div class="invalid-feedback">Please choose a username.</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -186,13 +190,13 @@
                                                     </td>
                                                     <td class="product align-middle ps-1">{{ $product->name }}</td>
                                                     <td class="price align-middle white-space-nowrap text-end fw-bold text-700">
-                                                        <input class="form-control @error('quantity') is-invalid @enderror form-control-sm" id="quantity_product{{ $product->id }}" name="quantity_product{{ $product->id }}" type="number" min="0" value="{{ old('quantity_product'.$product->id) ? old('quantity_product'.$product->id) : 0 }}" style="width: 5rem;" disabled />
+                                                        <input class="form-control @error('quantity') is-invalid @enderror form-control-sm" id="quantity_product{{ $product->id }}" name="quantity_product{{ $product->id }}" type="number" min="0" value="{{ old('quantity') ? old('quantity') : 0 }}" style="width: 5rem;" disabled />
                                                         @error('quantity')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </td>
                                                     <td class="price align-middle white-space-nowrap text-end fw-bold text-700">
-                                                        <input class="form-control @error('amount') is-invalid @enderror form-control-sm" id="amount_product{{ $product->id }}" name="amount_product{{ $product->id }}" type="number" min="0" value="{{ old('amount_product'.$product->id) ? old('amount_product'.$product->id) : 0 }}"  disabled onfocusout="setPrice({{ $product->id }}, 'product');" />
+                                                        <input class="form-control @error('amount') is-invalid @enderror form-control-sm" id="amount_product{{ $product->id }}" name="amount_product{{ $product->id }}" type="number" min="0" value="{{ old('amount') ? old('amount') : 0 }}"  disabled onkeyup="setPrice({{ $product->id }}, 'product');" />
                                                         @error('amount')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
@@ -212,7 +216,6 @@
                                     <form class="mb-2 needs-validation" id="wizardValidationForm3" novalidate="novalidate" data-wizard-form="3">
                                         <input type="hidden" id="code_acte">
                                         <input type="hidden" id="quantity_acte">
-                                        <input type="hidden" id="amount_acte">
                                         <input type="hidden" id="index_acte">
                                         <div id="actes" data-list='{"valueNames":["acte","price_acte","category_acte","tags_acte","vendor_acte","time_acte"],"page":10,"pagination":true}'>
                                             <div class="mb-4">
@@ -254,13 +257,13 @@
                                                       </td>
                                                       <td class="acte align-middle ps-1">{{ $acte->description }}</td>
                                                       <td class="price_acte align-middle white-space-nowrap text-end fw-bold text-700">
-                                                        <input class="form-control @error('quantity_acte') is-invalid @enderror form-control-sm" id="quantity_acte{{ $acte->id }}" name="quantity_acte{{ $acte->id }}" type="number" min="0" value="{{ old('quantity_acte') ? old('quantity_acte') : 0 }}" style="width: 5rem;" disabled />
+                                                        <input class="form-control @error('quantity_acte') is-invalid @enderror form-control-sm" id="quantity_acte{{ $acte->id }}" name="quantity_acte{{ $acte->id }}" type="number" min="0" value="{{ old('quantity_acte') ? old('quantity_acte') : 0 }}" style="width: 5rem;" disabled onclick="setPrice({{ $acte->id }}, 'acte');" />
                                                         @error('quantity_acte')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                       </td>
                                                       <td class="price_acte align-middle white-space-nowrap text-end fw-bold text-700">
-                                                        <input class="form-control @error('amount_acte') is-invalid @enderror form-control-sm" id="amount_acte{{ $acte->id }}" name="amount_acte{{ $acte->id }}" type="number" min="0" value="{{ old('amount_acte') ? old('amount_acte') : 0 }}" disabled onfocusout="setPrice({{ $acte->id }}, 'acte');" />
+                                                        <input class="form-control @error('amount_acte') is-invalid @enderror form-control-sm" id="amount_acte{{ $acte->id }}" name="amount_acte{{ $acte->id }}" type="number" min="0" value="{{ old('amount_acte') ? old('amount_acte') : 0 }}" disabled onclick="setPrice({{ $acte->id }}, 'acte');" onkeyup="setPrice({{ $acte->id }}, 'acte');" />
                                                         @error('amount_acte')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
@@ -280,14 +283,13 @@
                                     <form class="mb-2 needs-validation" id="wizardValidationForm4" novalidate="novalidate" data-wizard-form="4">
                                         <input type="hidden" id="code_examen">
                                         <input type="hidden" id="quantity_examen">
-                                        <input type="hidden" id="amount_examen">
                                         <input type="hidden" id="index_examen">
                                         <div id="examens" data-list='{"valueNames":["examen","price_examen","category_examen","tags_examen","vendor_examen","time_examen"],"page":10,"pagination":true}'>
                                             <div class="mb-4">
                                             <div class="row g-3">
                                                 <div class="col-auto col-6">
                                                 <div class="search-box">
-                                                    <input class="form-control search-input search" type="search" placeholder="Rechercher..." aria-label="Search" />
+                                                    <input class="form-control search-input search" type="search" placeholder="Search examens" aria-label="Search" />
                                                     <span class="fas fa-search search-box-icon"></span>
                                                 </div>
                                                 </div>
@@ -321,13 +323,13 @@
                                                     </td>
                                                     <td class="examen align-middle ps-1">{{ $examen->nom_examen }}</td>
                                                     <td class="price_examen align-middle white-space-nowrap text-end fw-bold text-700">
-                                                        <input class="form-control @error('quantity_examen') is-invalid @enderror form-control-sm" id="quantity_examen{{ $examen->id }}" name="quantity_examen{{ $examen->id }}" type="number" value="{{ old('quantity_examen') ? old('quantity_examen') : 0 }}" style="width: 5rem;" disabled />
+                                                        <input class="form-control @error('quantity_examen') is-invalid @enderror form-control-sm" id="quantity_examen{{ $examen->id }}" name="quantity_examen{{ $examen->id }}" type="number" value="{{ old('quantity_examen') ? old('quantity_examen') : 0 }}" style="width: 5rem;" disabled onclick="setPrice({{ $examen->id }}, 'examen');" />
                                                         @error('quantity_examen')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </td>
                                                     <td class="price_examen align-middle white-space-nowrap text-end fw-bold text-700">
-                                                        <input class="form-control @error('amount_examen') is-invalid @enderror form-control-sm" id="amount_examen{{ $examen->id }}" name="amount_examen{{ $examen->id }}" type="number" value="{{ old('amount_examen') ? old('amount_examen') : 0 }}" disabled onfocusout="setPrice({{ $examen->id }}, 'examen');" />
+                                                        <input class="form-control @error('amount_examen') is-invalid @enderror form-control-sm" id="amount_examen{{ $examen->id }}" name="amount_examen{{ $examen->id }}" type="number" value="{{ old('amount_examen') ? old('amount_examen') : 0 }}" disabled onclick="setPrice({{ $examen->id }}, 'examen');" onkeyup="setPrice({{ $examen->id }}, 'examen');" />
                                                         @error('amount_examen')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
@@ -365,11 +367,11 @@
                                             <div id="show_mise_observation" style="display: none;">
                                                 <div class="mb-3">
                                                     <label class="col-form-label col-form-label-sm" for="nbre_jours">Nombre de jours</label>
-                                                    <input class="form-control input-border-bt" id="nbre_jours" type="number" name="nbre_jours" min="0" onclick="calculMontantObservation();" onkeyup="calculMontantObservation();" />
+                                                    <input class="form-control input-border-bt" id="nbre_jours" type="number" name="nbre_jours" onclick="calculMontantObservation();" onkeyup="calculMontantObservation();" />
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="col-form-label col-form-label-sm" for="observation_montant">Montant</label>
-                                                    <input class="form-control input-border-bt" id="observation_montant" type="number" min="0" name="observation_montant"  />
+                                                    <input class="form-control input-border-bt" id="observation_montant" type="text" name="observation_montant"  />
                                                 </div>
                                             </div>
                                         </div>
@@ -380,49 +382,35 @@
                                     <div class="mb-3 mt-3">
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" id="evacuation_patient" name="evacuation_patient" />
-                                            <label class="form-check-label" for="flexCheckDefault">Évacuation ?</label>
+                                            <label class="form-check-label" for="flexCheckDefault">Évacuation?</label>
                                           </div>
                                     </div>
-                                    <div id="show_evacuation_montant" style="display: none;">
-                                        <div class="mb-3">
-                                            <label class="col-form-label col-form-label-sm" for="nbre_kilometre">Nombre de kilomètre</label>
-                                            <input class="form-control input-border-bt" id="nbre_kilometre" type="number" name="nbre_kilometre" style="width:25%;" />
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="col-form-label col-form-label-sm" for="evacuation_montant">Montant Evacuation</label>
-                                            <input class="form-control input-border-bt" id="evacuation_montant" type="number" min="0" name="evacuation_montant" style="width:25%;" />
-                                        </div>
+                                    <div class="mb-3" id="show_evacuation_montant" style="display: none;">
+                                        <label class="col-form-label col-form-label-sm" for="evacuation_montant">Nombre de kilomètre</label>
+                                        <input class="form-control input-border-bt" id="nbre_kilometre" type="number" name="nbre_kilometre" style="width:25%;" />
                                     </div>
-
                                 </div>
                                 <!-- FICHE -->
                                 <div class="tab-pane" role="tabpanel" aria-labelledby="bootstrap-wizard-validation-tab7" id="bootstrap-wizard-validation-tab7">
                                     <div class="table-responsive scrollbar">
-                                        <div class="row mb-4">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="name_prescripteur">Nom et prénom du prescripteur</label>
-                                                    <input class="form-control input-border-bt" id="name_prescripteur" type="text" name="name_prescripteur" />
-                                                </div>
-                                                <div class="mb-3">
-                                                    <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="name_gerant">Nom et prénom du gérant</label>
-                                                    <input class="form-control input-border-bt" id="name_gerant" type="text" name="name_gerant" value="{{Auth::user()->name}}" />
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="contact_prescripteur">Contact du prescripteur</label>
-                                                    <input class="form-control input-border-bt" id="contact_prescripteur" type="text" name="contact_prescripteur" />
-                                                </div>
-                                                <div class="mb-3">
-                                                    <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="contact_gerant">Contact du gérant</label>
-                                                    <input class="form-control input-border-bt" id="contact_gerant" type="tel" name="contact_gerant" value="{{Auth::user()->name}}" />
-                                                </div>
-                                            </div>
+                                        <div class="mb-3">
+                                            <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="name_prescripteur">Nom et prénom du prescripteur</label>
+                                            <input class="form-control input-border-bt" id="name_prescripteur" type="text" name="name_prescripteur" />
                                         </div>
-                                        <h4 style="color: #004ebc">RECAPITULATIF</h4>
-                                        <table class="table fs--2 mt-3">
+                                        <div class="mb-3">
+                                            <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="contact_prescripteur">Contact du prescripteur</label>
+                                            <input class="form-control input-border-bt" id="contact_prescripteur" type="text" name="contact_prescripteur" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="name_gerant">Nom et prénom du gérant</label>
+                                            <input class="form-control input-border-bt" id="name_gerant" type="text" name="name_gerant" value="{{Auth::user()->name}}" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="contact_gerant">Contact du prescripteur</label>
+                                            <input class="form-control input-border-bt" id="contact_gerant" type="tel" name="contact_gerant" />
+                                        </div>
+                                        <br><br>
+                                        <table class="table fs--2 mb-0">
                                           <thead>
                                             <tr>
                                               <th class="border-top border-200 ps-0 align-middle" scope="col" style="width:32%; color: #004ebc;">DÉSIGNATION</th>

@@ -629,12 +629,15 @@ class HomeController extends Controller
             // OBSERVATION
             'type_observation'=>$request->type_observation, // ALTER TABLE feuille_soin RENAME COLUMN cout_total_ex TO type_observation; ALTER TABLE feuille_soin RENAME COLUMN cout_total_eq TO cout_total_ex;
             'nbre_jours' => $request->nbre_jours,
-            'cout_mise_en_observation' => $cout_mise_en_observation,
+            'cout_mise_en_observation' => $request->observation_montant,
             // EVACUATION
             'nbre_kilomettre' => $request->nbre_kilometre,
-            'cout_evacuation' => $cout_evacuation,
-            // 'cout_total_eq' => $request->cout_tatol_equiepement,
-            'nom_agent' => Auth::user()->name,
+            'cout_evacuation' => $request->evacuation_montant,
+            // GERANT / PRESCRIPTEUR
+            'nom_agent' => $request->name_gerant, // ALTER TABLE feuille_soin RENAME COLUMN nom_agent TO name_gerant;
+            'contact_prescripteur' => $request->contact_prescripteur,
+            'name_gerant' => $request->name_gerant,
+            'contact_gerant' => $request->contact_gerant,
             'user_id' => Auth::user()->id,
             'id_structure' => Auth::user()->structure_id,
         ]);
