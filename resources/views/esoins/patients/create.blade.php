@@ -63,6 +63,10 @@
 
                         <div class="col-lg-4">
                             <div class="mb-3">
+                                <select name="" id="">
+                                    <option value="">Selectionner un village</option>
+
+                                </select>
                                 <label class="col-form-label col-form-label-sm" for="village_patient">Village</label>
                                 <input class="form-control input-border-bt" id="village_patient" type="text" name="village_patient" />
                             </div>

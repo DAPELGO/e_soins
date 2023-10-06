@@ -140,7 +140,7 @@ class ImportController extends Controller
                 echo $i.' - '.$examen->id.' - '.$customerArr[$i][0].' - '.$customerArr[$i][1].'<br/>';*/
 
                 // PRODUCT
-	       		$product = Product::create([
+	       		/*$product = Product::create([
                     'id' => $customerArr[$i][0],
                     'code_product' => Time(),
                     'name' => $customerArr[$i][1],
@@ -149,7 +149,16 @@ class ImportController extends Controller
                     'prix_drd' => $customerArr[$i][2],
                 ]);
 
-                echo $i.' - '.$product->id.' - '.$customerArr[$i][0].' - '.$customerArr[$i][1].'<br/>';
+                echo $i.' - '.$product->id.' - '.$customerArr[$i][0].' - '.$customerArr[$i][1].'<br/>';*/
+
+                // PRODUCT
+	       		$structure = Structure::create([
+                    'parent_id' => $customerArr[$i][0],
+                    'nom_structure' => $customerArr[$i][1],
+                    'id_typestructure' => 41,
+                ]);
+
+                echo $i.' - '.$structure->id.' - '.$customerArr[$i][0].' - '.$customerArr[$i][1].'<br/>';
                 // PRODUCT
 	       		/*$nproduct = Nproduct::create([
                     'code_product' => html_entity_decode($customerArr[$i][0]),
