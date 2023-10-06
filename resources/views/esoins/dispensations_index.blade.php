@@ -3,7 +3,7 @@
 @section('consultation', 'active')
 @section('content')
 <div class="mb-3 mt-1">
-    <h4 style="padding: 0.4rem 0 0.4rem 1rem; background-color: #004ebc; color: white !important; font-size: 0.8rem;">LISTE DES CONSULTATIONS</h4>
+    <h4 style="padding: 0.4rem 0 0.4rem 1rem; background-color: #004ebc; color: white !important; font-size: 0.8rem;">LISTE DES DISPENSATIONS</h4>
 </div>
   <div id="categories" data-list='{"valueNames":["id","livre_name","sublivre_count","product_count","last_active","slug"],"page":10,"pagination":true}'>
     <div class="row align-items-center justify-content-between g-3 mb-4">
@@ -18,7 +18,7 @@
       </div>
       <div class="col-auto">
         <div class="d-flex align-items-center">
-          <a href="{{ route('patients.index') }}" class="btn btn-outline-primary btn-sm" style="font-weight: 600;"><span class="fas fa-plus me-2"></span>Saisie consultation</a>
+          <a href="{{ route('dispensations.add') }}" class="btn btn-outline-primary btn-sm" style="font-weight: 600;"><span class="fas fa-plus me-2"></span>Nouvelle Dispensation</a>
         </div>
       </div>
     </div>
@@ -36,15 +36,15 @@
               <th class="sort align-middle" scope="col" data-sort="livre_name" style="color: #004ebc;">PATIENTS</th>
               <th class="sort align-middle" scope="col" data-sort="livre_name" style="color: #004ebc;">ÂGE</th>
               <th class="sort align-middle" scope="col" data-sort="livre_name" style="color: #004ebc;">CSPS/CM</th>
-              <th class="sort align-middle" scope="col" data-sort="livre_name" style="color: #004ebc;">DATE CONULT.</th>
+              <th class="sort align-middle" scope="col" data-sort="livre_name" style="color: #004ebc;">DATE CONSULT.</th>
               <th class="sort align-middle" scope="col" data-sort="livre_name" style="color: #004ebc;">MONTANT</th>
-              <th class="sort align-middle" scope="col" data-sort="livre_name" style="color: #004ebc;">STATUT</th>
+              {{-- <th class="sort align-middle" scope="col" data-sort="livre_name" style="color: #004ebc;">STATUT</th> --}}
               <th class="sort align-middle" scope="col" data-sort="last_active" style="color: #004ebc;">ACTIONS</th>
             </tr>
           </thead>
           <tbody class="list" id="categories-table-body">
             <?php $i = 1; ?>
-            @foreach($rconsults as $rconsult)
+            {{-- @foreach($rconsults as $rconsult)
             <tr class="hover-actions-trigger btn-reveal-trigger position-static">
               <td class="fs--1 align-middle ps-0 py-3">
                 <div class="form-check mb-0 fs-0">
@@ -66,11 +66,11 @@
                 @endif
               </td>
               <td class="last_active align-middle white-space-nowrap text-700">
-                <a href="{{ route('esoins.fiche', $rconsult->id) }}" class="btn btn-soft-primary btn-sm btn-actions"><span class="text-900 fs-3 fas fa-user-md"></span></a>
+                <a href="{{ route('esoins.fiche', $rconsult->id) }}" title="Fiche Patient" class="btn btn-soft-primary btn-sm btn-actions"><span class="text-900 fs-3 fas fa-user-md"></span></a>
               </td>
             </tr>
             <?php $i++; ?>
-            @endforeach
+            @endforeach --}}
             @foreach($nconsults as $nconsult)
             <tr class="hover-actions-trigger btn-reveal-trigger position-static">
               <td class="fs--1 align-middle ps-0 py-3">
@@ -84,15 +84,15 @@
               <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->csps}}</td>
               <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->visit_date}}</td>
               <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->cout_total_act }}</td>
-              <td class="livre_name align-middle white-space-nowrap fw-bold text-td">
+              {{-- <td class="livre_name align-middle white-space-nowrap fw-bold text-td">
                 @if(count(check_dispensation($nconsult->num_ordonance))>0)
-                    <span class="badge ms-2 badge badge-phoenix badge-phoenix-success">COMPLETED</span>
+                    <span class="badge ms-2 badge badge-phoenix badge-phoenix-success">TERMINE</span>
                 @else
                     <span class="badge badge-tag me-2 mb-2">NOUVEAU</span>
                 @endif
-              </td>
+              </td> --}}
               <td class="last_active align-middle white-space-nowrap text-700">
-                <a href="{{ route('esoins.fiche', $nconsult->id) }}" class="btn btn-soft-primary btn-sm btn-actions"><span class="text-900 fs-3 fas fa-user-md"></span></a>
+                <a href="{{ route('esoins.fiche', $nconsult->id) }}" title="Voir la fiche" class="btn btn-soft-primary btn-sm btn-actions"><span class="text-900 fs-3 fas fa-user-md"></span></a>
               </td>
             </tr>
             <?php $i++; ?>
@@ -102,7 +102,7 @@
       </div>
       <div class="row align-items-center justify-content-between py-2 pe-0 fs--1">
         <div class="col-auto d-flex">
-          <p class="mb-0 d-none d-sm-block me-3 fw-semi-bold text-900" data-list-info="data-list-info"></p><a class="fw-semi-bold" href="#!" data-list-view="*">Tous les livres<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a class="fw-semi-bold d-none" href="#!" data-list-view="less">View Less<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+          <p class="mb-0 d-none d-sm-block me-3 fw-semi-bold text-900" data-list-info="data-list-info"></p><a class="fw-semi-bold" href="#!" data-list-view="*">Tous<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a class="fw-semi-bold d-none" href="#!" data-list-view="less">Voir moin<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
         </div>
         <div class="col-auto d-flex">
           <button class="page-link" data-list-pagination="prev"><span class="fas fa-chevron-left"></span></button>

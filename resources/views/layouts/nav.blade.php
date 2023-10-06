@@ -7,7 +7,7 @@
     </script>
     <div class="collapse navbar-collapse" id="navbarVerticalCollapse">
       <!-- scrollbar removed-->
-      <div class="navbar-vertical-content">
+      <div class="navbar-vertical-content h-100">
         <ul class="navbar-nav flex-column" id="navbarVerticalNav">
           <li class="nav-item">
             <!-- label-->
@@ -23,18 +23,18 @@
             </div>
 
             <!-- parent pages-->
-            <div class="nav-item-wrapper @yield('consultation')"><a class="nav-link label-1 @yield('consultation')" href="{{ route('app.consultation') }}" role="button" data-bs-toggle="" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-icon"><span data-feather="user-plus"></span></span><span class="nav-link-text-wrapper"><span class="nav-link-text">Consultations</span></span>
+            <div class="nav-item-wrapper @yield('consultation')"><a class="nav-link label-1 @yield('consultation')" href="{{ route('app.dispensation') }}" role="button" data-bs-toggle="" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-icon"><span data-feather="user-plus"></span></span><span class="nav-link-text-wrapper"><span class="nav-link-text">Dispensation de l'ordonnance</span></span>
                 </div>
               </a>
             </div>
 
             <!-- parent pages-->
-            <div class="nav-item-wrapper @yield('dispensation')"><a class="nav-link label-1 @yield('dispensation')" href="{{ route('esoins.dispensation') }}" role="button" data-bs-toggle="" aria-expanded="false">
+            {{-- <div class="nav-item-wrapper @yield('dispensation')"><a class="nav-link label-1 @yield('dispensation')" href="{{ route('esoins.dispensation') }}" role="button" data-bs-toggle="" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-icon"><span data-feather="edit-3"></span></span><span class="nav-link-text-wrapper"><span class="nav-link-text">Dispensation de l'ordonnance</span></span>
                 </div>
               </a>
-            </div>
+            </div> --}}
           </li>
           <div class="form m-4 p-2 bg-white rounded-2" style="border: 1px solid #ccc;">
             <select class="form-select" id="id_drs_filtre" name="id_drs_filtre" data-choices="data-choices" data-options='{"removeItemButton":true,"placeholder":true}' onchange="changeValue('id_drs_filtre', 'id_district_filtre', 'structure');">

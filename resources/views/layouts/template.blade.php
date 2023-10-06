@@ -354,7 +354,7 @@
         /************ END SELECT CHARGEMENT SOUS TABLES **************************/
         var code_product = [], code_acte = [], code_examen = [];
         var quantity_product = [], quantity_acte = [], quantity_examen = [];
-        var price_product = [], price_acte = [], price_examen = [];
+        var amount_product = [], amount_acte = [], amount_examen = [];
         var index_product = [], index_acte = [], index_examen = [];
         var total_account_prod = 0.0;
         var total_account_act = 0.0;
@@ -363,16 +363,18 @@
             if( $("#check_"+table+i).is(':checked') ){
 
                 $("#quantity_"+table+i).removeAttr("disabled");
-                $("#price_"+table+i).attr("class", "badge badge-tag me-2 mb-2 bg-info color-info");
-                $("#total_"+table+i).attr("class", "badge badge-tag me-2 mb-2 bg-info color-info");
+                $("#amount_"+table+i).removeAttr("disabled");
+                // $("#price_"+table+i).attr("class", "badge badge-tag me-2 mb-2 bg-info color-info");
+                // $("#total_"+table+i).attr("class", "badge badge-tag me-2 mb-2 bg-info color-info");
                 var productSelected = $("#check_"+table+i).val();
                 var quantitySelected = $("#quantity_"+table+i).val();
-                var priceSelected = $("#price_"+table+i).text();
+                var userPriceSelected = $("#amount_"+table+i).val();
+                //var priceSelected = $("#price_"+table+i).text();
                 if(table == 'product'){
                     // alert(productSelected);
                     code_product[i] = productSelected;
                     quantity_product[i] = quantitySelected;
-                    price_product[i] = priceSelected;
+                    amount_product[i] = userPriceSelected;
                     index_product.push(i);
                     $("#code_"+table).val(code_product);
                     $("#quantity_"+table).val(quantity_product);
@@ -380,7 +382,7 @@
                 }else if(table == 'acte'){
                     code_acte[i] = productSelected;
                     quantity_acte[i] = quantitySelected;
-                    price_acte[i] = priceSelected;
+                    amount_acte[i] = userPriceSelected;
                     index_acte.push(i);
                     $("#code_"+table).val(code_acte);
                     $("#quantity_"+table).val(quantity_acte);
@@ -388,7 +390,7 @@
                 }else {
                     code_examen[i] = productSelected;
                     quantity_examen[i] = quantitySelected;
-                    price_examen[i] = priceSelected;
+                    amount_examen[i] = userPriceSelected;
                     index_examen.push(i);
                     $("#code_"+table).val(code_examen);
                     $("#quantity_"+table).val(quantity_examen);

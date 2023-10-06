@@ -25033,7 +25033,8 @@ html:not(.navbar-vertical-collapsed) .navbar-vertical.navbar-expand-xs .navbar-v
     padding-left: 1rem;
   }
   .navbar-vertical.navbar-expand-lg .navbar-vertical-content .navbar-nav .nav-link:hover {
-    background-color: var(--phoenix-navbar-vertical-link-hover-bg);
+    /* background-color: var(--phoenix-navbar-vertical-link-hover-bg); */
+    background-color: none !important;
   }
   .navbar-vertical.navbar-expand-lg .navbar-vertical-content .navbar-nav .nav .nav-link {
     padding-left: 3.3125rem;

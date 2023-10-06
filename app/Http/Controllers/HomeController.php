@@ -194,6 +194,65 @@ class HomeController extends Controller
         return view('esoins.consultation', compact('rconsults', 'nconsults'));
     }
 
+    // LIST DISPENSATIONS
+    public function dispensations()
+    {
+        $user = DB::table('users')
+                        ->join('structures', 'users.structure_id', 'structures.id')
+                        ->select('users.*', 'structures.nom_structure', 'structures.level_structure')
+                        ->where('users.id', Auth::user()->id)
+                        ->first();
+        switch ($user->level_structure) {
+            case env('LEVEL_DRS'):
+                $structure = Structure::find(Auth::user()->structure_id);
+                $structures = $structure->getAllChildren();
+                $array = array();
+                foreach ($structures as $structure) {
+                    array_push($array, $structure->id);
+                }
+                $nconsults = DB::table('feuille_soin')->where('feuille_soin.patient_id', '>', 0)->whereIn('structures.id', $array)
+                            ->join('patients', 'feuille_soin.patient_id', 'patients.id')
+                            ->join('structures', 'feuille_soin.id_structure', 'structures.id')
+                            ->select('feuille_soin.*', 'patients.name', 'patients.birth_date')
+                            ->orderBy('feuille_soin.created_at', 'desc')
+                            ->get();
+                break;
+            case env('LEVEL_DISTRICT'):
+                $nconsults = DB::table('feuille_soin')->where('feuille_soin.patient_id', '>', 0)->where('structures.parent_id', Auth::user()->structure_id)
+                            ->join('patients', 'feuille_soin.patient_id', 'patients.id')
+                            ->join('structures', 'feuille_soin.id_structure', 'structures.id')
+                            ->select('feuille_soin.*', 'patients.name', 'patients.birth_date')
+                            ->orderBy('feuille_soin.created_at', 'desc')
+                            ->get();
+                break;
+
+            default:
+            $nconsults = DB::table('feuille_soin')->where('feuille_soin.patient_id', '>', 0)->where('feuille_soin.user_id', Auth::user()->id)
+                            ->join('patients', 'feuille_soin.patient_id', 'patients.id')
+                            ->select('feuille_soin.*', 'patients.name', 'patients.birth_date')
+                            ->orderBy('feuille_soin.created_at', 'desc')
+                            ->get();
+                break;
+        }
+
+        //$rconsults = DB::table('feuille_soin')->where('patient_id', 0)->orderBy('created_at', 'desc')->get();
+
+        //return view('esoins.dispensations', compact('rconsults', 'nconsults'));
+        return view('esoins.dispensations_index', compact('nconsults'));
+    }
+
+    // CREATE DISPENSATION
+    public function addDispensation(){
+        $structure = Structure::where('id', Auth::user()->structure_id)->first();
+        $structures = Structure::where('parent_id', $structure->parent_id)->get();
+        $products = Product::all();
+        $actes = Acte::all();
+        $examens = Equipement::all();
+        $examens = Examen::all();
+        $typeprestations = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('PARAM_CIBLE')])->get();
+        return view('esoins.dispensations_create', compact('structures', 'products', 'actes', 'examens', 'typeprestations', 'examens'));
+    }
+
     public function efiche($id)
     {
         // CONSULTATION
