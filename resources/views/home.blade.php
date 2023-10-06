@@ -1,5 +1,6 @@
 @extends('layouts.template')
 @section('page_title', 'ECOM')
+@section('dashboard', 'active')
 @section('content')
     <div class="pb-1">
       <div class="row g-1">

@@ -13,8 +13,8 @@ use App\Http\Controllers\Auth\LoginController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/dispensations', 'HomeController@dispensations')->name('app.dispensation');
-Route::get('/dispensations/add', 'HomeController@addDispensation')->name('dispensations.add');
+Route::get('/factures', 'HomeController@factures')->name('app.factures');
+Route::get('/factures/add', 'HomeController@addFacture')->name('factures.add');
 
 Route::get('/esoins', 'HomeController@index')->name('app.home');
 Route::get('/consultations', 'HomeController@econsultation')->name('app.consultation');

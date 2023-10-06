@@ -23,7 +23,7 @@
             </div>
 
             <!-- parent pages-->
-            <div class="nav-item-wrapper @yield('consultation')"><a class="nav-link label-1 @yield('consultation')" href="{{ route('app.dispensation') }}" role="button" data-bs-toggle="" aria-expanded="false">
+            <div class="nav-item-wrapper @yield('factures')"><a class="nav-link label-1 @yield('factures')" href="{{ route('app.factures') }}" role="button" data-bs-toggle="" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-icon"><span data-feather="user-plus"></span></span><span class="nav-link-text-wrapper"><span class="nav-link-text">Factures</span></span>
                 </div>
               </a>

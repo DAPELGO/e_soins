@@ -34,7 +34,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $structure = Structure::where('id', Auth::user()->structure_id)->first();
+        return view('home')->with('structure', $structure);
     }
 
     public function getStat()
@@ -195,8 +196,9 @@ class HomeController extends Controller
     }
 
     // LIST DISPENSATIONS
-    public function dispensations()
+    public function factures()
     {
+        $structure = Structure::where('id', Auth::user()->structure_id)->first();
         $user = DB::table('users')
                         ->join('structures', 'users.structure_id', 'structures.id')
                         ->select('users.*', 'structures.nom_structure', 'structures.level_structure')
@@ -235,22 +237,18 @@ class HomeController extends Controller
                 break;
         }
 
-        //$rconsults = DB::table('feuille_soin')->where('patient_id', 0)->orderBy('created_at', 'desc')->get();
-
-        //return view('esoins.dispensations', compact('rconsults', 'nconsults'));
-        return view('esoins.dispensations_index', compact('nconsults'));
+        return view('esoins.dispensations_index', compact('nconsults', 'structure'));
     }
 
     // CREATE DISPENSATION
-    public function addDispensation(){
+    public function addFacture(){
         $structure = Structure::where('id', Auth::user()->structure_id)->first();
         $structures = Structure::where('parent_id', $structure->parent_id)->get();
         $products = Product::all();
         $actes = Acte::all();
-        $examens = Equipement::all();
         $examens = Examen::all();
         $typeprestations = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('PARAM_CIBLE')])->get();
-        return view('esoins.dispensations_create', compact('structures', 'products', 'actes', 'examens', 'typeprestations', 'examens'));
+        return view('esoins.dispensations_create', compact('structures', 'products', 'actes', 'structure', 'typeprestations', 'examens'));
     }
 
     public function efiche($id)

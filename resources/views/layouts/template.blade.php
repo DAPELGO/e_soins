@@ -196,7 +196,13 @@
 
             // CHECK MISE OBSERVATION
             $('input[name="type_observation"]').click(function(){
-                document.getElementById("show_mise_observation").style.display = "block";
+                var type_observation = $('input[name="type_observation"]:checked').val();
+                if(type_observation != "ambulatoire"){
+                    document.getElementById("show_mise_observation").style.display = "block";
+                }
+                else{
+                    document.getElementById("show_mise_observation").style.display = "none";
+                }
             });
 
             // CHECK EVACUATION
@@ -355,82 +361,80 @@
         var code_product = [], code_acte = [], code_examen = [];
         var quantity_product = [], quantity_acte = [], quantity_examen = [];
         var amount_product = [], amount_acte = [], amount_examen = [];
+
         var index_product = [], index_acte = [], index_examen = [];
+
         var total_account_prod = 0.0;
         var total_account_act = 0.0;
         var total_account_ex = 0.0;
+
         function selectProduct(i, table){
             if( $("#check_"+table+i).is(':checked') ){
 
                 $("#quantity_"+table+i).removeAttr("disabled");
                 $("#amount_"+table+i).removeAttr("disabled");
-                // $("#price_"+table+i).attr("class", "badge badge-tag me-2 mb-2 bg-info color-info");
-                // $("#total_"+table+i).attr("class", "badge badge-tag me-2 mb-2 bg-info color-info");
+
                 var productSelected = $("#check_"+table+i).val();
                 var quantitySelected = $("#quantity_"+table+i).val();
                 var userPriceSelected = $("#amount_"+table+i).val();
-                //var priceSelected = $("#price_"+table+i).text();
+
                 if(table == 'product'){
-                    // alert(productSelected);
                     code_product[i] = productSelected;
                     quantity_product[i] = quantitySelected;
                     amount_product[i] = userPriceSelected;
                     index_product.push(i);
+
                     $("#code_"+table).val(code_product);
                     $("#quantity_"+table).val(quantity_product);
+                    $("#amount_"+table).val(amount_product);
                     $("#index_"+table).val(index_product);
-                }else if(table == 'acte'){
+                }
+                else if(table == 'acte'){
                     code_acte[i] = productSelected;
                     quantity_acte[i] = quantitySelected;
                     amount_acte[i] = userPriceSelected;
                     index_acte.push(i);
+
                     $("#code_"+table).val(code_acte);
                     $("#quantity_"+table).val(quantity_acte);
+                    $("#amount_"+table).val(amount_acte);
                     $("#index_"+table).val(index_acte);
-                }else {
+                }
+                else {
                     code_examen[i] = productSelected;
                     quantity_examen[i] = quantitySelected;
                     amount_examen[i] = userPriceSelected;
                     index_examen.push(i);
+
                     $("#code_"+table).val(code_examen);
                     $("#quantity_"+table).val(quantity_examen);
+                    $("#amount_"+table).val(amount_examen);
                     $("#index_"+table).val(index_examen);
                 }
-
-                // console.log(price);
-
-                // product.push(productSelected);
-                // quantity.push(quantitySelected);
-
-                // console.log(product);
-                // console.log(quantity);
-                // alert(product.length);
-                // alert("Checkbox Is checked");
             }
             else{
                 $("#quantity_"+table+i).attr("disabled", "");
-                $("#price_"+table+i).attr("class", "badge badge-tag me-2 mb-2");
-                $("#total_"+table+i).attr("class", "badge badge-tag me-2 mb-2");
+                $("#amount_"+table+i).attr("disabled", "");
+
                 if(table == 'product'){
                     code_product[i] = '';
                     quantity_product[i] = '';
-                    total_account_prod = total_account_prod - parseFloat( $("#total_"+table+i).text());
+                    amount_product[i] = '';
+                    total_account_prod = total_account_prod - parseFloat( $("#amount_"+table+i).text());
                     $("#total_account_"+table).text(total_account_prod);
-                }else if(table == 'acte'){
+                }
+                else if(table == 'acte'){
                     code_acte[i] = '';
                     quantity_acte[i] = '';
                     total_account_act = total_account_act - parseFloat( $("#total_"+table+i).text());
                     $("#total_account_"+table).text(total_account_act);
-                }else{
+                }
+                else{
                     code_examen[i] = '';
                     quantity_examen[i] = '';
                     total_account_ex = total_account_ex - parseFloat( $("#total_"+table+i).text());
-                    $("#total_account_"+table).text(total_account_act);
+                    $("#total_account_"+table).text(total_account_ex);
                 }
-
-                $("#total_"+table+i).text('0.00');
-                $("#quantity_"+table+i).val(0);
-                // alert("quantity"+i);
             }
         }
 
@@ -439,51 +443,45 @@
         function setPrice(i, table){
             var total = 0.0;
 
+            // GET AMOUNT
+            var amount_price = $("#amount_"+table+i).val() =='' ? 0 : $("#amount_"+table+i).val();
+
             // GET QUANTITY
-            var quantity_price = $("#quantity_"+table+i).val();
-            // var quantitySelected = $("#quantity_"+table+i).val();
-            // GET PRIX UNITAIRE
-            var price_pvp = $("#price_"+table+i).text();
+            var quantity_price = $("#quantity_"+table+i).val() =='' ? 0 : $("#quantity_"+table+i).val();
 
             if(table == 'product'){
                 quantity_product[i] = quantity_price;
+                amount_product[i] = amount_price;
                 $("#quantity_"+table).val(quantity_product);
-            }else if(table == 'acte'){
+                $("#amount_"+table).val(amount_product);
+
+                console.log('Total Account 1', total_account_prod);
+                total_account_prod = total_account_prod + parseFloat(amount_price);
+                console.log('Parse Float', parseFloat(amount_price));
+                console.log(total_account_prod);
+                $("#total_account_"+table).text(total_account_prod);
+            }
+            else if(table == 'acte'){
                 quantity_acte[i] = quantity_price;
+                amount_acte[i] = amount_price;
                 $("#quantity_"+table).val(quantity_acte);
-            }else{
+                $("#amount_"+table).val(amount_acte);
+
+                total_account_act = total_account_act + parseFloat(amount_price);
+                $("#total_account_"+table).text(total_account_act);
+            }
+            else{
                 quantity_examen[i] = quantity_price;
+                amount_examen[i] = amount_price;
                 $("#quantity_"+table).val(quantity_examen);
+                $("#amount_"+table).val(amount_examen);
+
+                total_account_act = total_account_act + parseFloat(amount_price);
+                $("#total_account_"+table).text(total_account_act);
+
+                total_account_ex = total_account_ex + parseFloat(amount_price);
+                $("#total_account_"+table).text(total_account_ex);
             }
-
-            // console.log(quantity);
-            // console.log(quantity);
-
-            if(!quantity_price){
-                // alert(quantity);
-                $("#total_"+table+i).text(0);
-            }else{
-                if(table == 'product'){
-                    total_account_prod = total_account_prod + parseFloat(price_pvp);
-                    $("#total_account_"+table).text(total_account_prod);
-                }else if(table == 'acte'){
-                    total_account_act = total_account_act + parseFloat(price_pvp);
-                    $("#total_account_"+table).text(total_account_act);
-                }else{
-                    total_account_ex = total_account_ex + parseFloat(price_pvp);
-                    $("#total_account_"+table).text(total_account_ex);
-                }
-                total = parseFloat(quantity_price) * parseFloat(price_pvp);
-
-                // alert($("#total_account_"+table).text());
-
-
-                // console.log(product_id_list);
-                $("#total_"+table+i).text(total);
-            }
-            // console.log(quantity);
-
-            // alert(total_account+' '+table);
         }
 
         function afficheForm(form_area, display_area){

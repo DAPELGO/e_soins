@@ -1,6 +1,6 @@
 @extends('layouts.template')
 @section('page_title', 'ECOM | All livre')
-@section('consultation', 'active')
+@section('factures', 'active')
 @section('content')
 <div class="mb-3 mt-1">
     <h4 style="padding: 0.4rem 0 0.4rem 1rem; background-color: #004ebc; color: white !important; font-size: 0.8rem;">LISTE DES FACTURES</h4>
@@ -18,7 +18,7 @@
       </div>
       <div class="col-auto">
         <div class="d-flex align-items-center">
-          <a href="{{ route('dispensations.add') }}" class="btn btn-outline-primary btn-sm" style="font-weight: 600;"><span class="fas fa-plus me-2"></span>Nouvelle Facturation</a>
+          <a href="{{ route('factures.add') }}" class="btn btn-outline-primary btn-sm" style="font-weight: 600;"><span class="fas fa-plus me-2"></span>Nouvelle Facturation</a>
         </div>
       </div>
     </div>

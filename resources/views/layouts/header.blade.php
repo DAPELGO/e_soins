@@ -6,7 +6,7 @@
         <a class="navbar-brand me-1 me-sm-3" href="{{ route('app.home') }}">
           <div class="d-flex align-items-center">
             <div class="d-flex align-items-center"><img src="{{ asset('assets/img/icons/armoirie-bf.png') }}" alt="Armoirie BF" width="24" />
-              <p class="logo-text ms-2 d-none d-sm-block">Facture individuelle de soins gratuité</p>
+              <p class="logo-text ms-2 d-none d-sm-block">Facture individuelle de soins gratuité (<b style="color: #004ebc">{{$structure->nom_structure}}</b>)</p>
             </div>
           </div>
         </a>
