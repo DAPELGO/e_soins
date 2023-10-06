@@ -3,7 +3,7 @@
 @section('consultation', 'active')
 @section('content')
 <div class="mb-3 mt-1">
-    <h4 style="padding: 0.4rem 0 0.4rem 1rem; background-color: #004ebc; color: white !important; font-size: 0.8rem;">LISTE DES DISPENSATIONS</h4>
+    <h4 style="padding: 0.4rem 0 0.4rem 1rem; background-color: #004ebc; color: white !important; font-size: 0.8rem;">LISTE DES FACTURES</h4>
 </div>
   <div id="categories" data-list='{"valueNames":["id","livre_name","sublivre_count","product_count","last_active","slug"],"page":10,"pagination":true}'>
     <div class="row align-items-center justify-content-between g-3 mb-4">
@@ -18,7 +18,7 @@
       </div>
       <div class="col-auto">
         <div class="d-flex align-items-center">
-          <a href="{{ route('dispensations.add') }}" class="btn btn-outline-primary btn-sm" style="font-weight: 600;"><span class="fas fa-plus me-2"></span>Nouvelle Dispensation</a>
+          <a href="{{ route('dispensations.add') }}" class="btn btn-outline-primary btn-sm" style="font-weight: 600;"><span class="fas fa-plus me-2"></span>Nouvelle Facturation</a>
         </div>
       </div>
     </div>

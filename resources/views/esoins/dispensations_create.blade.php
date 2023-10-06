@@ -4,7 +4,7 @@
 @section('content')
 <div class="row">
     <div class="col-lg-12">
-        <h4 class="panel-title">NOUVELLE DISPENSATION</h4>
+        <h4 class="panel-title">NOUVELLE FACTURATION</h4>
         <div class="panel">
             <div class="my-0">
                 <div class="row">
@@ -31,7 +31,7 @@
                                     <div class="text-center d-inline-block"><span class="nav-item-circle-parent"><span class="nav-item-circle"><span class="fas fa-check"></span></span></span><span class="d-none d-md-block mt-1 fs--1">Évacuation</span></div>
                                 </a></li>
                                 <li class="nav-item"><a class="nav-link fw-semi-bold" href="#bootstrap-wizard-validation-tab7" data-bs-toggle="tab" data-wizard-step="7">
-                                    <div class="text-center d-inline-block"><span class="nav-item-circle-parent"><span class="nav-item-circle"><span class="fas fa-check"></span></span></span><span class="d-none d-md-block mt-1 fs--1">Fiche de soins</span></div>
+                                    <div class="text-center d-inline-block"><span class="nav-item-circle-parent"><span class="nav-item-circle"><span class="fas fa-check"></span></span></span><span class="d-none d-md-block mt-1 fs--1">Validation</span></div>
                                 </a></li>
                             </ul>
                             </div>
@@ -100,8 +100,8 @@
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <span class="fas fa-asterisk fs--2 me-1 text-danger"></span>
-                                                    <label class="col-form-label col-form-label-sm" for="consultation_date">Date</label>
-                                                    <input class="form-control input-border-bt" id="consultation_date" type="text" required="required" placeholder="dd-mm-aaaa" name="consultation_date" value="{{ date('d/m/Y') }}" />
+                                                    <label class="col-form-label col-form-label-sm" for="consultation_date">Date de facturation</label>
+                                                    <input class="form-control input-border-bt" id="consultation_date" type="date" required="required" placeholder="dd-mm-aaaa" name="consultation_date" value="{{ date('d/m/Y') }}" />
                                                     <div class="invalid-feedback">Veuillez entrez une date !</div>
                                                 </div>
                                                 <div class="mb-3">
@@ -115,7 +115,7 @@
                                                     <div class="invalid-feedback">Veuillez entrer le numéro !</div>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="patient_type">Cible</label>
+                                                    <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="patient_type">Prestations</label>
                                                     @foreach ($typeprestations as $typeprestation)
                                                         <div class="form-check">
                                                             <input class="form-check-input" type="radio" name="patient_type" id="cible{{ $typeprestation->id }}" required="required" value="{{ $typeprestation->id }}" onclick="changeValue('cible{{ $typeprestation->id }}', 'type_prestation', 'valeur');" />
@@ -141,16 +141,16 @@
                                         <input type="hidden" id="code_product">
                                         <input type="hidden" id="quantity_product">
                                         <input type="hidden" id="index_product">
-                                        {{-- <div class="row">
+                                        <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
-                                                    <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="ordonnance_number">Numéro d'ordonnance</label>
-                                                    <input class="form-control input-border-bt" id="ordonnance_number" type="text" required="required" placeholder="00000001" name="ordonnance_number" />
+                                                    <label class="col-form-label col-form-label-sm" for="ordonnance_number">Numéro d'ordonnance</label>
+                                                    <input class="form-control input-border-bt" id="ordonnance_number" type="text" placeholder="00000001" name="ordonnance_number" />
                                                     <div class="invalid-feedback">Please choose a username.</div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <hr> --}}
+                                        <hr>
                                         <div id="products" data-list='{"valueNames":["product","price","category","tags","vendor_acte","time"],"page":1000,"pagination":true}'>
                                             <div class="mb-4">
                                             <div class="row g-3">
@@ -177,7 +177,7 @@
                                                     </th>
                                                     <th class="sort white-space-nowrap align-middle ps-1" scope="col" style="width:150px;" data-sort="product">PRODUIT</th>
                                                     <th class="sort align-middle ps-1" scope="col" data-sort="price" style="width:50px;">QUANTITÉ</th>
-                                                    <th class="sort align-middle ps-1" scope="col" data-sort="category" style="width:50px;">PRIX</th>
+                                                    <th class="sort align-middle ps-1" scope="col" data-sort="category" style="width:50px;">MONTANT</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody class="list" id="products-table-body">
@@ -243,7 +243,7 @@
                                                       </th>
                                                       <th class="sort white-space-nowrap align-middle ps-1" scope="col" style="width:150px;" data-sort="acte">ACTE</th>
                                                       <th class="sort align-middle ps-1" scope="col" data-sort="price_acte" style="width:50px;">QUANTITÉ</th>
-                                                      <th class="sort align-middle ps-1" scope="col" data-sort="category_acte" style="width:50px;">PRIX</th>
+                                                      <th class="sort align-middle ps-1" scope="col" data-sort="category_acte" style="width:50px;">MONTANT</th>
                                                       {{-- <th class="sort align-middle ps-3" scope="col" data-sort="tags_acte" style="width:50px;">TOTAL</th> --}}
                                                     </tr>
                                                   </thead>
@@ -310,7 +310,7 @@
                                                     </th>
                                                     <th class="sort white-space-nowrap align-middle ps-1" scope="col" style="width:150px;" data-sort="examen">EXAMENS COMPLÉMENTAIRES</th>
                                                     <th class="sort align-middle ps-1" scope="col" data-sort="price_examen" style="width:50px;">QUANTITÉ</th>
-                                                    <th class="sort align-middle ps-1" scope="col" data-sort="category_examen" style="width:50px;">PRIX</th>
+                                                    <th class="sort align-middle ps-1" scope="col" data-sort="category_examen" style="width:50px;">MONTANT</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody class="list" id="examens-table-body">
@@ -371,7 +371,7 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="col-form-label col-form-label-sm" for="observation_montant">Montant</label>
-                                                    <input class="form-control input-border-bt" id="observation_montant" type="text" name="observation_montant" disabled />
+                                                    <input class="form-control input-border-bt" id="observation_montant" type="text" name="observation_montant"  />
                                                 </div>
                                             </div>
                                         </div>
@@ -393,6 +393,23 @@
                                 <!-- FICHE -->
                                 <div class="tab-pane" role="tabpanel" aria-labelledby="bootstrap-wizard-validation-tab7" id="bootstrap-wizard-validation-tab7">
                                     <div class="table-responsive scrollbar">
+                                        <div class="mb-3">
+                                            <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="name_prescripteur">Nom et prénom du prescripteur</label>
+                                            <input class="form-control input-border-bt" id="name_prescripteur" type="text" name="name_prescripteur" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="contact_prescripteur">Contact du prescripteur</label>
+                                            <input class="form-control input-border-bt" id="contact_prescripteur" type="text" name="contact_prescripteur" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="name_gerant">Nom et prénom du gérant</label>
+                                            <input class="form-control input-border-bt" id="name_gerant" type="text" name="name_gerant" value="{{Auth::user()->name}}" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="contact_gerant">Contact du prescripteur</label>
+                                            <input class="form-control input-border-bt" id="contact_gerant" type="tel" name="contact_gerant" />
+                                        </div>
+                                        <br><br>
                                         <table class="table fs--2 mb-0">
                                           <thead>
                                             <tr>
