@@ -5686,11 +5686,11 @@
       });
 
       nextButton.addEventListener(events.CLICK, () => {
-        var total_account_product = document.getElementById("total_account_product").innerText;
-        var total_account_acte = document.getElementById("total_account_acte").innerText;
-        var total_account_examen = document.getElementById("total_account_examen").innerText;
-        var observation_montant = document.getElementById("observation_montant").value;
-        var evacuation_montant = parseFloat(document.getElementById("nbre_kilometre").value)*120;
+        var total_account_product = document.getElementById("total_account_product").innerText == '' ? 0 : document.getElementById("total_account_product").innerText;
+        var total_account_acte = document.getElementById("total_account_acte").innerText == '' ? 0 : document.getElementById("total_account_acte").innerText;
+        var total_account_examen = document.getElementById("total_account_examen").innerText == '' ? 0 : document.getElementById("total_account_examen").innerText;
+        var observation_montant = document.getElementById("observation_montant").value == '' ? 0 : document.getElementById("observation_montant").value;
+        var evacuation_montant = document.getElementById("evacuation_montant").value == '' ? 0 : document.getElementById("evacuation_montant").value;
         var cout_global_total = parseFloat(total_account_product) +
                                 parseFloat(total_account_acte) +
                                 parseFloat(total_account_examen) +

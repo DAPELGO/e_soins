@@ -247,8 +247,8 @@ class HomeController extends Controller
         $products = Product::all();
         $actes = Acte::all();
         $examens = Examen::all();
-        $typeprestations = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('PARAM_CIBLE')])->get();
-        return view('esoins.dispensations_create', compact('structures', 'products', 'actes', 'structure', 'typeprestations', 'examens'));
+        $prestations = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('PARAM_CIBLE')])->get();
+        return view('esoins.dispensations_create', compact('structures', 'products', 'actes', 'structure', 'prestations', 'examens'));
     }
 
     public function efiche($id)
@@ -503,7 +503,143 @@ class HomeController extends Controller
     }
 
     // STORE CONSULTATION
+    public function storeFacture(Request $request)
+    {
+        dd($request->all());
 
+        // List prod
+        $array_prod = array();
+        $tab_prod = explode(',',  $request->liste_prod);
+        for($i=0;$i<count($tab_prod); $i++){
+            if(strlen($tab_prod[$i])>0){
+                array_push($array_prod, $tab_prod[$i]);
+            }
+        }
+        $liste_prod = implode(" ", $array_prod);
+
+        // List act
+        $array_act = array();
+        $tab_act = explode(',',  $request->liste_act);
+        for($i=0;$i<count($tab_act); $i++){
+            if(strlen($tab_act[$i])>0){
+                array_push($array_act, $tab_act[$i]);
+            }
+        }
+        $liste_act = implode(" ", $array_act);
+
+        // List ex
+        $array_ex = array();
+        $tab_ex = explode(',',  $request->liste_ex);
+        for($i=0;$i<count($tab_ex); $i++){
+            if(strlen($tab_ex[$i])>0){
+                array_push($array_ex, $tab_ex[$i]);
+            }
+        }
+        $liste_ex = implode(" ", $array_ex);
+
+        // Quantity prod
+        $arrayquantity_prod = array();
+        $tabquantity_prod = explode(',',  $request->quantity_prod);
+        for($i=0;$i<count($tabquantity_prod); $i++){
+            if(strlen($tabquantity_prod[$i])>0){
+                array_push($arrayquantity_prod, $tabquantity_prod[$i]);
+            }
+        }
+        $quantity_prod = implode(" ", $arrayquantity_prod);
+
+        // Quantity act
+        $arrayquantity_act = array();
+        $tabquantity_act = explode(',',  $request->quantity_act);
+        for($i=0;$i<count($tabquantity_act); $i++){
+            if(strlen($tabquantity_act[$i])>0){
+                array_push($arrayquantity_act, $tabquantity_act[$i]);
+            }
+        }
+        $quantity_act = implode(" ", $arrayquantity_act);
+
+        // Quantity eq
+        $arrayquantity_ex = array();
+        $tabquantity_ex = explode(',',  $request->quantity_ex);
+        for($i=0;$i<count($tabquantity_ex); $i++){
+            if(strlen($tabquantity_ex[$i])>0){
+                array_push($arrayquantity_ex, $tabquantity_ex[$i]);
+            }
+        }
+        $quantity_ex = implode(" ", $arrayquantity_ex);
+
+
+        // COUT MISE EN OBSERVATION
+        $cout_mise_en_observation = 0;
+        if($request->cout_mise_en_observation !=''){
+            $cout_mise_en_observation = $request->cout_mise_en_observation;
+        }
+
+        // COUT EVACUATION
+        $cout_evacuation = 0;
+
+        if($request->nbre_kilometre){
+            $cout_evacuation = floatval($request->nbre_kilometre)*120;
+        }
+        // dd($liste_ex);
+        // dd(explode(',',  $request->liste_prod));
+        // $patient = Patient::where('id', $request->patient_id)->first();
+
+        $birth_date_unknow = $request->birth_date_unknow;
+        $birth_date_item = $request->birth_date_item;
+        $age_patient = $this->getBirthDate($birth_date_unknow, $birth_date_item);
+
+        // $diagnostic = implode(" ", $diagnostic);
+        // dd($request->cout_total_prod.' '.$request->cout_total_act.' '.$request->cout_tatol_examen);
+        DB::table('feuille_soin')->insertOrIgnore([
+            // GENERAL
+            'id' => Time(),
+            'nom_patient'=>$request->nom_patient,
+            'village'=>$request->village_patient,
+            'age_patient'=>$age_patient, // ALTER TABLE feuille_soin RENAME COLUMN qualification TO age_patient;
+            'sex' => $patient->sexe,
+            'mother_name'=>$request->mother_patient,
+            'tel'=>$request->num_telephone,
+            'visit_date' => $request->consultation_date,
+            'serie_number' => $request->serie_number,
+            'registre_number' => $request->registre_number,
+            'consultation_type' => $request->patient_type,
+            'type_prestation' => $request->type_prestation,
+            // PRODUCT
+            'num_ordonance' => $request->num_ordonance,
+            'liste_prod' => $liste_prod,
+            'quantity_prod' => $quantity_prod,
+            'montant_prod' => $montant_prod, // ALTER TABLE feuille_soin RENAME COLUMN list_examens TO montant_prod;
+            'cout_total_prod' => $request->cout_total_prod,
+            // ACTE
+            'liste_act' => $liste_act,
+            'quantity_act' => $quantity_act,
+            'montant_act' => $montant_act, // ALTER TABLE feuille_soin RENAME COLUMN nom_prenom TO montant_act;
+            'cout_total_act' => $request->cout_total_act,
+            // EXAMEN
+            'liste_ex' => $liste_ex,
+            'quantity_ex' => $quantity_ex,
+            'montant_ex' => $montant_ex, // ALTER TABLE feuille_soin RENAME COLUMN type_of_agent TO montant_ex;
+            'cout_total_ex' => $request->cout_tatol_ex,
+            // OBSERVATION
+            'type_observation'=>$request->type_observation, // ALTER TABLE feuille_soin RENAME COLUMN cout_total_ex TO type_observation; ALTER TABLE feuille_soin RENAME COLUMN cout_total_eq TO cout_total_ex;
+            'nbre_jours' => $request->nbre_jours,
+            'cout_mise_en_observation' => $request->observation_montant,
+            // EVACUATION
+            'nbre_kilomettre' => $request->nbre_kilometre,
+            'cout_evacuation' => $request->evacuation_montant,
+            // GERANT / PRESCRIPTEUR
+            'nom_agent' => $request->name_gerant, // ALTER TABLE feuille_soin RENAME COLUMN nom_agent TO name_gerant;
+            'contact_prescripteur' => $request->contact_prescripteur,
+            'name_gerant' => $request->name_gerant,
+            'contact_gerant' => $request->contact_gerant,
+            'user_id' => Auth::user()->id,
+            'id_structure' => Auth::user()->structure_id,
+        ]);
+
+        toastr()->success('Enregistrement effectué avec succès');
+    }
+
+    // STORE CONSULTATION
     public function storeConsultation(Request $request)
     {
         // dd($request->all());

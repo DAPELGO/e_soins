@@ -44,6 +44,7 @@
     <link href="{{ asset('assets/css/user-rtl.min.css') }}" type="text/css" rel="stylesheet" id="user-style-rtl">
     <link href="{{ asset('assets/css/user.min.css') }}" type="text/css" rel="stylesheet" id="user-style-default">
     <link href="{{ asset('leaflet/leaflet.css') }}" type="text/css" rel="stylesheet" id="user-style-default">
+    @yield('css')
     <script>
       var phoenixIsRTL = window.config.config.phoenixIsRTL;
       if (phoenixIsRTL) {
@@ -219,72 +220,78 @@
                 // GENERAL
                 var nom_patient = $("#nom_patient").val();
                 var village_patient = $("#village_patient").val();
-                var birth_date_unknow = $("#birth_date_unknow").val();
+                var distance_village_patient = $("#distance_village_patient").val();
+                var age = $("#age").val();
                 var birth_date_item = $("#birth_date_item").val();
                 var sexe_patient = $("#sexe_patient").val();
-                var mother_name = $("#mother_name").val();
+                var parent_patient = $("#parent_patient").val();
                 var num_telephone = $("#num_telephone").val();
                 var consultation_date = $("#consultation_date").val();
                 var serie_number = $("#serie_number").val();
                 var registre_number = $("#registre_number").val();
                 var patient_type = $("#patient_type").val();
                 var type_prestation = $("#type_prestation").val();
+
                 // PRODUCT
                 var num_ordonance = $("#ordonnance_number").val();
                 var liste_prod = $("#code_product").val();
                 var quantity_prod = $("#quantity_product").val();
                 var total_account_product = $("#total_account_product").text();
                 var cout_total_prod = $("#total_account_product").text();
+
                 // ACTE
                 var liste_act = $("#code_acte").val();
                 var quantity_act = $("#quantity_acte").val();
-                var total_account_acte = $("#total_account_actee").val();
+                var total_account_acte = $("#total_account_acte").text();
                 var cout_total_act = $("#total_account_acte").text();
+
                 // EXAMEN
                 var liste_ex = $("#code_examen").val();
                 var quantity_ex = $("#quantity_examen").val();
-                var total_account_examen = $("#total_account_examenamen").val();
-                var cout_tatol_ex = $("#total_account_examen").text();
+                var total_account_examen = $("#total_account_examen").text();
+                var cout_total_ex = $("#total_account_examen").text();
+
                 // OBSERVATION
                 var type_observation = $("#type_observation").val();
                 var nbre_jours = $("#nbre_jours").val();
                 var cout_mise_en_observation = $("#observation_montant").val();
+
                 // EVACUATION
-                var nbre_kilometre = $("#nbre_kilometre").val();
-                var cout_evacuation = $("#cout_evacuation").val();
+                var cout_evacuation = $("#evacuation_montant").val();
+
                 // GERANT / PRESCRIPTEUR
                 var name_prescripteur = $("#name_prescripteur").val();
                 var contact_prescripteur = $("#contact_prescripteur").val();
+                var qualification_prescripteur = $("#qualification_prescripteur").val();
                 var name_gerant = $("#name_gerant").val();
                 var contact_gerant = $("#contact_gerant").val();
 
                 // alert("submit success");
                 $.ajax({
-                        url: "{{ route('consultation.store') }}",
+                        url: "{{ route('factures.store') }}",
                         type: 'POST',
                         data: {"_token": "{{ csrf_token() }}",
                             // GENERAL
-                            nom_patient:nom_patient, village_patient:village_patient, birth_date_unknow:birth_date_unknow, birth_date_item:birth_date_item,
-                            sexe_patient:sexe_patient, mother_name:mother_name, num_telephone:num_telephone, consultation_date:consultation_date,
+                            nom_patient:nom_patient, village_patient:village_patient, distance_village_patient:distance_village_patient, age:age, birth_date_item:birth_date_item,
+                            sexe_patient:sexe_patient, parent_patient:parent_patient, num_telephone:num_telephone, consultation_date:consultation_date,
                             serie_number:serie_number, registre_number:registre_number, patient_type:patient_type, type_prestation:type_prestation,
                             // PRODUCT
                             num_ordonance:num_ordonance, liste_prod:liste_prod, quantity_prod:quantity_prod, total_account_product:total_account_product, cout_total_prod:cout_total_prod,
                             // ACTE
                             liste_act:liste_act, quantity_act:quantity_act, total_account_acte, cout_total_act:cout_total_act,
                             // EXAMEN
-                            liste_ex:liste_ex, quantity_ex:quantity_ex, total_account_examen:total_account_examen, cout_tatol_ex:cout_tatol_ex,
+                            liste_ex:liste_ex, quantity_ex:quantity_ex, total_account_examen:total_account_examen, cout_total_ex:cout_total_ex,
                             // OBSERVATION
                             type_observation:type_observation, nbre_jours:nbre_jours, cout_mise_en_observation:cout_mise_en_observation,
                             // EVACUATION
-                            nbre_kilometre:nbre_kilometre, cout_evacuation
+                            cout_evacuation:cout_evacuation,
                             // GERANT / PRESCRIPTEUR
-                            name_prescripteur:name_prescripteur, contact_prescripteur:contact_prescripteur, name_gerant:name_gerant, contact_gerant:contact_gerant
-
+                            name_prescripteur:name_prescripteur, contact_prescripteur:contact_prescripteur, qualification_prescripteur:qualification_prescripteur, name_gerant:name_gerant, contact_gerant:contact_gerant
                         },
                         error:function(){alert("Erreur");},
                         success: function () {
                             // location.reload();
-                            document.location.href = "{{ route('app.consultation') }}";
+                            document.location.href = "{{ route('app.factures') }}";
                         }
                 });
             });
@@ -346,9 +353,8 @@
             // Région
             function changeValue(parent, child, table_item)
             {
-                // alert(0);
+
                 var idparent_val = $("#"+parent).val();
-                // alert(idparent_val);
                 var table = table_item;
 
                 var url = '{{ route('root.selection') }}';
@@ -361,26 +367,13 @@
                     error:function(data){alert("Erreur");},
                     success: function (data) {
                         var data = data.data;
-                        if(table == 'langue') {
-                            var content = '';
-                            for (var x = 0; x < data.length; x++) {
-                                if(data[x]['id'] !='') {
-                                    content += '<div class="radio-custom radio-primary"><input type="radio" id="'+data[x]['id']+'" name="langue[]" value="'+data[x]['id']+'"><label class="no-fw" for="'+data[x]['id']+'">'+data[x]['name']+'</label></div>';
-                                }
+                        var options = '<option value="" selected disabled>--- Choisir une valeur ---</option>';
+                        for (var x = 0; x < data.length; x++) {
+                            if(data[x]['id'] !='') {
+                                options += '<option value="' + data[x]['id'] + '">' + data[x]['name'] + '</option>';
                             }
-
-                            $('#'+child).html(content);
-
-                        }else{
-                            var options = '<option value="" selected>--- Choisir une valeur </option>';
-                            for (var x = 0; x < data.length; x++) {
-                                if(data[x]['id'] !='') {
-                                    options += '<option value="' + data[x]['id'] + '">' + data[x]['name'] + '</option>';
-                                }
-                            }
-                            $('#'+child).html(options);
                         }
-
+                        $('#'+child).html(options);
                     }
                 });
             }
@@ -388,12 +381,15 @@
         var code_product = [], code_acte = [], code_examen = [];
         var quantity_product = [], quantity_acte = [], quantity_examen = [];
         var amount_product = [], amount_acte = [], amount_examen = [];
+        var last_amount_product = [], last_amount_acte = [], last_amount_examen = [];
 
         var index_product = [], index_acte = [], index_examen = [];
 
         var total_account_prod = 0.0;
         var total_account_act = 0.0;
         var total_account_ex = 0.0;
+
+        var last_amount = 0;
 
         function selectProduct(i, table){
             if( $("#check_"+table+i).is(':checked') ){
@@ -440,6 +436,7 @@
                 }
             }
             else{
+                $('#check_'+table+i).removeAttr("checked");
                 $("#quantity_"+table+i).attr("disabled", "");
                 $("#amount_"+table+i).attr("disabled", "");
 
@@ -447,66 +444,76 @@
                     code_product[i] = '';
                     quantity_product[i] = '';
                     amount_product[i] = '';
-                    total_account_prod = total_account_prod - parseFloat( $("#amount_"+table+i).text());
+                    last_amount = last_amount_product[i] ? last_amount_product[i] : 0;
+                    total_account_prod = total_account_prod - parseFloat(last_amount);
+                    last_amount_product[i] = 0;
+                    $("#quantity_"+table+i).val(0);
+                    $("#amount_"+table+i).val(0);
                     $("#total_account_"+table).text(total_account_prod);
                 }
                 else if(table == 'acte'){
                     code_acte[i] = '';
                     quantity_acte[i] = '';
-                    total_account_act = total_account_act - parseFloat( $("#total_"+table+i).text());
+                    amount_acte[i] = '';
+                    last_amount = last_amount_acte[i] ? last_amount_acte[i] : 0;
+                    total_account_act = total_account_act - parseFloat(last_amount);
+                    last_amount_acte[i] = 0;
+                    $("#quantity_"+table+i).val(0);
+                    $("#amount_"+table+i).val(0);
                     $("#total_account_"+table).text(total_account_act);
                 }
                 else{
                     code_examen[i] = '';
                     quantity_examen[i] = '';
-                    total_account_ex = total_account_ex - parseFloat( $("#total_"+table+i).text());
+                    amount_examen[i] = '';
+                    last_amount = last_amount_examen[i] ? last_amount_examen[i] : 0;
+                    total_account_ex = total_account_ex - parseFloat(last_amount);
+                    last_amount_examen[i] = 0;
+                    $("#quantity_"+table+i).val(0);
+                    $("#amount_"+table+i).val(0);
                     $("#total_account_"+table).text(total_account_ex);
                 }
             }
         }
 
-
-
         function setPrice(i, table){
             var total = 0.0;
-
-            // GET AMOUNT
+            var last_amount = 0;
             var amount_price = $("#amount_"+table+i).val() =='' ? 0 : $("#amount_"+table+i).val();
-
-            // GET QUANTITY
             var quantity_price = $("#quantity_"+table+i).val() =='' ? 0 : $("#quantity_"+table+i).val();
 
             if(table == 'product'){
                 quantity_product[i] = quantity_price;
                 amount_product[i] = amount_price;
-                $("#quantity_"+table).val(quantity_product);
-                $("#amount_"+table).val(amount_product);
-
-                console.log('Total Account 1', total_account_prod);
-                total_account_prod = total_account_prod + parseFloat(amount_price);
-                console.log('Parse Float', parseFloat(amount_price));
-                console.log(total_account_prod);
+                if(amount_product != last_amount_product[i]){
+                    last_amount = last_amount_product[i] ? last_amount_product[i] : 0;
+                    console.log('Last amount : ', last_amount);
+                    console.log('Amount price : ', amount_price);
+                    console.log('Total account : ', total_account_prod);
+                    total_account_prod = total_account_prod - parseFloat(last_amount) + parseFloat(amount_price);
+                    console.log('Total account 1 : ', total_account_prod);
+                }
+                last_amount_product[i] = parseFloat(amount_price);
                 $("#total_account_"+table).text(total_account_prod);
             }
             else if(table == 'acte'){
                 quantity_acte[i] = quantity_price;
                 amount_acte[i] = amount_price;
-                $("#quantity_"+table).val(quantity_acte);
-                $("#amount_"+table).val(amount_acte);
-
-                total_account_act = total_account_act + parseFloat(amount_price);
+                if(amount_acte != last_amount_acte[i]){
+                    last_amount = last_amount_acte[i] ? last_amount_acte[i] : 0;
+                    total_account_act = total_account_act - parseFloat(last_amount) + parseFloat(amount_price);
+                }
+                last_amount_acte[i] = parseFloat(amount_price);
                 $("#total_account_"+table).text(total_account_act);
             }
             else{
                 quantity_examen[i] = quantity_price;
                 amount_examen[i] = amount_price;
-                $("#quantity_"+table).val(quantity_examen);
-                $("#amount_"+table).val(amount_examen);
-
-                total_account_act = total_account_act + parseFloat(amount_price);
-                $("#total_account_"+table).text(total_account_act);
-
-                total_account_ex = total_account_ex + parseFloat(amount_price);
+                if(amount_examen != last_amount_examen[i]){
+                    last_amount = last_amount_examen[i] ? last_amount_examen[i] : 0;
+                    total_account_ex = total_account_ex - parseFloat(last_amount) + parseFloat(amount_price);
+                }
+                last_amount_examen[i] = parseFloat(amount_price);
                 $("#total_account_"+table).text(total_account_ex);
             }
         }
@@ -571,6 +578,6 @@
 
         }
     </script>
-
+    @yield('script')
   </body>
 </html>
