@@ -78,8 +78,8 @@
                                                                 <label class="form-check-label mb-0" for="birth_date_month">Mois</label>
                                                             </div>
                                                             <div class="form-check form-check-inline">
-                                                                <input class="form-check-input" id="birth_date_month" type="radio" name="birth_date_item" value="year" />
-                                                                <label class="form-check-label mb-0" for="birth_date_month">Années</label>
+                                                                <input class="form-check-input" id="birth_date_year" type="radio" name="birth_date_item" value="year" />
+                                                                <label class="form-check-label mb-0" for="birth_date_year">Années</label>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -148,6 +148,7 @@
                                         <form class="needs-validation" id="wizardValidationForm2" novalidate="novalidate" data-wizard-form="2">
                                             <input type="hidden" id="code_product">
                                             <input type="hidden" id="quantity_product">
+                                            <input type="hidden" id="amount_product">
                                             <input type="hidden" id="index_product">
                                             <div class="row">
                                                 <div class="col-lg-6">
@@ -181,7 +182,7 @@
                                                             </td>
                                                             <td class="product align-middle ps-1">{{ $product->name }}</td>
                                                             <td class="align-middle white-space-nowrap text-end fw-bold text-700">
-                                                                <input class="form-control @error('quantity_product'.$product->id) is-invalid @enderror form-control-sm" id="quantity_product{{ $product->id }}" name="quantity_product{{ $product->id }}" type="number" min="0" value="{{ old('quantity_product'.$product->id) ? old('quantity_product'.$product->id) : 0 }}" style="width: 5rem;" disabled />
+                                                                <input class="form-control @error('quantity_product'.$product->id) is-invalid @enderror form-control-sm" id="quantity_product{{ $product->id }}" name="quantity_product{{ $product->id }}" type="number" min="0" value="{{ old('quantity_product'.$product->id) ? old('quantity_product'.$product->id) : 0 }}" style="width: 5rem;" disabled onclick="setQuantity({{ $product->id }}, 'product');" />
                                                                 @error('quantity_product'.$product->id)
                                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                                 @enderror
@@ -204,6 +205,7 @@
                                         <form class="mb-2 needs-validation" id="wizardValidationForm3" novalidate="novalidate" data-wizard-form="3">
                                             <input type="hidden" id="code_acte">
                                             <input type="hidden" id="quantity_acte">
+                                            <input type="hidden" id="amount_acte">
                                             <input type="hidden" id="index_acte">
                                             <div class="row">
                                                 <div class="col-lg-6">
@@ -233,7 +235,7 @@
                                                         </td>
                                                         <td class="acte align-middle ps-1">{{ $acte->description }}</td>
                                                         <td class="align-middle white-space-nowrap text-end fw-bold text-700">
-                                                        <input class="form-control @error('quantity_acte'.$acte->id) is-invalid @enderror form-control-sm" id="quantity_acte{{ $acte->id }}" name="quantity_acte{{ $acte->id }}" type="number" min="0" value="{{ old('quantity_acte'.$acte->id) ? old('quantity_acte'.$acte->id) : 0 }}" style="width: 5rem;" disabled />
+                                                        <input class="form-control @error('quantity_acte'.$acte->id) is-invalid @enderror form-control-sm" id="quantity_acte{{ $acte->id }}" name="quantity_acte{{ $acte->id }}" type="number" min="0" value="{{ old('quantity_acte'.$acte->id) ? old('quantity_acte'.$acte->id) : 0 }}" style="width: 5rem;" disabled onclick="setQuantity({{ $acte->id }}, 'acte');" />
                                                         @error('quantity_acte'.$acte->id)
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
@@ -256,6 +258,7 @@
                                         <form class="mb-2 needs-validation" id="wizardValidationForm4" novalidate="novalidate" data-wizard-form="4">
                                             <input type="hidden" id="code_examen">
                                             <input type="hidden" id="quantity_examen">
+                                            <input type="hidden" id="amount_examen">
                                             <input type="hidden" id="index_examen">
                                             <div class="row">
                                                 <div class="col-lg-6">
@@ -283,14 +286,14 @@
                                                                 <input class="form-check-input" type="checkbox"  name="check_examen{{ $examen->id }}" id="check_examen{{ $examen->id }}" value="{{ $examen->code_examen }}" onclick="selectProduct({{ $examen->id }}, 'examen');" />
                                                                 </div>
                                                             </td>
-                                                            <td class="examen align-middle ps-1">{{ $examen->nom_examen }}</td>
+                                                            <td class="align-middle ps-1">{{ $examen->nom_examen }}</td>
                                                             <td class="price_examen align-middle white-space-nowrap text-end fw-bold text-700">
-                                                                <input class="form-control @error('quantity_examen'.$examen->id) is-invalid @enderror form-control-sm" id="quantity_examen{{ $examen->id }}" name="quantity_examen{{ $examen->id }}" type="number" value="{{ old('quantity_examen'.$examen->id) ? old('quantity_examen'.$examen->id) : 0 }}" style="width: 5rem;" disabled />
+                                                                <input class="form-control @error('quantity_examen'.$examen->id) is-invalid @enderror form-control-sm" id="quantity_examen{{ $examen->id }}" name="quantity_examen{{ $examen->id }}" type="number" min="0" value="{{ old('quantity_examen'.$examen->id) ? old('quantity_examen'.$examen->id) : 0 }}" style="width: 5rem;" disabled onclick="setQuantity({{ $examen->id }}, 'examen');" />
                                                                 @error('quantity_examen'.$examen->id)
                                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                                 @enderror
                                                             </td>
-                                                            <td class="price_examen align-middle white-space-nowrap text-end fw-bold text-700">
+                                                            <td class="align-middle white-space-nowrap text-end fw-bold text-700">
                                                                 <input class="form-control @error('amount_examen'.$examen->id) is-invalid @enderror form-control-sm" id="amount_examen{{ $examen->id }}" name="amount_examen{{ $examen->id }}" type="number" value="{{ old('amount_examen'.$examen->id) ? old('amount_examen'.$examen->id) : 0 }}" disabled onfocusout="setPrice({{ $examen->id }}, 'examen');" />
                                                                 @error('amount_examen'.$examen->id)
                                                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -367,16 +370,9 @@
                                                         <label class="col-form-label col-form-label-sm" for="qualification_prescripteur">Qualification du prescripteur</label>
                                                         <select class="form-select" id="qualification_prescripteur" name="qualification_prescripteur">
                                                             <option value="">Veuillez choisir...</option>
-                                                            <option value="1">Médécin généraliste</option>
-                                                            <option value="2">Médécin spécialiste</option>
-                                                            <option value="3">Infirmier breveté</option>
-                                                            <option value="3">Infirmier / IDE</option>
-                                                            <option value="4">Attaché / Ingénieur</option>
-                                                            <option value="5">Sage femme / Maïeuticien</option>
-                                                            <option value="5">Sage femme d'etat / Maïeuticien d'etat</option>
-                                                            <option value="6">Accoucheuse auxiliaire</option>
-                                                            <option value="6">Accoucheuse brevetée</option>
-                                                            <option value="7">AIS / ASC</option>
+                                                            @foreach ($qualifications as $qualification)
+                                                                <option value="{{ $qualification->id }}">{{ $qualification->libelle }}</option>
+                                                            @endforeach
                                                         </select>
                                                     </div>
                                                 </div>

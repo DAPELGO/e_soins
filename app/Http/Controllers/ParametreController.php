@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Parametre;
+use App\Models\Structure;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,8 +28,9 @@ class ParametreController extends Controller
     public function index()
     {
         if (Auth::user()->can('users.view')) {
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
             $parametres = Parametre::where('is_delete', false)->get();
-            return view('parametres.index', compact('parametres'));
+            return view('parametres.index', compact('parametres', 'structure'));
         }else{
             return redirect()->route('app.home');
         }
@@ -42,8 +44,9 @@ class ParametreController extends Controller
     public function create()
     {
         if (Auth::user()->can('users.create')) {
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
             $parametres = Parametre::where('is_delete', false)->get();
-            return view('parametres.create', compact('parametres'));
+            return view('parametres.create', compact('parametres', 'structure'));
         }else{
             return redirect()->route('app.home');
         }
@@ -87,7 +90,8 @@ class ParametreController extends Controller
     {
         if (Auth::user()->can('users.view')) {
             $parametre = Parametre::where('id', $id)->first();
-            return view('app.parametres.show', compact('parametre'));
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
+            return view('app.parametres.show', compact('parametre', 'structure'));
         }else{
             return redirect()->route('app.home');
         }
@@ -103,7 +107,8 @@ class ParametreController extends Controller
     {
         if (Auth::user()->can('users.view')) {
             $parametre = Parametre::where('id', $id)->first();
-            return view('app.parametres.edit', compact('parametre'));
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
+            return view('app.parametres.edit', compact('parametre', 'structure'));
         }else{
             return redirect()->route('app.home');
         }

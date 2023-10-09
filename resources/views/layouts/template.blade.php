@@ -222,37 +222,37 @@
                 var village_patient = $("#village_patient").val();
                 var distance_village_patient = $("#distance_village_patient").val();
                 var age = $("#age").val();
-                var birth_date_item = $("#birth_date_item").val();
-                var sexe_patient = $("#sexe_patient").val();
+                var birth_date_item = $('input[name="birth_date_item"]:checked').val();
+                var sexe_patient = $('input[name="sexe_patient"]:checked').val();
                 var parent_patient = $("#parent_patient").val();
                 var num_telephone = $("#num_telephone").val();
                 var consultation_date = $("#consultation_date").val();
                 var serie_number = $("#serie_number").val();
                 var registre_number = $("#registre_number").val();
-                var patient_type = $("#patient_type").val();
+                var patient_type = $('input[name="patient_type"]:checked').val();
                 var type_prestation = $("#type_prestation").val();
 
                 // PRODUCT
                 var num_ordonance = $("#ordonnance_number").val();
                 var liste_prod = $("#code_product").val();
                 var quantity_prod = $("#quantity_product").val();
-                var total_account_product = $("#total_account_product").text();
+                var montant_prod = $("#amount_product").val();
                 var cout_total_prod = $("#total_account_product").text();
 
                 // ACTE
                 var liste_act = $("#code_acte").val();
                 var quantity_act = $("#quantity_acte").val();
-                var total_account_acte = $("#total_account_acte").text();
+                var montant_act = $("#amount_acte").val();
                 var cout_total_act = $("#total_account_acte").text();
 
                 // EXAMEN
                 var liste_ex = $("#code_examen").val();
                 var quantity_ex = $("#quantity_examen").val();
-                var total_account_examen = $("#total_account_examen").text();
+                var montant_ex = $("#amount_examen").val();
                 var cout_total_ex = $("#total_account_examen").text();
 
                 // OBSERVATION
-                var type_observation = $("#type_observation").val();
+                var type_observation = $('input[name="type_observation"]:checked').val();
                 var nbre_jours = $("#nbre_jours").val();
                 var cout_mise_en_observation = $("#observation_montant").val();
 
@@ -276,11 +276,11 @@
                             sexe_patient:sexe_patient, parent_patient:parent_patient, num_telephone:num_telephone, consultation_date:consultation_date,
                             serie_number:serie_number, registre_number:registre_number, patient_type:patient_type, type_prestation:type_prestation,
                             // PRODUCT
-                            num_ordonance:num_ordonance, liste_prod:liste_prod, quantity_prod:quantity_prod, total_account_product:total_account_product, cout_total_prod:cout_total_prod,
+                            num_ordonance:num_ordonance, liste_prod:liste_prod, quantity_prod:quantity_prod, montant_prod:montant_prod, cout_total_prod:cout_total_prod,
                             // ACTE
-                            liste_act:liste_act, quantity_act:quantity_act, total_account_acte, cout_total_act:cout_total_act,
+                            liste_act:liste_act, quantity_act:quantity_act, montant_act:montant_act, cout_total_act:cout_total_act,
                             // EXAMEN
-                            liste_ex:liste_ex, quantity_ex:quantity_ex, total_account_examen:total_account_examen, cout_total_ex:cout_total_ex,
+                            liste_ex:liste_ex, quantity_ex:quantity_ex, montant_ex:montant_ex, cout_total_ex:cout_total_ex,
                             // OBSERVATION
                             type_observation:type_observation, nbre_jours:nbre_jours, cout_mise_en_observation:cout_mise_en_observation,
                             // EVACUATION
@@ -476,6 +476,23 @@
             }
         }
 
+        function setQuantity(i, table){
+            var quantity_price = $("#quantity_"+table+i).val() =='' ? 0 : $("#quantity_"+table+i).val();
+
+            if(table == 'product'){
+                quantity_product[i] = quantity_price;
+                $("#quantity_"+table).val(quantity_product);
+            }
+            else if(table == 'acte'){
+                quantity_acte[i] = quantity_price;
+                $("#quantity_"+table).val(quantity_acte);
+            }
+            else{
+                quantity_examen[i] = quantity_price;
+                $("#quantity_"+table).val(quantity_examen);
+            }
+        }
+
         function setPrice(i, table){
             var total = 0.0;
             var last_amount = 0;
@@ -487,13 +504,11 @@
                 amount_product[i] = amount_price;
                 if(amount_product != last_amount_product[i]){
                     last_amount = last_amount_product[i] ? last_amount_product[i] : 0;
-                    console.log('Last amount : ', last_amount);
-                    console.log('Amount price : ', amount_price);
-                    console.log('Total account : ', total_account_prod);
                     total_account_prod = total_account_prod - parseFloat(last_amount) + parseFloat(amount_price);
-                    console.log('Total account 1 : ', total_account_prod);
                 }
                 last_amount_product[i] = parseFloat(amount_price);
+                $("#quantity_"+table).val(quantity_product);
+                $("#amount_"+table).val(amount_product);
                 $("#total_account_"+table).text(total_account_prod);
             }
             else if(table == 'acte'){
@@ -504,6 +519,8 @@
                     total_account_act = total_account_act - parseFloat(last_amount) + parseFloat(amount_price);
                 }
                 last_amount_acte[i] = parseFloat(amount_price);
+                $("#quantity_"+table).val(quantity_acte);
+                $("#amount_"+table).val(amount_acte);
                 $("#total_account_"+table).text(total_account_act);
             }
             else{
@@ -514,6 +531,8 @@
                     total_account_ex = total_account_ex - parseFloat(last_amount) + parseFloat(amount_price);
                 }
                 last_amount_examen[i] = parseFloat(amount_price);
+                $("#quantity_"+table).val(quantity_examen);
+                $("#amount_"+table).val(amount_examen);
                 $("#total_account_"+table).text(total_account_ex);
             }
         }

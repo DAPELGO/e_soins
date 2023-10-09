@@ -41,11 +41,11 @@
               </div>
             </td>
             <td class="id align-middle white-space-nowrap fw-bold">{{ $i }}</td>
-            <td class="livre_name align-middle white-space-nowrap text-td"><a class="fw-bold" href="{{ route('esoins.fiche', $nconsult->id) }}">{{ $nconsult->name }}</a></td>
-            <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->birth_date }}</td>
-            <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->csps}}</td>
-            <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->visit_date}}</td>
-            <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->cout_total_act }}</td>
+            <td class="livre_name align-middle white-space-nowrap text-td"><a class="fw-bold" href="{{ route('esoins.fiche', $nconsult->id) }}">{{ $nconsult->nom_patient }}</a></td>
+            <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ calculate_age($nconsult->age_patient) }}</td>
+            <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->nom_structure}}</td>
+            <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ \Carbon\Carbon::parse($nconsult->visit_date)->format('d/m/Y') }}</td>
+            <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->cout_total_prod + $nconsult->cout_total_act + $nconsult->cout_total_ex + $nconsult->cout_mise_en_observation + $nconsult->cout_evacuation }} FCFA</td>
             <td class="last_active align-middle white-space-nowrap text-700">
               <a href="{{ route('esoins.fiche', $nconsult->id) }}" title="Voir la fiche" class="btn btn-soft-primary btn-sm btn-actions"><span class="text-900 fs-3 fas fa-user-md"></span></a>
             </td>

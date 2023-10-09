@@ -51,3 +51,23 @@ if(!function_exists('get_structure_level')){
 	}
 }
 
+// Calculate patient age
+if(!function_exists('calculate_age')){
+    function calculate_age($birthDate){
+        $birthDate = new DateTime($birthDate);
+        $currentDate = new DateTime();
+
+        $interval = $currentDate->diff($birthDate);
+
+        if ($interval->y > 0) {
+            $age = $interval->y . ' an' . ($interval->y > 1 ? 's' : '');
+        } elseif ($interval->m > 0) {
+            $age = $interval->m . ' mois';
+        } else {
+            $age = $interval->d . ' jour' . ($interval->d > 1 ? 's' : '');
+        }
+
+        return $age;
+    }
+}
+

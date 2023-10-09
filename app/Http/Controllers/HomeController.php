@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Structure;
+use Carbon\Carbon;
 use App\Models\Acte;
-use App\Models\Equipement;
+use App\Models\Examen;
+use App\Models\Valeur;
+use App\Models\Patient;
 use App\Models\Product;
 use App\Models\Nproduct;
-use App\Models\Patient;
 use App\Models\Org_unit;
-use App\Models\Valeur;
-use App\Models\Examen;
+use App\Models\Structure;
+use App\Models\Equipement;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+
 class HomeController extends Controller
 {
     /**
@@ -138,21 +140,12 @@ class HomeController extends Controller
     // INDEX CONSULTATION
     public function econsultation()
     {
-        /*$products = Product::all();
-        dd($products);
-        foreach($examens as $examen){
-            $product = Product::create([
-                'name' => $examen->description,
-                'prix_pvp' => $examen->unit_cost_pvp,
-            ]);
-
-            $product->code_product = 'prod'.$product->id;
-        }*/
         $user = DB::table('users')
                         ->join('structures', 'users.structure_id', 'structures.id')
                         ->select('users.*', 'structures.nom_structure', 'structures.level_structure')
                         ->where('users.id', Auth::user()->id)
                         ->first();
+
         switch ($user->level_structure) {
             case env('LEVEL_DRS'):
                 $structure = Structure::find(Auth::user()->structure_id);
@@ -187,11 +180,7 @@ class HomeController extends Controller
         }
 
         $rconsults = DB::table('feuille_soin')->where('patient_id', 0)->orderBy('created_at', 'desc')->get();
-        // $nconsults = DB::table('feuille_soin')->where('patient_id', '>', 0)
-                               // ->join('patients', 'feuille_soin.patient_id', 'patients.id')
-                               // ->select('feuille_soin.*', 'patients.name', 'patients.birth_date')
-                               // ->orderBy('feuille_soin.created_at', 'desc')
-                               // ->get();
+
         return view('esoins.consultation', compact('rconsults', 'nconsults'));
     }
 
@@ -204,6 +193,7 @@ class HomeController extends Controller
                         ->select('users.*', 'structures.nom_structure', 'structures.level_structure')
                         ->where('users.id', Auth::user()->id)
                         ->first();
+
         switch ($user->level_structure) {
             case env('LEVEL_DRS'):
                 $structure = Structure::find(Auth::user()->structure_id);
@@ -212,33 +202,29 @@ class HomeController extends Controller
                 foreach ($structures as $structure) {
                     array_push($array, $structure->id);
                 }
-                $nconsults = DB::table('feuille_soin')->where('feuille_soin.patient_id', '>', 0)->whereIn('structures.id', $array)
-                            ->join('patients', 'feuille_soin.patient_id', 'patients.id')
+                $nconsults = DB::table('feuille_soin')->whereIn('structures.id', $array)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
-                            ->select('feuille_soin.*', 'patients.name', 'patients.birth_date')
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
                 break;
             case env('LEVEL_DISTRICT'):
-                $nconsults = DB::table('feuille_soin')->where('feuille_soin.patient_id', '>', 0)->where('structures.parent_id', Auth::user()->structure_id)
-                            ->join('patients', 'feuille_soin.patient_id', 'patients.id')
+                $nconsults = DB::table('feuille_soin')->where('structures.parent_id', Auth::user()->structure_id)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
-                            ->select('feuille_soin.*', 'patients.name', 'patients.birth_date')
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
                 break;
 
             default:
-            $nconsults = DB::table('feuille_soin')->where('feuille_soin.patient_id', '>', 0)->where('feuille_soin.user_id', Auth::user()->id)
-                            ->join('patients', 'feuille_soin.patient_id', 'patients.id')
-                            ->select('feuille_soin.*', 'patients.name', 'patients.birth_date')
+            $nconsults = DB::table('feuille_soin')->where('feuille_soin.user_id', Auth::user()->id)
+                            ->join('structures', 'feuille_soin.id_structure', 'structures.id')
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
                 break;
         }
-
+        //dd($nconsults);
         return view('esoins.dispensations_index', compact('nconsults', 'structure'));
     }
+
 
     // CREATE DISPENSATION
     public function addFacture(){
@@ -248,11 +234,15 @@ class HomeController extends Controller
         $actes = Acte::all();
         $examens = Examen::all();
         $prestations = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('PARAM_CIBLE')])->get();
-        return view('esoins.dispensations_create', compact('structures', 'products', 'actes', 'structure', 'prestations', 'examens'));
+        $qualifications = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('PARAM_QUALIFICATION')])->get();
+        return view('esoins.dispensations_create', compact('structures', 'products', 'actes', 'structure', 'prestations', 'examens', 'qualifications'));
     }
 
     public function efiche($id)
     {
+        // SRTUCTURE
+        $structure = Structure::where('id', Auth::user()->structure_id)->first();
+
         // CONSULTATION
         $consult = DB::table('feuille_soin')->where('id', $id)->first();
 
@@ -303,7 +293,7 @@ class HomeController extends Controller
         $quantity_eq = explode(" ",$consult->quantity_eq);
         $examens = Examen::whereIn('code_examen', $liste_eq)->get();
         $typeprestation = (Valeur::where('id', $consult->type_prestation)->first())->libelle;
-        return view('esoins.fiche', compact('consult', 'nproducts', 'cproducts', 'actes', 'examens', 'patient', 'quantity_prod', 'quantity_act', 'quantity_eq', 'csps', 'district', 'drs', 'typeprestation'));
+        return view('esoins.fiche', compact('consult', 'nproducts', 'cproducts', 'actes', 'examens', 'patient', 'quantity_prod', 'quantity_act', 'quantity_eq', 'csps', 'district', 'drs', 'typeprestation', 'structure'));
     }
 
     /******** DISPENSATION ****************** */
@@ -502,10 +492,29 @@ class HomeController extends Controller
         return view('esoins.add-consultation', compact('patient', 'products', 'actes', 'examens', 'typeprestations', 'examens'));
     }
 
+    // COMPUTE WIH TWO PARAMS AND RETURN BIRTHDATE
+    public function getBirthDate($age, $birth_date_item)
+    {
+        if($birth_date_item == 'day'){
+            $currentDate = Carbon::now();
+            $patient_date = $currentDate->subDays(intval($age));
+        }
+        else if($birth_date_item == 'month'){
+            $currentDate = Carbon::now();
+            $patient_date = $currentDate->subMonths(intval($age));
+        }
+        else if($birth_date_item == 'year'){
+            $currentDate = Carbon::now();
+            $patient_date = $currentDate->subYears(intval($age));
+        }
+
+        return $patient_date->format('d-m-Y');
+    }
+
     // STORE CONSULTATION
     public function storeFacture(Request $request)
     {
-        dd($request->all());
+        //dd($request->all());
 
         // List prod
         $array_prod = array();
@@ -567,6 +576,35 @@ class HomeController extends Controller
         }
         $quantity_ex = implode(" ", $arrayquantity_ex);
 
+        // MONTANT PRODUIT
+        $arraymontant_prod = array();
+        $tabmontant_prod = explode(',',  $request->montant_prod);
+        for($i=0;$i<count($tabmontant_prod); $i++){
+            if(strlen($tabmontant_prod[$i])>0){
+                array_push($arraymontant_prod, $tabmontant_prod[$i]);
+            }
+        }
+        $montant_prod = implode(" ", $arraymontant_prod);
+
+        // MONTANT ACTE
+        $arraymontant_act = array();
+        $tabmontant_act = explode(',',  $request->montant_act);
+        for($i=0;$i<count($tabmontant_act); $i++){
+            if(strlen($tabmontant_act[$i])>0){
+                array_push($arraymontant_act, $tabmontant_act[$i]);
+            }
+        }
+        $montant_act = implode(" ", $arraymontant_act);
+
+        // MONTANT EXAMEN
+        $arraymontant_ex = array();
+        $tabmontant_ex = explode(',',  $request->montant_ex);
+        for($i=0;$i<count($tabmontant_ex); $i++){
+            if(strlen($tabmontant_ex[$i])>0){
+                array_push($arraymontant_ex, $tabmontant_ex[$i]);
+            }
+        }
+        $montant_ex = implode(" ", $arraymontant_ex);
 
         // COUT MISE EN OBSERVATION
         $cout_mise_en_observation = 0;
@@ -575,66 +613,72 @@ class HomeController extends Controller
         }
 
         // COUT EVACUATION
-        $cout_evacuation = 0;
+        $cout_evacuation = $request->cout_evacuation;
 
-        if($request->nbre_kilometre){
-            $cout_evacuation = floatval($request->nbre_kilometre)*120;
-        }
-        // dd($liste_ex);
-        // dd(explode(',',  $request->liste_prod));
-        // $patient = Patient::where('id', $request->patient_id)->first();
-
-        $birth_date_unknow = $request->birth_date_unknow;
+        // AGE PATIENT
+        $age = $request->age;
         $birth_date_item = $request->birth_date_item;
-        $age_patient = $this->getBirthDate($birth_date_unknow, $birth_date_item);
+        $age_patient = $this->getBirthDate($age, $birth_date_item);
 
-        // $diagnostic = implode(" ", $diagnostic);
-        // dd($request->cout_total_prod.' '.$request->cout_total_act.' '.$request->cout_tatol_examen);
-        DB::table('feuille_soin')->insertOrIgnore([
-            // GENERAL
-            'id' => Time(),
-            'nom_patient'=>$request->nom_patient,
-            'village'=>$request->village_patient,
-            'age_patient'=>$age_patient, // ALTER TABLE feuille_soin RENAME COLUMN qualification TO age_patient;
-            'sex' => $patient->sexe,
-            'mother_name'=>$request->mother_patient,
-            'tel'=>$request->num_telephone,
-            'visit_date' => $request->consultation_date,
-            'serie_number' => $request->serie_number,
-            'registre_number' => $request->registre_number,
-            'consultation_type' => $request->patient_type,
-            'type_prestation' => $request->type_prestation,
-            // PRODUCT
-            'num_ordonance' => $request->num_ordonance,
-            'liste_prod' => $liste_prod,
-            'quantity_prod' => $quantity_prod,
-            'montant_prod' => $montant_prod, // ALTER TABLE feuille_soin RENAME COLUMN list_examens TO montant_prod;
-            'cout_total_prod' => $request->cout_total_prod,
-            // ACTE
-            'liste_act' => $liste_act,
-            'quantity_act' => $quantity_act,
-            'montant_act' => $montant_act, // ALTER TABLE feuille_soin RENAME COLUMN nom_prenom TO montant_act;
-            'cout_total_act' => $request->cout_total_act,
-            // EXAMEN
-            'liste_ex' => $liste_ex,
-            'quantity_ex' => $quantity_ex,
-            'montant_ex' => $montant_ex, // ALTER TABLE feuille_soin RENAME COLUMN type_of_agent TO montant_ex;
-            'cout_total_ex' => $request->cout_tatol_ex,
-            // OBSERVATION
-            'type_observation'=>$request->type_observation, // ALTER TABLE feuille_soin RENAME COLUMN cout_total_ex TO type_observation; ALTER TABLE feuille_soin RENAME COLUMN cout_total_eq TO cout_total_ex;
-            'nbre_jours' => $request->nbre_jours,
-            'cout_mise_en_observation' => $request->observation_montant,
-            // EVACUATION
-            'nbre_kilomettre' => $request->nbre_kilometre,
-            'cout_evacuation' => $request->evacuation_montant,
-            // GERANT / PRESCRIPTEUR
-            'nom_agent' => $request->name_gerant, // ALTER TABLE feuille_soin RENAME COLUMN nom_agent TO name_gerant;
-            'contact_prescripteur' => $request->contact_prescripteur,
-            'name_gerant' => $request->name_gerant,
-            'contact_gerant' => $request->contact_gerant,
-            'user_id' => Auth::user()->id,
-            'id_structure' => Auth::user()->structure_id,
-        ]);
+        try{
+            // ENREGISTREMENT DE LA FACTURE
+            DB::table('feuille_soin')->insertOrIgnore([
+                // GENERAL
+                'id' => Time(),
+                'nom_patient'=>$request->nom_patient,
+                'village'=>$request->village_patient,
+                'distance_village'=>$request->distance_village_patient,
+                'age_patient'=>$age_patient,
+                'sex' => $request->sexe_patient,
+                'parent_name'=>$request->parent_patient,
+                'tel'=>$request->num_telephone,
+                'visit_date' => $request->consultation_date,
+                'serie_number' => $request->serie_number,
+                'registre_number' => $request->registre_number,
+                'consultation_type' => $request->patient_type,
+                'type_prestation' => $request->type_prestation,
+
+                // PRODUCT
+                'num_ordonance' => $request->num_ordonance,
+                'liste_prod' => $liste_prod,
+                'quantity_prod' => $quantity_prod,
+                'montant_prod' => $montant_prod,
+                'cout_total_prod' => (double) $request->cout_total_prod,
+
+                // ACTE
+                'liste_act' => $liste_act,
+                'quantity_act' => $quantity_act,
+                'montant_act' => $montant_act,
+                'cout_total_act' => (double) $request->cout_total_act,
+
+                // EXAMEN
+                'liste_ex' => $liste_ex,
+                'quantity_ex' => $quantity_ex,
+                'montant_ex' => $montant_ex,
+                'cout_total_ex' => (double) $request->cout_total_ex,
+
+                // OBSERVATION
+                'type_observation'=>(double) $request->type_observation,
+                'nbre_jours' => (double) $request->nbre_jours,
+                'cout_mise_en_observation' => (double) $request->observation_montant,
+
+                // EVACUATION
+                'cout_evacuation' => (double) $request->evacuation_montant,
+
+                // GERANT / PRESCRIPTEUR
+                'nom_prescripteur' => $request->name_prescripteur,
+                'contact_prescripteur' => $request->contact_prescripteur,
+                'qualification_prescripteur' => $request->qualification_prescripteur,
+                'name_gerant' => $request->name_gerant,
+                'contact_gerant' => $request->contact_gerant,
+                'user_id' => Auth::user()->id,
+                'id_structure' => Auth::user()->structure_id,
+            ]);
+        }
+        catch(\Exception $e){
+            //dd($e->getMessage());
+            toastr()->error('Erreur d\'enregistrement de la facture');
+        }
 
         toastr()->success('Enregistrement effectué avec succès');
     }

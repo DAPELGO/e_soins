@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Valeur;
 use App\Models\Parametre;
+use App\Models\Structure;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,12 +29,13 @@ class ValeurController extends Controller
     public function index()
     {
         if (Auth::user()->can('users.view')) {
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
             $valeurs = DB::table('valeurs')
                                 ->join('parametres', 'parametres.id', 'valeurs.id_parametre')
                                 ->select('valeurs.*', 'parametres.libelle as libelle_parametre')
                                 ->where('valeurs.is_delete', false)
                                 ->get();
-            return view('valeurs.index', compact('valeurs'));
+            return view('valeurs.index', compact('valeurs', 'structure'));
         }else{
             return redirect(route('app.home'));
         }
@@ -47,9 +49,10 @@ class ValeurController extends Controller
     public function create()
     {
         if (Auth::user()->can('users.create')) {
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
             $parametres = Parametre::where('is_delete', false)->get();
             $valeurs = Valeur::where('is_delete', false)->get();
-        return view('valeurs.create', compact('parametres', 'valeurs'));
+        return view('valeurs.create', compact('parametres', 'valeurs', 'structure'));
         }else{
             return redirect(route('app.home'));
         }
@@ -109,8 +112,9 @@ class ValeurController extends Controller
             $valeurup = Valeur::where('id', $id)->first();
             $parametres = Parametre::where('is_delete', false)->get();
             $valeurs = Valeur::where('is_delete', false)->get();
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
             // dd($valeurup);
-            return view('valeurs.edit', compact('valeurup', 'parametres', 'valeurs'));
+            return view('valeurs.edit', compact('valeurup', 'parametres', 'valeurs', 'structure'));
         }else{
             return redirect()->route('home');
         }
