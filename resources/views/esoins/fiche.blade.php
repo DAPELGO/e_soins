@@ -1,21 +1,21 @@
 @extends('layouts.template')
 @section('page_title', 'ECOM | All user')
-@section('consultation', 'active')
+@section('factures', 'active')
 @section('content')
   <h4 style="padding: 1rem; background-color: #004ebc; color: white !important; font-size: 0.8rem; margin-bottom:0 !important;">FEUILLE DE SOINS</h4>
   <div style="background-color: #ededec; padding: 1.5rem;">
     <div class="mb-4 bg-white mt-2 position-relative top-1 p-4" style="border: 1px solid #acacac;">
         <div class="row fs--1">
             <div class="col-lg-4"><span class="fw-black">DRS : </span>{{ $drs->nom_structure }}</div>
-            <div class="col-lg-4 offset-4"><span class="fw-black">Date : </span> {{ $consult->visit_date }}</div>
+            <div class="col-lg-4 offset-4"><span class="fw-black">Date : </span> {{ \Carbon\Carbon::parse($consult->visit_date)->format('d/m/Y') }}</div>
             <div class="col-lg-4"><span class="fw-black">DS : </span> {{ $consult->csps? $consult->district : $district->nom_structure }}</div>
             <div class="col-lg-4 offset-4"><span class="fw-black">N° </span><small><i>(Serie)</i></small> : {{ $consult->serie_number }}</div>
             <div class="col-auto"><span class="fw-black">FS</span> : {{ $consult->csps? $consult->csps : $csps->nom_structure }}</div>
         </div>
         <hr>
         <div class="row py-2 pe-0 fs--1">
-            <div class="col-lg-4"><span class="text-black fw-bold">Nom & Prénom :</span> @if($patient) {{ $patient->name }} @else {{ $consult->nom_patient }} @endif</div>
-            <div class="col-lg-4 offset-4"><span class="text-black fw-bold">Village/secteur :</span> @if($patient) {{ $patient->village }} @else {{ $consult->village }} @endif</div>
+            <div class="col-lg-4"><span class="text-black fw-bold">Nom & Prénom :</span>  {{ $consult->nom_patient }} </div>
+            <div class="col-lg-4 offset-4"><span class="text-black fw-bold">Village/secteur :</span>{{ $consult->village }}</div>
         </div>
 
         <div class="row py-2 pe-0 fs--1">
@@ -51,7 +51,7 @@
             </div>
         </div>
         <div class="row py-2 pe-0 fs--1">
-            <div class="col-lg-2"><span class="text-black fw-bold">Âge :</span> @if($patient) {{ $patient->birth_date }} @endif</div>
+            <div class="col-lg-2"><span class="text-black fw-bold">Âge :</span> {{ calculate_age($consult->age_patient) }} </div>
             <div class="col-lg-2">
                 <span class="text-black fw-bold">Sexe : </span>
                 <div class="form-check form-check-inline">
@@ -72,8 +72,8 @@
         </div>
 
         <div class="row py-2 pe-0 fs--1">
-            <div class="col-lg-4"><span class="text-black fw-bold">Nom du père/mère (pour enfants < 5 ans) :</span> @if($patient) {{ $patient->mother }} @else {{ $consult->mother_name }} @endif</div>
-            <div class="col-lg-4"><span class="text-black fw-bold">Contact : </span>@if($patient) {{ $patient->num_parent }} @else {{ $consult->tel }} @endif</div>
+            <div class="col-lg-4"><span class="text-black fw-bold">Nom du père/mère (pour enfants < 5 ans) :</span> {{ $consult->parent_name }}</div>
+            <div class="col-lg-4"><span class="text-black fw-bold">Contact : </span>{{ $consult->tel }} </div>
             <div class="col-lg-4"><span class="text-black fw-bold">N° Ordonnance : </span>{{ $consult->num_ordonance }}</div>
         </div>
         <hr>
@@ -279,8 +279,8 @@
                     </table>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <h4 class="fs--2" style="background-color: #F2F2F2; padding: 0.5rem;">MÉDICAMENTS ET CONSOMMABLES MÉDICAUX SERIVS</h4>
+           {{--  <div class="col-lg-6">
+                <h4 class="fs--2" style="background-color: #F2F2F2; padding: 0.5rem;">MÉDICAMENTS ET CONSOMMABLES MÉDICAUX SERVIS</h4>
                 <div class="table-responsive scrollbar border-1">
                     <table class="table fs--2 mb-0">
                       <thead>
@@ -326,7 +326,7 @@
                       </tbody>
                     </table>
                 </div>
-            </div>
+            </div> --}}
             <div class="col-lg-6">
                 <h4 class="fs--2" style="background-color: #F2F2F2; padding: 0.5rem;">ÉVACUATION SANITAIRE</h4>
                 <div class="table-responsive scrollbar border-1">
@@ -460,7 +460,7 @@
             </table>
         </div>
         <div class="col-auto offset-8 pt-4 fs--1">
-            <i>{{ $consult->nom_agent }} <br><span>{{ $consult->qualification }}</span></i>
+            <i>{{ $consult->nom_prescripteur }} <br><span>{{ $qualification->libelle }}</span></i>
         </div>
         <div class="pt-12 fs--1">
             <i>Nom & Prénom du Gérant</i>

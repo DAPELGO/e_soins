@@ -16,12 +16,12 @@ use App\Http\Controllers\Auth\LoginController;
 Route::get('/factures', 'HomeController@factures')->name('app.factures');
 Route::get('/factures/add', 'HomeController@addFacture')->name('factures.add');
 Route::post('/factures/store', 'HomeController@storeFacture')->name('factures.store');
+Route::get('/{id_consultation}/fiche', 'HomeController@efiche')->name('esoins.fiche');
 
 Route::get('/esoins', 'HomeController@index')->name('app.home');
 Route::get('/consultations', 'HomeController@econsultation')->name('app.consultation');
 Route::get('/consultation-add/{id}', 'HomeController@addConsultation')->name('consultation.add');
 Route::post('/consultation-store', 'HomeController@storeConsultation')->name('consultation.store');
-Route::get('/{id_consultation}/fiche', 'HomeController@efiche')->name('esoins.fiche');
 Route::get('/jsondata', 'HomeController@getjson')->name('esoins.getjson');
 Route::get('/ordonnance', 'HomeController@ordonnance')->name('esoins.ordonnance');
 Route::post('/ordonnance', 'HomeController@save')->name('ordonnance.save');

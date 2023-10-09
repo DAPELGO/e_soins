@@ -204,12 +204,14 @@ class HomeController extends Controller
                 }
                 $nconsults = DB::table('feuille_soin')->whereIn('structures.id', $array)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
+                            ->select('feuille_soin.*', 'structures.nom_structure')
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
                 break;
             case env('LEVEL_DISTRICT'):
                 $nconsults = DB::table('feuille_soin')->where('structures.parent_id', Auth::user()->structure_id)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
+                            ->select('feuille_soin.*', 'structures.nom_structure')
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
                 break;
@@ -217,6 +219,7 @@ class HomeController extends Controller
             default:
             $nconsults = DB::table('feuille_soin')->where('feuille_soin.user_id', Auth::user()->id)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
+                            ->select('feuille_soin.*', 'structures.nom_structure')
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
                 break;
@@ -246,42 +249,22 @@ class HomeController extends Controller
         // CONSULTATION
         $consult = DB::table('feuille_soin')->where('id', $id)->first();
 
-        // PATIENT
-        $patient = Patient::where('id', $consult->patient_id)->first();
-
         // CSPS
         $csps = Structure::where('id', Auth::user()->structure_id)->first();
+
+        //QUALIFICATIONS
+        $qualification = Valeur::where('id', $consult->qualification_prescripteur)->first();
 
         // DISTRICT
         $district = Structure::where('id', $csps->parent_id)->first();
 
         // DRS
         $drs = Structure::where('id', $district->parent_id)->first();
-        // $nproducts = DB::table('netsigl')->where('ordonnnce_id', $consult->num_ordonance)->get();
-        // NETSIGL PRODUCT
-        $nproducts = DB::table('netsigl')
-                                ->join('products', 'netsigl.code_product', 'products.code_product')
-                                ->select('products.*', 'netsigl.quantity_product as quantity_product')
-                                ->where('netsigl.ordonnance_id', $consult->num_ordonance)
-                                ->get();
-        // $cproducts = DB::table('netsigl')->where('ordonnnce_id', $consult->num_ordonance)->get();
-        // CONSULTATION PRODUCT
+
+        // PRODUITS
         $liste_prod =  explode(" ",$consult->liste_prod);
         $quantity_prod =  explode(" ",$consult->quantity_prod);
-         // if($consult->patient_id == 0){
-             // $cproducts = Product::whereIn('code_product', $liste_prod)->get();
-         // }else{
-             // $cproducts = Nproduct::whereIn('uid', $liste_prod)->get();
-         // }
-
         $cproducts = Product::whereIn('code_product', $liste_prod)->get();
-        // dd($cproducts);
-
-        // $cproducts = DB::table('feuille_soin')
-                                // ->join('products', 'feuille_soin.code_product', 'products.uid')
-                                // ->select('products.*')
-                                // ->where('feuille_soin.ordonnance_id', $consult->num_ordonance)
-                                // ->get();
 
         // ACTES
         $liste_act =  explode(" ",$consult->liste_act);
@@ -293,7 +276,8 @@ class HomeController extends Controller
         $quantity_eq = explode(" ",$consult->quantity_eq);
         $examens = Examen::whereIn('code_examen', $liste_eq)->get();
         $typeprestation = (Valeur::where('id', $consult->type_prestation)->first())->libelle;
-        return view('esoins.fiche', compact('consult', 'nproducts', 'cproducts', 'actes', 'examens', 'patient', 'quantity_prod', 'quantity_act', 'quantity_eq', 'csps', 'district', 'drs', 'typeprestation', 'structure'));
+
+        return view('esoins.fiche', compact('consult', 'cproducts', 'actes', 'examens', 'quantity_prod', 'quantity_act', 'quantity_eq', 'csps', 'district', 'drs', 'typeprestation', 'structure', 'qualification'));
     }
 
     /******** DISPENSATION ****************** */
