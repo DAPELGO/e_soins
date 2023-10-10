@@ -32,9 +32,9 @@ class eFluxController extends Controller
             case 'type-structure':
                 $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('TYPESTRUCTURE')])->get();
                 break;
-            // TYPE STRUCTUE CSPS
-            case 'type-structure-csps':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('TYPESTRUCTURE_CSPS')])->get();
+            // PRESTATIONS
+            case 'prestations':
+                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('PARAM_CIBLE')])->get();
                 break;
             // TYPE STRUCTURE CMA
             case 'type-structure-cma':
