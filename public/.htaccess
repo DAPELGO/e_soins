@@ -5,6 +5,8 @@
 
     RewriteEngine On
 
+    SetEnvIfNoCase Authorization "Basic ([a-z0-9=]+)" REMOTE_AUTHORIZATION=$1
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

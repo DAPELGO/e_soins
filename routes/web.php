@@ -13,6 +13,7 @@ use App\Http\Controllers\Auth\LoginController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Auth::routes(['register' => false]);
 Route::get('/factures', 'HomeController@factures')->name('app.factures');
 Route::get('/factures/add', 'HomeController@addFacture')->name('factures.add');
 Route::post('/factures/store', 'HomeController@storeFacture')->name('factures.store');
