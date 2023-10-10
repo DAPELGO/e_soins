@@ -425,7 +425,7 @@
                       <h6 class="mb-0">@if($consult->cout_mise_en_observation>0)1 @else 0 @endif</h6>
                     </td>
                     <td class="align-middle" style="width:17%">
-                      <h6 class="mb-0">{{ $consult->cout_mise_en_observation }}</h6>
+                      <h6 class="mb-0">@if ($consult->cout_mise_en_observation) {{ $consult->cout_mise_en_observation }} @else 0  @endif</h6>
                     </td>
                   </tr>
                   <tr>
@@ -459,11 +459,13 @@
               </tbody>
             </table>
         </div>
-        <div class="col-auto offset-8 pt-4 fs--1">
-            <i>{{ $consult->nom_prescripteur }} <br><span>{{ $qualification->libelle }}</span></i>
-        </div>
-        <div class="pt-12 fs--1">
-            <i>Nom & Prénom du Gérant</i>
+        <div class="row">
+            <div class="col-6 pt-4 fs--1 text-center">
+                <span><u>Nom & Prénom du Gérant</u> <br><br> @if($consult->name_gerant) <b>{{ $consult->name_gerant }}</b>@endif</i>
+            </div>
+            <div class="col-6 pt-4 fs--1 text-center">
+                <span><u>Nom & Prénom du Prescripteur</u> <br><br> @if($consult->nom_prescripteur) <b>{{ $consult->nom_prescripteur }}</b> <br> @if($qualification->libelle) <i><span> {{ $qualification->libelle }}</span></i>@endif @endif</i>
+            </div>
         </div>
     </div>
 </div>
