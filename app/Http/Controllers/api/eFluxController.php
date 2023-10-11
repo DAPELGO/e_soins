@@ -4,8 +4,11 @@ namespace App\Http\Controllers\api;
 
 use App\User;
 use \stdClass;
+use App\Models\Acte;
 use App\Models\Livre;
+use App\Models\Examen;
 use App\Models\Valeur;
+use App\Models\Product;
 use App\Models\Exercice;
 use App\Models\Paiement;
 use App\Models\Structure;
@@ -41,6 +44,18 @@ class eFluxController extends Controller
             case 'qualifications':
                 $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('PARAM_QUALIFICATION')])->get();
                 break;
+            // PRODUITS
+            case 'products':
+                $valeurs = Product::all();
+                break;
+            // ACTES
+            case 'actes':
+                $valeurs = Acte::all();
+                break;
+            // EXAMENS
+            case 'examens':
+                $valeurs = Examen::all();
+                break;
             default:
                 # code...
                 break;
@@ -53,6 +68,53 @@ class eFluxController extends Controller
     {
         $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parent'=>$id_parametre])->get();
         return response()->json($valeurs);
+    }
+
+    /**
+     * Get an authenticated user factures
+     *
+     * @return [json] factures object
+     */
+    public function factures(Request $request)
+    {
+        $user = DB::table('users')
+                        ->join('structures', 'users.structure_id', 'structures.id')
+                        ->select('users.*', 'structures.nom_structure', 'structures.level_structure')
+                        ->where('users.id', $request->user()->id)
+                        ->first();
+
+        switch ($user->level_structure) {
+            case env('LEVEL_NATIONAL'):
+            case env('LEVEL_DRS'):
+                $structures = Structure::find($request->user()->structure_id)->getAllChildren();
+                $array = array();
+                foreach ($structures as $structure) {
+                    array_push($array, $structure->id);
+                }
+
+                $factures = DB::table('feuille_soin')->whereIn('structures.id', $array)
+                            ->join('structures', 'feuille_soin.id_structure', 'structures.id')
+                            ->select('feuille_soin.*', 'structures.nom_structure')
+                            ->orderBy('feuille_soin.created_at', 'desc')
+                            ->get();
+                break;
+            case env('LEVEL_DISTRICT'):
+                $factures = DB::table('feuille_soin')->where('structures.parent_id', $request->user()->structure_id)
+                            ->join('structures', 'feuille_soin.id_structure', 'structures.id')
+                            ->select('feuille_soin.*', 'structures.nom_structure')
+                            ->orderBy('feuille_soin.created_at', 'desc')
+                            ->get();
+                break;
+            default:
+                $factures = DB::table('feuille_soin')->where('feuille_soin.user_id',  $request->user()->id)
+                            ->join('structures', 'feuille_soin.id_structure', 'structures.id')
+                            ->select('feuille_soin.*', 'structures.nom_structure')
+                            ->orderBy('feuille_soin.created_at', 'desc')
+                            ->get();
+                break;
+        }
+
+        return response()->json($factures);
     }
 
     // SAVE DATA SYNCHRONISE
@@ -175,92 +237,5 @@ class eFluxController extends Controller
         $response['data'] = $array_save;
         $response['paramsave'] = $paramsave;
         return response()->json($response);
-    }
-
-    /**
-     * Handle a login request to the application.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
-     */
-    public function login(Request $request)
-    {
-        $this->validateLogin($request);
-        $credentials = $request->only('email', 'password');
-        if(Auth::attempt($credentials)){
-            $valeur = DB::table('users')
-                                ->join('structures', 'structures.id', 'users.structure_id')
-                                ->join('valeurs', 'valeurs.id', 'structures.id_typestructure')
-                                ->select('users.*', 'valeurs.libelle as type_structure')
-                                ->where('users.email', $request->email)
-                                ->first();
-            $valeur = json_decode(json_encode($valeur), TRUE);
-            $valeur['password'] = $credentials['password'];
-            $valeur['flag'] = TRUE;
-        }else{
-            $valeur['flag'] = FALSE;
-        }
-        return $valeur;
-    }
-
-    public function saveSoldd($data, $livre)
-    {
-        // SOLDE INITIAL
-        if($request->solde_initial_banque != NULL && $request->solde_initial_caisse != NULL){
-            Solde::create([
-                'livre_id' => $livre->id,
-                'solde_caisse' => $request->solde_initial_caisse,
-                'solde_banque' => $request->solde_initial_banque,
-            ]);
-        }
-
-        $solde = DB::table('livres')
-                            ->join('soldes', 'soldes.livre_id', 'livres.id')
-                            ->select('soldes.*')
-                            ->where('livres.id_user_created', Auth::user()->id)
-                            ->latest()
-                            ->first();
-
-        // GET VALUE
-        $montant = $request->montant_livre;
-        $id_de_vers = $request->id_de_vers;
-
-        $solde_caisse = $solde->solde_caisse;
-        $solde_banque = $solde->solde_banque;
-        switch ($request->id_type_operation) {
-            case env('IDTYPEOPERATIONRE'):
-                if($id_de_vers == env('ENTREECAISSE')){
-                    $solde_caisse = $solde_caisse + $montant;
-                }else if($id_de_vers == env('ENTREEBANQUE')){
-                    $solde_banque = $solde_banque + $montant;
-                }
-                break;
-            case env('IDTYPEOPERATIONDE'):
-                if($id_de_vers == env('SORTIECAISSE')){
-                    $solde_caisse = $solde_caisse - $montant;
-                }else if($id_de_vers == env('SORTIEBANQUE')){
-                    $solde_banque = $solde_banque - $montant;
-                }
-                break;
-            case env('IDTYPEOPERATIONMI'):
-                if($id_de_vers == env('BANQUECAISSE')){
-                    $solde_caisse = $solde_caisse + $montant;
-                    $solde_banque = $solde_banque - $montant;
-                }else if($id_de_vers == env('CAISSEBANQUE')){
-                    $solde_banque = $solde_banque + $montant;
-                    $solde_caisse = $solde_caisse - $montant;
-                }
-                break;
-
-            default:
-                # code...
-                break;
-        }
-
-        Solde::create([
-            'livre_id' => $livre->id,
-            'solde_caisse' => $solde_caisse,
-            'solde_banque' => $solde_banque,
-        ]);
     }
 }
