@@ -73,7 +73,6 @@ class ApiController extends Controller
     * @param  [string] password
     * @param  [boolean] remember_me
     */
-
     public function login(Request $request)
     {
         $request->validate([
