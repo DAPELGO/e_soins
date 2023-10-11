@@ -42,9 +42,10 @@ class HomeController extends Controller
 
     public function getStat()
     {
+        $total_med = 0;
         $total_act = 0;
         $total_eq = 0;
-        $total_med = 0;
+        $total_obs = 0;
         $total_ev = 0;
 
         $user = DB::table('users')
@@ -65,6 +66,11 @@ class HomeController extends Controller
                                     ->join('structures', 'structures.id', 'feuille_soin.id_structure')
                                     ->whereIn('structures.id', $array)
                                     ->get();
+                $total_med = $consults->sum('cout_total_prod');
+                $total_act = $consults->sum('cout_total_act');
+                $total_eq = $consults->sum('cout_total_ex');
+                $total_obs = $consults->sum('cout_mise_en_observation');
+                $total_ev = $consults->sum('cout_evacuation');
                 break;
             case env('LEVEL_DISTRICT'):
                 $consults = DB::table('feuille_soin')
@@ -72,20 +78,24 @@ class HomeController extends Controller
                                     ->where('structures.parent_id', Auth::user()->structure_id)
                                     ->get();
 
+                $total_med = $consults->sum('cout_total_prod');
+                $total_act = $consults->sum('cout_total_act');
+                $total_eq = $consults->sum('cout_total_ex');
+                $total_obs = $consults->sum('cout_mise_en_observation');
+                $total_ev = $consults->sum('cout_evacuation');
                 break;
 
             default:
                 $consults = DB::table('feuille_soin')->where('user_id', Auth::user()->id)->get();
+                $total_med = $consults->sum('cout_total_prod');
+                $total_act = $consults->sum('cout_total_act');
+                $total_eq = $consults->sum('cout_total_ex');
+                $total_obs = $consults->sum('cout_mise_en_observation');
+                $total_ev = $consults->sum('cout_evacuation');
                 break;
         }
 
-        foreach($consults as $consult){
-            $total_act = $total_act + Acte::whereIn('code_acte', explode(" ", $consult->liste_act))->get()->sum('price_pvp');
-            $total_eq = $total_eq + Equipement::whereIn('code_equipement', explode(" ", $consult->liste_eq ))->get()->sum('unit_cost_pvp');
-            $total_med = $total_med + Product::whereIn('code_product', explode(" ", $consult->liste_prod))->get()->sum('prix_pvp');
-            $total_ev = $total_ev + Acte::whereIn('code_acte', explode(" ", $consult->liste_act))->get()->sum('price_pvp');
-        }
-        $response['data'] = array('total_act'=>floatval(round($total_act)), 'total_eq'=>floatval(round($total_eq)), 'total_med'=>floatval(round($total_med)), 'total_ev'=>floatval(round($total_ev)));
+        $response['data'] = array('total_med'=>floatval(round($total_med)), 'total_act'=>floatval(round($total_act)), 'total_eq'=>floatval(round($total_eq)), 'total_obs'=>floatval(round($total_obs)), 'total_ev'=>floatval(round($total_ev)));
         return response()->json($response);
     }
 
@@ -623,7 +633,6 @@ class HomeController extends Controller
                 'type_prestation' => $request->type_prestation,
 
                 // PRODUCT
-                'num_ordonance' => $request->num_ordonance,
                 'liste_prod' => $liste_prod,
                 'quantity_prod' => $quantity_prod,
                 'montant_prod' => $montant_prod,

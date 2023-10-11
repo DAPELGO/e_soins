@@ -32,13 +32,13 @@ class UserController extends Controller
     {
         if (Auth::user()->can('users.view')) {
             $users = User::where('is_delete', FALSE)->get();
-
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
             $users = DB::table('users')
                                 ->join('structures', 'structures.id', 'users.structure_id')
                                 ->select('users.*', 'structures.nom_structure')
                                 ->where('users.is_delete', FALSE)
                                 ->get();
-            return view('users.index', compact("users"));
+            return view('users.index', compact("users", 'structure'));
         }else{
             return redirect(route('app.home'));
         }
@@ -52,11 +52,11 @@ class UserController extends Controller
     public function create()
     {
         if (Auth::user()->can('users.create')) {
-
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
             $roles = Role::where('is_delete', FALSE)->get();
             // $valeurs = Valeur::where('id', env('TYPESTRUCTURE_CSPS'))->orWhere('id', env('TYPESTRUCTURE_CMA'))->get();
             // $valeurs = $valeurs->where('id_parametre', env('TYPESTRUCTURE'))->orWhere()->get();
-            return view('users.create', compact('roles'));
+            return view('users.create', compact('roles', 'structure'));
         }
 
         return redirect(route('app.home'));
@@ -136,7 +136,8 @@ class UserController extends Controller
         if (Auth::user()->can('users.view')) {
             $user = User::find($id);
             $roles =  Role::where('is_delete', FALSE)->get();
-            return view('users.show', compact('user', 'roles'));
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
+            return view('users.show', compact('user', 'roles', 'structure'));
         }
 
         return redirect(route('app.home'));
@@ -180,7 +181,7 @@ class UserController extends Controller
                     break;
             }
             $roles =  Role::where('is_delete', FALSE)->get();
-            return view('users.edit', compact('user', 'roles', 'fm', 'dist', 'dists', 'fms'));
+            return view('users.edit', compact('user', 'roles', 'fm', 'dist', 'dists', 'fms', 'structure', 'reg'));
         }
 
         return redirect(route('app.home'));
@@ -258,19 +259,26 @@ class UserController extends Controller
         //
     }
 
-    public function delete(Request $request)
+    public function delete($id)
     {
         if (Auth::user()->can('users.delete')) {
+            try{
+                $user = User::findOrFail($id);
+                $user->is_delete = true;
+                $user->id_user_deleted = Auth::user()->id;
+                $user->save();
 
-            $id = $request->id;
-            $user = User::findOrFail($id);
-            $user->update([
-                'is_delete' => 1,
-            ]);
-
-            session()->flash('notification.message', 'Utilisateur supprimé avec succès !');
-            session()->flash('notification.type', 'error');
-            session()->flash('notification.title', 'Suppression');
+                toastr()->success('Utilisateur supprimé avec succès !');
+                return redirect()->route('users.index');
+            }
+            catch(\Illuminate\Database\QueryException $ex){
+                toastr()->error('Impossible de supprimer cet utilisateur !');
+                return redirect()->route('users.index');
+            }
+        }
+        else{
+            toastr()->error('Vous n\'avez pas accès à cette fonctionnalité !');
+            return redirect()->route('app.home');
         }
     }
 

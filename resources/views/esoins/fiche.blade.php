@@ -368,7 +368,7 @@
               <thead>
                 <tr>
                   <th class="border-top border-200 ps-0 align-middle" scope="col" style="width:50%; color: #004ebc;">DÉSIGNATION</th>
-                  <th class="border-top border-200 ps-0 align-middle" scope="col" style="width:12%; color: #004ebc;">QUANITÉ</th>
+                  <th class="border-top border-200 ps-0 align-middle" scope="col" style="width:12%; color: #004ebc;">QUANTITÉ</th>
                   <th class="border-top border-200 pe-0 align-middle" scope="col" style="width:12%; color: #004ebc;">MONTANT</th>
                 </tr>
               </thead>

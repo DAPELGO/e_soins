@@ -34,7 +34,7 @@
                   </h6>
                 </div>
               </div>
-              <div class="overflow-auto scrollbar" style="height: 10rem;">
+              {{-- <div class="overflow-auto scrollbar" style="height: 10rem;">
                 <ul class="nav d-flex flex-column mb-2 pb-1">
                   <li class="nav-item"><a class="nav-link px-3" href="#!"> <span class="me-2 text-900" data-feather="user"></span><span>Profile</span></a></li>
                   <li class="nav-item"><a class="nav-link px-3" href="#!"><span class="me-2 text-900" data-feather="pie-chart"></span>Dashboard</a></li>
@@ -42,7 +42,7 @@
                   <li class="nav-item"><a class="nav-link px-3" href="#!"> <span class="me-2 text-900" data-feather="settings"></span>Settings &amp; Privacy </a></li>
                   <li class="nav-item"><a class="nav-link px-3" href="#!"> <span class="me-2 text-900" data-feather="help-circle"></span>Aide</a></li>
                 </ul>
-              </div>
+              </div> --}}
               <div class="card-footer p-0 border-top">
                 <div class="px-3 py-3">
                     <a class="btn btn-phoenix-secondary d-flex flex-center w-100" href="{{ route('logout') }}"
