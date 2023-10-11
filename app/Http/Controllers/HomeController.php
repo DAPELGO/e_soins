@@ -508,8 +508,6 @@ class HomeController extends Controller
     // STORE CONSULTATION
     public function storeFacture(Request $request)
     {
-        //dd($request->all());
-
         // List prod
         $array_prod = array();
         $tab_prod = explode(',',  $request->liste_prod);
