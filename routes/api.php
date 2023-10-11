@@ -2,8 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\api\eFluxController;
 use App\Http\Controllers\api\ApiController;
+use App\Http\Controllers\api\eSoinsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,9 +23,10 @@ Route::group(['prefix' => 'auth'], function () {
     Route::group(['middleware' => 'auth:sanctum'], function() {
       Route::get('logout', [ApiController::class, 'logout']);
       Route::get('user', [ApiController::class, 'user']);
-      Route::get('/factures', [eFluxController::class, 'factures'])->name('esoins.factures');
-      Route::get('/{parametre}/getdata', [eFluxController::class, 'dataSelect'])->name('esoins.data');
-      Route::get('/{id_parametre}/get_valeur', [eFluxController::class, 'getValeur'])->name('esoins.valeur');
+      Route::get('/factures', [eSoinsController::class, 'factures'])->name('esoins.factures');
+      Route::post('/factures/store', [eSoinsController::class, 'storeFacture'])->name('factures.store');
+      Route::get('/{parametre}/getdata', [eSoinsController::class, 'dataSelect'])->name('esoins.data');
+      Route::get('/{id_parametre}/get_valeur', [eSoinsController::class, 'getValeur'])->name('esoins.valeur');
     });
 });
 
