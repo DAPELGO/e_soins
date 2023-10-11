@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\api;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Valeur;
+use App\User;
+use \stdClass;
 use App\Models\Livre;
-use App\Models\CreanceDette;
+use App\Models\Valeur;
 use App\Models\Exercice;
 use App\Models\Paiement;
+use App\Models\Structure;
+use App\Models\CreanceDette;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use App\User;
 use Illuminate\Validation\ValidationException;
-use \stdClass;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class eFluxController extends Controller
 {
@@ -32,88 +33,29 @@ class eFluxController extends Controller
             case 'type-structure':
                 $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('TYPESTRUCTURE')])->get();
                 break;
-            // TYPE STRUCTUE CSPS
-            case 'type-structure-csps':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('TYPESTRUCTURE_CSPS')])->get();
+            // PRESTATIONS
+            case 'prestations':
+                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('PARAM_CIBLE')])->get();
                 break;
-            // TYPE STRUCTURE CMA
-            case 'type-structure-cma':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('TYPESTRUCTURE_CMA')])->get();
-                break;
-            // TYPE OPERATION
-            case 'type-operation':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('TYPEOPERATION')])->get();
-                break;
-            // LIBELLE OPERATION
-            case 'libelle-operation':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('LIBELLEOPERATION')])->get();
-                break;
-            // CATEGORIE OPERATION
-            case 'categorie-operation':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('CATEGORIE')])->get();
-                break;
-            // ACTION OPERATION
-            case 'action-operation':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('ACTIONOPERATION')])->get();
-                break;
-            // DE VERS
-            case 'devers':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('DEVERS')])->get();
-                break;
-            // TYPE OPERATION CREANCE OU DETTE
-            case 'type-operation-creandette':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('TYPEOPCREADETTE')])->get();
-                break;
-            // TYPE CREANCE
-            case 'type-creance':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('TYPECREANCE')])->get();
-                break;
-            // TYPE DETTE
-            case 'type-dette':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('TYPEDETTE')])->get();
-                break;
-            // LIVRE
-            case 'livre':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('LIVRE')])->get();
-                break;
-            // TYPE EVACUATION
-            case 'type-evacuation':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('TYPEEVACUATION')])->get();
-                break;
-            // SORTIE CAISSE
-            case 'sortie-caisse':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('SORTIECAISSE')])->get();
-                break;
-            // SORTIE BANQUE
-            case 'sortie-banque':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('SORTIEBANQUE')])->get();
-                break;
-            // ENTREE CAISSE
-            case 'entree-caisse':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('ENTREECAISSE')])->get();
-                break;
-            // ENTREE BANQUE
-            case 'entree-banque':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('ENTREEBANQUE')])->get();
-                break;
-            // CAISSE VERS BANQUE
-            case 'caisse-banque':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('CAISSEBANQUE')])->get();
-                break;
-            // BANQUE VERS CAISSE
-            case 'banque-caisse':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('BANQUECAISSE')])->get();
-                break;
-            // EXERCICE
-            case 'exercice':
-                $valeurs = Exercice::where('is_delete', FALSE)->latest()->first();
-                break;
-
             default:
                 # code...
                 break;
         }
         return response()->json($valeurs);
+    }
+
+    // GET VALEUR
+    public function getValeur(String $id_parametre)
+    {
+        $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parent'=>$id_parametre])->get();
+        return response()->json($valeurs);
+    }
+
+    // GET STRUCTURE
+    public function getStructure(String $id_typestructure)
+    {
+        $structures = Structure::where(['is_delete'=>FALSE, 'parent_id'=>$id_typestructure])->get();
+        return response()->json($structures);
     }
 
     // SAVE DATA SYNCHRONISE

@@ -21,7 +21,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // Route::apiResource("eflux", eFluxController::class);
-// Route::get('/{parametre}/getdata', [eFluxController::class, 'dataSelect'])->name('eflux.data');
+Route::get('/{parametre}/getdata', [eFluxController::class, 'dataSelect'])->name('esoins.data');
+Route::get('/{id_parametre}/get_valeur', [eFluxController::class, 'getValeur'])->name('esoins.valeur');
+Route::get('/{id_parametre}/get_structure', [eFluxController::class, 'getStructure'])->name('esoins.structure');
 // Route::post('/{paramsave}/save', [eFluxController::class, 'saveData'])->name('eflux.save');
 // Route::post('login', [eFluxController::class, 'login'])->name('eflux.login');
 Route::get('map', [ApiController::class, 'map'])->name('map');
