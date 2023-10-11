@@ -44,6 +44,7 @@ Route::get('/', [LoginController::class, 'userLogin'])->name('user.login');
 Route::resource('structures', 'StructureController');
 // Users
 Route::resource('users', 'UserController');
+Route::get('/users/{id}/delete', 'UserController@delete')->name('users.delete');
 // Patients
 Route::resource('patients', 'PatientController');
 

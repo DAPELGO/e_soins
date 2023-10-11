@@ -152,10 +152,6 @@
                                             <input type="hidden" id="index_product">
                                             <div class="row">
                                                 <div class="col-lg-6">
-                                                    <div class="mb-3">
-                                                        <label class="col-form-label col-form-label-sm" for="ordonnance_number">Numéro d'ordonnance</label>
-                                                        <input class="form-control input-border-bt" id="ordonnance_number" type="text" placeholder="00000001" name="ordonnance_number" />
-                                                    </div>
                                                     <div class="row g-3">
                                                         <div class="total panel-title p-1"><span>MONTANT TOTAL : </span><strong class="badge badge-light-primary rounded-pill" id="total_account_product" style="font-size: 1rem;">0</strong></div>
                                                     </div>
@@ -360,15 +356,15 @@
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
                                                         <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="name_prescripteur">Nom et prénom du prescripteur</label>
-                                                        <input class="form-control input-border-bt" id="name_prescripteur" type="text" name="name_prescripteur" />
+                                                        <input class="form-control input-border-bt" id="name_prescripteur" type="text" name="name_prescripteur" required />
                                                     </div>
                                                     <div class="mb-3">
                                                         <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="contact_prescripteur">Contact du prescripteur</label>
-                                                        <input class="form-control input-border-bt" id="contact_prescripteur" type="text" name="contact_prescripteur" />
+                                                        <input class="form-control input-border-bt" id="contact_prescripteur" type="text" name="contact_prescripteur" required />
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label class="col-form-label col-form-label-sm" for="qualification_prescripteur">Qualification du prescripteur</label>
-                                                        <select class="form-select" id="qualification_prescripteur" name="qualification_prescripteur">
+                                                        <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="qualification_prescripteur">Qualification du prescripteur</label>
+                                                        <select class="form-select" id="qualification_prescripteur" name="qualification_prescripteur" required>
                                                             <option value="">Veuillez choisir...</option>
                                                             @foreach ($qualifications as $qualification)
                                                                 <option value="{{ $qualification->id }}">{{ $qualification->libelle }}</option>
@@ -379,11 +375,11 @@
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
                                                         <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="name_gerant">Nom et prénom du gérant</label>
-                                                        <input class="form-control input-border-bt" id="name_gerant" type="text" name="name_gerant" value="{{Auth::user()->name}}" />
+                                                        <input class="form-control input-border-bt" id="name_gerant" type="text" name="name_gerant" value="{{Auth::user()->name}}" required />
                                                     </div>
                                                     <div class="mb-3">
                                                         <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="contact_gerant">Contact du gérant</label>
-                                                        <input class="form-control input-border-bt" id="contact_gerant" type="tel" name="contact_gerant" />
+                                                        <input class="form-control input-border-bt" id="contact_gerant" type="tel" name="contact_gerant" required />
                                                     </div>
                                                 </div>
                                             </div>

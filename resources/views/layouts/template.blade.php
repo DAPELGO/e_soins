@@ -233,7 +233,6 @@
                 var type_prestation = $("#type_prestation").val();
 
                 // PRODUCT
-                var num_ordonance = $("#ordonnance_number").val();
                 var liste_prod = $("#code_product").val();
                 var quantity_prod = $("#quantity_product").val();
                 var montant_prod = $("#amount_product").val();
@@ -276,7 +275,7 @@
                             sexe_patient:sexe_patient, parent_patient:parent_patient, num_telephone:num_telephone, consultation_date:consultation_date,
                             serie_number:serie_number, registre_number:registre_number, patient_type:patient_type, type_prestation:type_prestation,
                             // PRODUCT
-                            num_ordonance:num_ordonance, liste_prod:liste_prod, quantity_prod:quantity_prod, montant_prod:montant_prod, cout_total_prod:cout_total_prod,
+                            liste_prod:liste_prod, quantity_prod:quantity_prod, montant_prod:montant_prod, cout_total_prod:cout_total_prod,
                             // ACTE
                             liste_act:liste_act, quantity_act:quantity_act, montant_act:montant_act, cout_total_act:cout_total_act,
                             // EXAMEN
@@ -571,10 +570,11 @@
                     dataType: 'json',
                     error:function(data){alert("Erreur");},
                     success: function (data) {
-                        $("#total_act").text(data.data.total_act+" FCFA");
-                        $("#total_eq").text(data.data.total_eq+" FCFA");
-                        $("#total_med").text(data.data.total_med+" FCFA");
-                        $("#total_ev").text(data.data.total_ev+" FCFA");
+                        $("#total_med").text(data.data.total_med + " FCFA");
+                        $("#total_act").text(data.data.total_act + " FCFA");
+                        $("#total_ex").text(data.data.total_eq + " FCFA");
+                        $("#total_obs").text(data.data.total_obs + " FCFA");
+                        $("#total_ev").text(data.data.total_ev + " FCFA");
                     }
             });
 
