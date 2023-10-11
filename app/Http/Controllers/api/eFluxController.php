@@ -30,12 +30,16 @@ class eFluxController extends Controller
         $valeurs = new StdClass();
         switch ($parametre) {
             // TYPE STRUCTURE
-            case 'type-structure':
-                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('TYPESTRUCTURE')])->get();
+            case 'structures':
+                $valeurs = Structure::where(['is_delete'=>FALSE])->get();
                 break;
             // PRESTATIONS
             case 'prestations':
                 $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('PARAM_CIBLE')])->get();
+                break;
+            // QUALIFICATION
+            case 'qualifications':
+                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('PARAM_QUALIFICATION')])->get();
                 break;
             default:
                 # code...
@@ -49,13 +53,6 @@ class eFluxController extends Controller
     {
         $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parent'=>$id_parametre])->get();
         return response()->json($valeurs);
-    }
-
-    // GET STRUCTURE
-    public function getStructure(String $id_typestructure)
-    {
-        $structures = Structure::where(['is_delete'=>FALSE, 'parent_id'=>$id_typestructure])->get();
-        return response()->json($structures);
     }
 
     // SAVE DATA SYNCHRONISE
