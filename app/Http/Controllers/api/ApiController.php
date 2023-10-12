@@ -92,10 +92,20 @@ class ApiController extends Controller
         $tokenResult = $user->createToken('Personal Access Token');
         $token = $tokenResult->plainTextToken;
 
-        return response()->json([
-        'accessToken' =>$token,
-        'token_type' => 'Bearer',
-        ]);
+        if($token){
+            return response()->json([
+                'success'=>true,
+                'message'=>'authorized',
+                'accessToken' =>$token,
+                'token_type' => 'Bearer',
+            ]);
+        }
+        else{
+            return response()->json([
+                'success'=>false,
+                'message'=>'unauthorized'
+            ]);
+        }
     }
 
     /**
@@ -108,8 +118,8 @@ class ApiController extends Controller
         $request->user()->tokens()->delete();
 
         return response()->json([
-        'message' => 'Successfully logged out'
+            'success' => true,
+            'message' => 'Successfully logged out'
         ]);
-
     }
 }
