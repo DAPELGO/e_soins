@@ -50,7 +50,8 @@ class ImportController extends Controller
 	*/
     public function viewCsv()
     {
-        return view('importCsv');
+        $structure = Structure::where('id', Auth::user()->structure_id)->first();
+        return view('importCsv', compact('structure'));
     }
 
     /**
