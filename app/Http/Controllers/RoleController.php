@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Role;
+use App\Models\Structure;
 use App\Models\Permission;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,7 +30,8 @@ class RoleController extends Controller
     {
         if (Auth::user()->can('roles.view')) {
             $roles = Role::where('is_delete', FALSE)->get();
-            return view('roles.index', compact('roles'));
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
+            return view('roles.index', compact('roles', 'structure'));
        }else{
             return redirect()->route('app.home');
         }
@@ -44,7 +46,8 @@ class RoleController extends Controller
     {
         if (Auth::user()->can('roles.create')) {
             $permissions =  Permission::where('is_delete', FALSE)->get();
-            return view('roles.create', compact('permissions'));
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
+            return view('roles.create', compact('permissions', 'structure'));
         }else{
             return redirect()->route('app.home');
         }
@@ -93,6 +96,7 @@ class RoleController extends Controller
         if (Auth::user()->can('roless.view')) {
 
             $role = Role::find($id);
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
             $users = DB::table('admins')
                                 ->join('role_user', 'admins.id', 'role_user.user_id')
                                 ->select('admins.*')
@@ -103,7 +107,7 @@ class RoleController extends Controller
                                 ->select('permissions.nom_permission')
                                 ->where('permission_role.role_id', $id)
                                 ->get();
-            return view('backend.roles.show', compact('role', 'users', 'permissions'));
+            return view('backend.roles.show', compact('role', 'users', 'permissions', 'structure'));
         }
 
         return redirect(route('backend.home'));
@@ -121,7 +125,8 @@ class RoleController extends Controller
 
             $role = Role::find($id);
             $permissions =  Permission::where('is_delete', FALSE)->get();
-            return view('roles.edit', compact('role', 'permissions'));
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
+            return view('roles.edit', compact('role', 'permissions', 'structure'));
         }
 
         return redirect(route('backend.home'));

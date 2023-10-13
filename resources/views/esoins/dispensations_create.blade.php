@@ -264,6 +264,7 @@
                                                 </div>
                                             </div>
                                             <hr>
+                                            @if ($structure->level_structure != env("LEVEL_FS"))
                                             <div id="examens">
                                                 <table class="table w-100" id="dataTableFis-examens">
                                                     <thead>
@@ -300,6 +301,11 @@
                                                     </tbody>
                                                 </table>
                                             </div>
+                                            @else
+                                            <div id="examens">
+                                                <h4 class="text-warning">Cliquez sur suivant pour continuer...!</h4>
+                                            </div>
+                                            @endif
                                         </form>
                                     </div>
                                     <!-- HOSPITALISATION -->

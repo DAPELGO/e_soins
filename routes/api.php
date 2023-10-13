@@ -24,7 +24,8 @@ Route::group(['prefix' => 'auth'], function () {
       Route::get('logout', [ApiController::class, 'logout']);
       Route::get('user', [ApiController::class, 'user']);
       Route::get('/factures', [eSoinsController::class, 'factures'])->name('esoins.factures');
-      Route::post('/factures/store', [eSoinsController::class, 'storeFacture'])->name('factures.store');
+      Route::post('/factures/store', [eSoinsController::class, 'storeFacture'])->name('eso.store');
+      Route::get('/{id_facture}/delete', [eSoinsController::class, 'deleteFacture'])->name('esoins.delete');
       Route::get('/{parametre}/getdata', [eSoinsController::class, 'dataSelect'])->name('esoins.data');
       Route::get('/{id_parametre}/get_valeur', [eSoinsController::class, 'getValeur'])->name('esoins.valeur');
     });
