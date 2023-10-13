@@ -266,6 +266,7 @@ class UserController extends Controller
                 $user = User::findOrFail($id);
                 $user->is_delete = true;
                 $user->id_user_deleted = Auth::user()->id;
+                $user->deleted_at = date('Y-m-d H:i:s');
                 $user->save();
 
                 toastr()->success('Utilisateur supprimé avec succès !');

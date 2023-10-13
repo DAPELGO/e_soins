@@ -1,6 +1,7 @@
 @extends('layouts.template')
 @section('css')
-  <link rel="stylesheet" type="text/css" href="{{asset('assets/DataTables/datatables.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('assets/css/sweetalert2.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('assets/DataTables/datatables.css')}}">
 @endsection
 @section('page_title', 'ECOM | All livre')
 @section('factures', 'active')
@@ -47,7 +48,8 @@
             <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ \Carbon\Carbon::parse($nconsult->visit_date)->format('d/m/Y') }}</td>
             <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->cout_total_prod + $nconsult->cout_total_act + $nconsult->cout_total_ex + $nconsult->cout_mise_en_observation + $nconsult->cout_evacuation }} FCFA</td>
             <td class="last_active align-middle white-space-nowrap text-700">
-              <a href="{{ route('esoins.fiche', $nconsult->id) }}" title="Voir la fiche" class="btn btn-soft-primary btn-sm btn-actions"><span class="text-900 fs-3 fas fa-user-md"></span></a>
+              <a href="{{ route('esoins.fiche', $nconsult->id) }}" title="Supprimer la facture" class="btn btn-soft-primary btn-sm btn-actions"><span class="text-900 fs-3" data-feather="eye"></span></a>
+              <a class="btn btn-soft-danger btn-sm btn-actions sweet-conf" href="{{ route('esoins.delete', $nconsult->id) }}" data="Voulez vous supprimer cette facture ?"><span class="text-900 fs-3" data-feather="trash-2"></span></a>
             </td>
           </tr>
           <?php $i++; ?>
@@ -57,50 +59,52 @@
   </div>
 @endsection
 @section('script')
-  <script src="{{asset('assets/DataTables/datatables.js')}}"></script>
-  <script>
-    $(document).ready(function() {
-        $('[id^="dataTableFis-"]').DataTable({
-            retrieve: true,
-            "pagingType": "full_numbers",
-            "lengthMenu": [
-                [10, 25, 50, -1],
-                [10, 25, 50, "Toutes"]
-            ],
-            "order": [],
-            responsive: true,
-            language: {
-                search: "_INPUT_",
-                searchPlaceholder: "Rechercher...",
-                "decimal":        "",
-                "emptyTable":     "Aucune donnée disponible dans ce tableau",
-                "info":           "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
-                "infoEmpty":      "Affichage de 0 à 0 sur 0 entrées",
-                "infoFiltered":   "(filtré sur un total de _MAX_ entrées)",
-                "infoPostFix":    "",
-                "thousands":      ",",
-                "lengthMenu":     "Affichage de _MENU_ entrées",
-                "loadingRecords": "Chargement...",
-                "processing":     "Traitement...",
-                "zeroRecords":    "Aucune correspondance trouvée",
-                "paginate": {
-                    "first":      "Début",
-                    "last":       "Fin",
-                    "next":       "<i class='icofont icofont-double-right'></i>",
-                    "previous":   "<i class='icofont icofont-double-left'></i>"
-                },
-                "aria": {
-                    "sortAscending":  ": Cliquez pour activer le tri ascendant",
-                    "sortDescending": ": Cliquez pour activer le tri descendant"
+    <script src="{{ asset('assets/js/sweet-alert/sweetalert.min.js') }}"></script>
+    <script src="{{ asset('assets/js/sweet-alert/app.js') }}"></script>
+    <script src="{{asset('assets/DataTables/datatables.js')}}"></script>
+    <script>
+        $(document).ready(function() {
+            $('[id^="dataTableFis-"]').DataTable({
+                retrieve: true,
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "Toutes"]
+                ],
+                "order": [],
+                responsive: true,
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Rechercher...",
+                    "decimal":        "",
+                    "emptyTable":     "Aucune donnée disponible dans ce tableau",
+                    "info":           "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                    "infoEmpty":      "Affichage de 0 à 0 sur 0 entrées",
+                    "infoFiltered":   "(filtré sur un total de _MAX_ entrées)",
+                    "infoPostFix":    "",
+                    "thousands":      ",",
+                    "lengthMenu":     "Affichage de _MENU_ entrées",
+                    "loadingRecords": "Chargement...",
+                    "processing":     "Traitement...",
+                    "zeroRecords":    "Aucune correspondance trouvée",
+                    "paginate": {
+                        "first":      "Début",
+                        "last":       "Fin",
+                        "next":       "<i class='icofont icofont-double-right'></i>",
+                        "previous":   "<i class='icofont icofont-double-left'></i>"
+                    },
+                    "aria": {
+                        "sortAscending":  ": Cliquez pour activer le tri ascendant",
+                        "sortDescending": ": Cliquez pour activer le tri descendant"
+                    }
                 }
-            }
-        });
+            });
 
-        // $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-        //     $($.fn.dataTable.tables(true)).DataTable()
-        //         .columns.adjust()
-        //         .responsive.recalc();
-        // });
-    });
-  </script>
+            // $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            //     $($.fn.dataTable.tables(true)).DataTable()
+            //         .columns.adjust()
+            //         .responsive.recalc();
+            // });
+        });
+    </script>
 @endsection

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Structure;
 use App\Models\Permission;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,7 +29,8 @@ class PermissionController extends Controller
     {
         if (Auth::user()->can('permissions.view')) {
             $permissions = Permission::where('is_delete', false)->get();
-            return view('permissions.index', compact('permissions'));
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
+            return view('permissions.index', compact('permissions', 'structure'));
         }else{
             return redirect()->route('app.home');
         }
@@ -42,7 +44,8 @@ class PermissionController extends Controller
     public function create()
     {
         if (Auth::user()->can('permissions.create')) {
-            return view('permissions.create');
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
+            return view('permissions.create', compact('structure'));
         }else{
             return redirect()->route('app.home');
         }
@@ -81,12 +84,13 @@ class PermissionController extends Controller
     {
         if (Auth::user()->can('permissions.view')) {
             $permission = Permission::where('id', $id)->first();
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
             $roles = DB::table('roles')
                                 ->join('permission_role', 'roles.id', 'permission_role.role_id')
                                 ->select('roles.*')
                                 ->where('permission_role.permission_id', $id)
                                 ->get();
-            return view('permissions.show', compact('permission', 'roles'));
+            return view('permissions.show', compact('permission', 'roles', 'structure'));
         }else{
             return redirect()->route('backend.home');
         }
@@ -102,7 +106,8 @@ class PermissionController extends Controller
     {
         if (Auth::user()->can('permissions.view')) {
             $permission = Permission::where('id', $id)->first();
-            return view('backend.permissions.edit', compact('permission'));
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
+            return view('backend.permissions.edit', compact('permission', 'structure'));
         }else{
             return redirect()->route('backend.home');
         }
