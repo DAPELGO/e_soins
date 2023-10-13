@@ -345,4 +345,28 @@ class eSoinsController extends Controller
 
         return response()->json(['success'=>true, 'message'=>'Facture enregistrée avec succès']);
     }
+
+    /**
+     * Delete a facture
+     *
+     * @return success message
+     */
+    public function deleteFacture($id_facture)
+    {
+        // if (Auth::user()->can('esoins.delete')) {
+            try{
+                $consult = DB::table('feuille_soin')->where('id', $id)
+                                ->update(['is_delete'=>true, 'id_user_deleted'=>Auth::user()->id, 'deleted_at'=>date('Y-m-d H:i:s')]);
+
+                return response()->json(['success'=>true, 'message'=>'Facture supprimée avec succès']);
+            }
+            catch(\Exception $e){
+                return response()->json(['success'=>false, 'message'=>'Une erreur est survenue lors de la suppression de la facture.', 'error'=>$e->getMessage()]);
+            }
+        // }
+        // else{
+        //     toastr()->error('Vous n\'avez pas les droits nécessaires pour effectuer cette action');
+        //     return redirect()->route('app.factures');
+        // }
+    }
 }

@@ -215,6 +215,7 @@ class HomeController extends Controller
                 $nconsults = DB::table('feuille_soin')->whereIn('structures.id', $array)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
                             ->select('feuille_soin.*', 'structures.nom_structure')
+                            ->where('feuille_soin.is_delete', false)
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
                 break;
@@ -222,6 +223,7 @@ class HomeController extends Controller
                 $nconsults = DB::table('feuille_soin')->where('structures.parent_id', Auth::user()->structure_id)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
                             ->select('feuille_soin.*', 'structures.nom_structure')
+                            ->where('feuille_soin.is_delete', false)
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
                 break;
@@ -230,6 +232,7 @@ class HomeController extends Controller
             $nconsults = DB::table('feuille_soin')->where('feuille_soin.user_id', Auth::user()->id)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
                             ->select('feuille_soin.*', 'structures.nom_structure')
+                            ->where('feuille_soin.is_delete', false)
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
                 break;
@@ -251,13 +254,24 @@ class HomeController extends Controller
         return view('esoins.dispensations_create', compact('structures', 'products', 'actes', 'structure', 'prestations', 'examens', 'qualifications'));
     }
 
+    //VIEW FACTURE
     public function efiche($id)
     {
+        // CONSULTATION
+        $consult = DB::table('feuille_soin')
+                    ->where('id', $id)
+                    ->where('is_delete', false)->first();
+
+        if(!$consult){
+            toastr()->error('Cette fiche n\'existe pas');
+            return redirect()->route('app.factures');
+        }
+
+        // PRESTATIONS
+        $prestations = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('PARAM_CIBLE')])->get();
+
         // SRTUCTURE
         $structure = Structure::where('id', Auth::user()->structure_id)->first();
-
-        // CONSULTATION
-        $consult = DB::table('feuille_soin')->where('id', $id)->first();
 
         // CSPS
         $csps = Structure::where('id', Auth::user()->structure_id)->first();
@@ -287,7 +301,29 @@ class HomeController extends Controller
         $examens = Examen::whereIn('code_examen', $liste_eq)->get();
         $typeprestation = (Valeur::where('id', $consult->type_prestation)->first())->libelle;
 
-        return view('esoins.fiche', compact('consult', 'cproducts', 'actes', 'examens', 'quantity_prod', 'quantity_act', 'quantity_eq', 'csps', 'district', 'drs', 'typeprestation', 'structure', 'qualification'));
+        return view('esoins.fiche', compact('consult', 'cproducts', 'actes', 'examens', 'quantity_prod', 'quantity_act', 'quantity_eq', 'csps', 'district', 'drs', 'typeprestation', 'structure', 'qualification', 'prestations'));
+    }
+
+    //DELETE FACTURE
+    public function deleteFacture($id)
+    {
+        // if (Auth::user()->can('esoins.delete')) {
+            try{
+                $consult = DB::table('feuille_soin')->where('id', $id)
+                                ->update(['is_delete'=>true, 'id_user_deleted'=>Auth::user()->id, 'deleted_at'=>date('Y-m-d H:i:s')]);
+
+                toastr()->success('Suppression effectuée avec succès');
+                return redirect()->route('app.factures');
+            }
+            catch(\Exception $e){
+                toastr()->error('Erreur lors de la suppression');
+                return redirect()->route('app.factures');
+            }
+        // }
+        // else{
+        //     toastr()->error('Vous n\'avez pas les droits nécessaires pour effectuer cette action');
+        //     return redirect()->route('app.factures');
+        // }
     }
 
     /******** DISPENSATION ****************** */

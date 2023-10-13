@@ -9,8 +9,9 @@
             <div class="col-lg-4"><span class="fw-black">DRS : </span>{{ $drs->nom_structure }}</div>
             <div class="col-lg-4 offset-4"><span class="fw-black">Date : </span> {{ \Carbon\Carbon::parse($consult->visit_date)->format('d/m/Y') }}</div>
             <div class="col-lg-4"><span class="fw-black">DS : </span> {{ $consult->csps? $consult->district : $district->nom_structure }}</div>
-            <div class="col-lg-4 offset-4"><span class="fw-black">N° </span><small><i>(Serie)</i></small> : {{ $consult->serie_number }}</div>
-            <div class="col-auto"><span class="fw-black">FS</span> : {{ $consult->csps? $consult->csps : $csps->nom_structure }}</div>
+            <div class="col-lg-4 offset-4"><span class="fw-black">N° de serie sur l'ordonnance</span> : {{ $consult->serie_number }}</div>
+            <div class="col-lg-4"><span class="fw-black">FS</span> : {{ $consult->csps? $consult->csps : $csps->nom_structure }}</div>
+            <div class="col-lg-4 offset-4"><span class="fw-black">N° </span><small><i>(Sur le registre de consultation)</i></small> : {{ $consult->registre_number }}</div>
         </div>
         <hr>
         <div class="row py-2 pe-0 fs--1">
