@@ -65,7 +65,7 @@ class HomeController extends Controller
                 $consults = DB::table('feuille_soin')
                                     ->join('structures', 'structures.id', 'feuille_soin.id_structure')
                                     ->whereIn('structures.id', $array)
-                                    ->where('is_delete', false)
+                                    ->where('feuille_soin.is_delete', false)
                                     ->get();
                 $total_med = $consults->sum('cout_total_prod');
                 $total_act = $consults->sum('cout_total_act');
@@ -77,7 +77,7 @@ class HomeController extends Controller
                 $consults = DB::table('feuille_soin')
                                     ->join('structures', 'structures.id', 'feuille_soin.id_structure')
                                     ->where('structures.parent_id', Auth::user()->structure_id)
-                                    ->where('is_delete', false)
+                                    ->where('feuille_soin.is_delete', false)
                                     ->get();
 
                 $total_med = $consults->sum('cout_total_prod');
@@ -279,16 +279,22 @@ class HomeController extends Controller
         $structure = Structure::where('id', Auth::user()->structure_id)->first();
 
         // CSPS
-        $csps = Structure::where('id', Auth::user()->structure_id)->first();
+        $csps = Structure::where('id', $consult->id_structure)->first();
+
+        // COMMUNES
+        $commune = Structure::where('id', $csps->parent_id)->first();
 
         //QUALIFICATIONS
         $qualification = Valeur::where('id', $consult->qualification_prescripteur)->first();
 
         // DISTRICT
-        $district = Structure::where('id', $csps->parent_id)->first();
+        $district = Structure::where('id', $commune->parent_id)->first();
+
+        // PROVINCE
+        $province = Structure::where('id', $district->parent_id)->first();
 
         // DRS
-        $drs = Structure::where('id', $district->parent_id)->first();
+        $drs = Structure::where('id', $province->parent_id)->first();
 
         // PRODUITS
         $liste_prod =  explode(" ",$consult->liste_prod);
