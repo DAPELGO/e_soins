@@ -41,6 +41,10 @@ class eSoinsController extends Controller
             case 'prestations':
                 $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('PARAM_CIBLE')])->get();
                 break;
+            // TYPE PRESTATION
+            case 'typeprestation':
+                $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('TYPE_PRESTATION')])->get();
+                break;
             // QUALIFICATION
             case 'qualifications':
                 $valeurs = Valeur::where(['is_delete'=>FALSE, 'id_parametre'=>env('PARAM_QUALIFICATION')])->get();

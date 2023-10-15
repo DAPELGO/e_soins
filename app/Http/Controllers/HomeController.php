@@ -288,20 +288,23 @@ class HomeController extends Controller
         // PRODUITS
         $liste_prod =  explode(" ",$consult->liste_prod);
         $quantity_prod =  explode(" ",$consult->quantity_prod);
+        $amount_prod =  explode(" ",$consult->montant_prod);
         $cproducts = Product::whereIn('code_product', $liste_prod)->get();
 
         // ACTES
         $liste_act =  explode(" ",$consult->liste_act);
         $quantity_act =  explode(" ",$consult->quantity_act);
+        $amount_act = explode(" ",$consult->montant_act);
         $actes = Acte::whereIn('code_acte', $liste_act)->get();
 
         // EQUIPEMENT
         $liste_eq = explode(" ",$consult->liste_eq);
         $quantity_eq = explode(" ",$consult->quantity_eq);
+        $amount_eq = explode(" ",$consult->montant_ex);
         $examens = Examen::whereIn('code_examen', $liste_eq)->get();
         $typeprestation = (Valeur::where('id', $consult->type_prestation)->first())->libelle;
 
-        return view('esoins.fiche', compact('consult', 'cproducts', 'actes', 'examens', 'quantity_prod', 'quantity_act', 'quantity_eq', 'csps', 'district', 'drs', 'typeprestation', 'structure', 'qualification', 'prestations'));
+        return view('esoins.fiche', compact('consult', 'cproducts', 'actes', 'examens', 'quantity_prod', 'quantity_act', 'quantity_eq', 'amount_prod', 'amount_act', 'amount_eq', 'csps', 'district', 'drs', 'typeprestation', 'structure', 'qualification', 'prestations'));
     }
 
     //DELETE FACTURE

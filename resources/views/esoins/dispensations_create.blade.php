@@ -362,15 +362,15 @@
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
                                                         <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="name_prescripteur">Nom et prénom du prescripteur</label>
-                                                        <input class="form-control input-border-bt" id="name_prescripteur" type="text" name="name_prescripteur" required />
+                                                        <input class="form-control input-border-bt" id="name_prescripteur" type="text" name="name_prescripteur" required="required" />
                                                     </div>
                                                     <div class="mb-3">
                                                         <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="contact_prescripteur">Contact du prescripteur</label>
-                                                        <input class="form-control input-border-bt" id="contact_prescripteur" type="text" name="contact_prescripteur" required />
+                                                        <input class="form-control input-border-bt" id="contact_prescripteur" type="text" name="contact_prescripteur" required="required" />
                                                     </div>
                                                     <div class="mb-3">
                                                         <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="qualification_prescripteur">Qualification du prescripteur</label>
-                                                        <select class="form-select" id="qualification_prescripteur" name="qualification_prescripteur" required>
+                                                        <select class="form-select" id="qualification_prescripteur" name="qualification_prescripteur" required="required">
                                                             <option value="">Veuillez choisir...</option>
                                                             @foreach ($qualifications as $qualification)
                                                                 <option value="{{ $qualification->id }}">{{ $qualification->libelle }}</option>
@@ -381,11 +381,11 @@
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
                                                         <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="name_gerant">Nom et prénom du gérant</label>
-                                                        <input class="form-control input-border-bt" id="name_gerant" type="text" name="name_gerant" value="{{Auth::user()->name}}" required />
+                                                        <input class="form-control input-border-bt" id="name_gerant" type="text" name="name_gerant" value="{{Auth::user()->name}}" required="required" />
                                                     </div>
                                                     <div class="mb-3">
                                                         <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="contact_gerant">Contact du gérant</label>
-                                                        <input class="form-control input-border-bt" id="contact_gerant" type="tel" name="contact_gerant" required />
+                                                        <input class="form-control input-border-bt" id="contact_gerant" type="tel" name="contact_gerant" required="required" />
                                                     </div>
                                                 </div>
                                             </div>

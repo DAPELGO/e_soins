@@ -50,7 +50,8 @@ class ImportController extends Controller
 	*/
     public function viewCsv()
     {
-        return view('importCsv');
+        $structure = Structure::where('id', 2)->first();
+        return view('importCsv', compact('structure'));
     }
 
     /**
@@ -152,10 +153,11 @@ class ImportController extends Controller
                 echo $i.' - '.$product->id.' - '.$customerArr[$i][0].' - '.$customerArr[$i][1].'<br/>';*/
 
                 // PRODUCT
+                $parent = Structure::where('nom_structure', $customerArr[$i][0])->first();
 	       		$structure = Structure::create([
-                    'parent_id' => $customerArr[$i][0],
+                    'parent_id' => $parent->id,
                     'nom_structure' => $customerArr[$i][1],
-                    'id_typestructure' => 41,
+                    'level_structure' => $customerArr[$i][2],
                 ]);
 
                 echo $i.' - '.$structure->id.' - '.$customerArr[$i][0].' - '.$customerArr[$i][1].'<br/>';
