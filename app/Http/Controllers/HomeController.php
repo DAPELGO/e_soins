@@ -54,6 +54,7 @@ class HomeController extends Controller
                         ->where('users.id', Auth::user()->id)
                         ->first();
         switch ($user->level_structure) {
+            case env ('LEVEL_NATIONAL'):
             case env('LEVEL_DRS'):
                 $structure = Structure::find(Auth::user()->structure_id);
                 $structures = $structure->getAllChildren();
