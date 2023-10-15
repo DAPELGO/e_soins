@@ -48,6 +48,7 @@ class HomeController extends Controller
         $total_obs = 0;
         $total_ev = 0;
 
+        $structure = Structure::where('id', Auth::user()->structure_id)->first();
         $user = DB::table('users')
                         ->join('structures', 'users.structure_id', 'structures.id')
                         ->select('users.*', 'structures.nom_structure', 'structures.level_structure')
@@ -56,7 +57,6 @@ class HomeController extends Controller
         switch ($user->level_structure) {
             case env ('LEVEL_NATIONAL'):
             case env('LEVEL_DRS'):
-                $structure = Structure::find(Auth::user()->structure_id);
                 $structures = $structure->getAllChildren();
                 $array = array();
                 foreach ($structures as $structure) {
@@ -156,6 +156,8 @@ class HomeController extends Controller
     // INDEX CONSULTATION
     public function econsultation()
     {
+        $structure = Structure::where('id', Auth::user()->structure_id)->first();
+
         $user = DB::table('users')
                         ->join('structures', 'users.structure_id', 'structures.id')
                         ->select('users.*', 'structures.nom_structure', 'structures.level_structure')
@@ -165,7 +167,6 @@ class HomeController extends Controller
         switch ($user->level_structure) {
             case env ('LEVEL_NATIONAL'):
             case env('LEVEL_DRS'):
-                $structure = Structure::find(Auth::user()->structure_id);
                 $structures = $structure->getAllChildren();
                 $array = array();
                 foreach ($structures as $structure) {
@@ -214,7 +215,6 @@ class HomeController extends Controller
         switch ($user->level_structure) {
             case env ('LEVEL_NATIONAL'):
             case env('LEVEL_DRS'):
-                $structure = Structure::find(Auth::user()->structure_id);
                 $structures = $structure->getAllChildren();
                 $array = array();
                 foreach ($structures as $structure) {
