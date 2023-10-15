@@ -396,6 +396,9 @@
                 $("#quantity_"+table+i).removeAttr("disabled");
                 $("#amount_"+table+i).removeAttr("disabled");
 
+                $("#quantity_"+table+i).attr("required", "");
+                $("#amount_"+table+i).attr("required", "");
+
                 var productSelected = $("#check_"+table+i).val();
                 var quantitySelected = $("#quantity_"+table+i).val();
                 var userPriceSelected = $("#amount_"+table+i).val();
@@ -438,6 +441,9 @@
                 $('#check_'+table+i).removeAttr("checked");
                 $("#quantity_"+table+i).attr("disabled", "");
                 $("#amount_"+table+i).attr("disabled", "");
+
+                $("#quantity_"+table+i).removeAttr("required");
+                $("#amount_"+table+i).removeAttr("required");
 
                 if(table == 'product'){
                     code_product[i] = '';

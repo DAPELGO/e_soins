@@ -101,12 +101,12 @@
                           </td>
                           <td class="align-middle" style="width:17%">
                             @if(count($quantity_act)>0)
-                                <h6 class="mb-0">{{ $quantity_act[$i] }}</h6>
+                                <h6 class="mb-0">{{ $quantity_act[$i] ?  $quantity_act[$i] : ''}}</h6>
                             @endif
                           </td>
                           <td class="align-middle" style="width:17%">
                             @if(count($amount_act)>0)
-                            <h6 class="mb-0">{{ floatval($amount_act[$i]) }}</h6>
+                            <h6 class="mb-0">{{ floatval($amount_act[$i]) ? floatval($amount_act[$i]) : '' }}</h6>
                             @endif
                           </td>
                         </tr>
@@ -153,12 +153,12 @@
                           </td>
                           <td class="align-middle" style="width:17%">
                             @if(count($quantity_ex)>0)
-                                <h6 class="mb-0">{{ $quantity_ex[$i] }}</h6>
+                                <h6 class="mb-0">{{ $quantity_ex[$i] ? $quantity_ex[$i] : '' }}</h6>
                             @endif
                           </td>
                           <td class="align-middle" style="width:17%">
                             @if(count($amount_ex)>0)
-                                <h6 class="mb-0">{{ floatval($amount_ex[$i]) }}</h6>
+                                <h6 class="mb-0">{{ floatval($amount_ex[$i]) ? floatval($amount_ex[$i]) : ''}}</h6>
                             @endif
                           </td>
                         </tr>
@@ -207,12 +207,12 @@
                           </td>
                           <td class="align-middle">
                             @if(count($quantity_prod)>0)
-                                <h6 class="mb-0">{{ $quantity_prod[$i] }}</h6>
+                                <h6 class="mb-0">{{ $quantity_prod[$i] ? $quantity_prod[$i] : '' }}</h6>
                             @endif
                           </td>
                           <td class="align-middle">
                             @if(count($amount_prod)>0)
-                                <h6 class="mb-0">{{ floatval($amount_prod[$i]) }}</h6>
+                                <h6 class="mb-0">{{ floatval($amount_prod[$i]) ? floatval($amount_prod[$i]) : ''  }}</h6>
                             @endif
 
                           </td>
