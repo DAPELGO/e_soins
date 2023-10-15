@@ -10,7 +10,6 @@ use App\Models\Structure;
 use App\Models\Nproduct;
 use App\Models\Org_unit;
 use App\Models\Examen;
-use App\User;
 use App\Models\Infrastructure;
 use App\Models\Region;
 use App\Models\Province;
@@ -163,14 +162,12 @@ class ImportController extends Controller
 
                 echo $i.' - '.$structure->id.' - '.$customerArr[$i][0].' - '.$customerArr[$i][1].'<br/>';*/
                 // USER
-                $structure = Structure::where('nom_structure', $customerArr[$i][2])->first();
                 $user = User::create([
-                    'id' => $customerArr[$i][0],
-                    'name' => html_entity_decode($customerArr[$i][2]),
-                    'email' => $customerArr[$i][1],
+                    'name' => $customerArr[$i][1],
+                    'email' => $customerArr[$i][0],
                     'statut' => 1,
-                    'password' => bcrypt($customerArr[$i][3]),
-                    'structure_id' => $structure->id,
+                    'password' => bcrypt($customerArr[$i][0]),
+                    'structure_id' => $customerArr[$i][3],
                 ]);
 
                 $user->roles()->sync([4]);
