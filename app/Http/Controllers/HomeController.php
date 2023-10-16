@@ -330,19 +330,35 @@ class HomeController extends Controller
         $structure = Structure::where('id', Auth::user()->structure_id)->first();
 
         // CSPS
-        $csps = Structure::where('id', $consult->id_structure)->first();
+        $consult_struct = Structure::where('id', $consult->id_structure)->first();
+
+        if($consult_struct->level_structure == env('LEVEL_FS')){
+            $csps = $consult_struct;
+            $district = Structure::where('id', $csps->parent_id)->first();
+            $drs = Structure::where('id', $district->parent_id)->first();
+        }
+        else if($consult_struct->level_structure == env('LEVEL_DISTRICT')){
+            $csps = null;
+            $district = $consult_struct;
+            $drs = Structure::where('id', $district->parent_id)->first();
+        }
+        else if($consult_struct->level_structure == env('LEVEL_DRS')){
+            $csps = null;
+            $district = null;
+            $drs = $consult_struct;
+        }
 
         // COMMUNES
         //$commune = Structure::where('id', $csps->parent_id)->first();
 
         // DISTRICT
-        $district = Structure::where('id', $csps->parent_id)->first();
+        //$district = Structure::where('id', $csps->parent_id)->first();
 
         // PROVINCE
         //$province = Structure::where('id', $district->parent_id)->first();
 
         // DRS
-        $drs = Structure::where('id', $district->parent_id)->first();
+        //$drs = Structure::where('id', $district->parent_id)->first();
 
         //QUALIFICATIONS
         $qualification = Valeur::where('id', $consult->qualification_prescripteur)->first();
