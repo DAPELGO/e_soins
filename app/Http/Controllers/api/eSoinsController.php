@@ -90,6 +90,18 @@ class eSoinsController extends Controller
 
         switch ($user->level_structure) {
             case env('LEVEL_NATIONAL'):
+                $structures = Structure::find($request->user()->structure_id)->getAllChildren();
+                $array = array();
+                foreach ($structures as $structure) {
+                    array_push($array, $structure->id);
+                }
+
+                $factures = DB::table('feuille_soin')->whereIn('structures.id', $array)
+                            ->join('structures', 'feuille_soin.id_structure', 'structures.id')
+                            ->select('feuille_soin.*', 'structures.nom_structure')
+                            ->orderBy('feuille_soin.created_at', 'desc')
+                            ->get();
+                break;
             case env('LEVEL_DRS'):
                 $structures = Structure::find($request->user()->structure_id)->getAllChildren();
                 $array = array();

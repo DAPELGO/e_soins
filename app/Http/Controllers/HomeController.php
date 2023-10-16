@@ -56,11 +56,29 @@ class HomeController extends Controller
                         ->first();
         switch ($user->level_structure) {
             case env ('LEVEL_NATIONAL'):
-            case env('LEVEL_DRS'):
-                $structures = $structure->getAllChildren();
+                $structs = $structure->getAllChildren();
                 $array = array();
-                foreach ($structures as $structure) {
-                    array_push($array, $structure->id);
+                foreach ($structs as $struct) {
+                    array_push($array, $struct->id);
+                }
+
+
+                $consults = DB::table('feuille_soin')
+                                    ->join('structures', 'structures.id', 'feuille_soin.id_structure')
+                                    ->whereIn('structures.id', $array)
+                                    ->where('feuille_soin.is_delete', false)
+                                    ->get();
+                $total_med = $consults->sum('cout_total_prod');
+                $total_act = $consults->sum('cout_total_act');
+                $total_eq = $consults->sum('cout_total_ex');
+                $total_obs = $consults->sum('cout_mise_en_observation');
+                $total_ev = $consults->sum('cout_evacuation');
+                break;
+            case env('LEVEL_DRS'):
+                $structs = $structure->getAllChildren();
+                $array = array();
+                foreach ($structs as $struct) {
+                    array_push($array, $struct->id);
                 }
 
                 $consults = DB::table('feuille_soin')
@@ -166,12 +184,26 @@ class HomeController extends Controller
 
         switch ($user->level_structure) {
             case env ('LEVEL_NATIONAL'):
-            case env('LEVEL_DRS'):
-                $structures = $structure->getAllChildren();
+                $structs = $structure->getAllChildren();
                 $array = array();
-                foreach ($structures as $structure) {
-                    array_push($array, $structure->id);
+                foreach ($structs as $struct) {
+                    array_push($array, $struct->id);
                 }
+
+                $nconsults = DB::table('feuille_soin')->where('feuille_soin.patient_id', '>', 0)->whereIn('structures.id', $array)
+                            ->join('patients', 'feuille_soin.patient_id', 'patients.id')
+                            ->join('structures', 'feuille_soin.id_structure', 'structures.id')
+                            ->select('feuille_soin.*', 'patients.name', 'patients.birth_date')
+                            ->orderBy('feuille_soin.created_at', 'desc')
+                            ->get();
+                break;
+            case env('LEVEL_DRS'):
+                $structs = $structure->getAllChildren();
+                $array = array();
+                foreach ($structs as $struct) {
+                    array_push($array, $struct->id);
+                }
+
                 $nconsults = DB::table('feuille_soin')->where('feuille_soin.patient_id', '>', 0)->whereIn('structures.id', $array)
                             ->join('patients', 'feuille_soin.patient_id', 'patients.id')
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
@@ -206,6 +238,7 @@ class HomeController extends Controller
     public function factures()
     {
         $structure = Structure::where('id', Auth::user()->structure_id)->first();
+
         $user = DB::table('users')
                         ->join('structures', 'users.structure_id', 'structures.id')
                         ->select('users.*', 'structures.nom_structure', 'structures.level_structure')
@@ -214,12 +247,27 @@ class HomeController extends Controller
 
         switch ($user->level_structure) {
             case env ('LEVEL_NATIONAL'):
-            case env('LEVEL_DRS'):
-                $structures = $structure->getAllChildren();
+                $structs = $structure->getAllChildren();
                 $array = array();
-                foreach ($structures as $structure) {
-                    array_push($array, $structure->id);
+                foreach ($structs as $struct) {
+                    array_push($array, $struct->id);
                 }
+
+                $nconsults = DB::table('feuille_soin')->whereIn('structures.id', $array)
+                            ->join('structures', 'feuille_soin.id_structure', 'structures.id')
+                            ->select('feuille_soin.*', 'structures.nom_structure')
+                            ->where('feuille_soin.is_delete', false)
+                            ->orderBy('feuille_soin.created_at', 'desc')
+                            ->get();
+                break;
+            case env('LEVEL_DRS'):
+                $structs = $structure->getAllChildren();
+                $array = array();
+                foreach ($structs as $struct) {
+                    array_push($array, $struct->id);
+                }
+
+
                 $nconsults = DB::table('feuille_soin')->whereIn('structures.id', $array)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
                             ->select('feuille_soin.*', 'structures.nom_structure')
@@ -245,7 +293,7 @@ class HomeController extends Controller
                             ->get();
                 break;
         }
-        //dd($nconsults);
+
         return view('esoins.dispensations_index', compact('nconsults', 'structure'));
     }
 
