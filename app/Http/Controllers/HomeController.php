@@ -333,19 +333,19 @@ class HomeController extends Controller
         $csps = Structure::where('id', $consult->id_structure)->first();
 
         // COMMUNES
-        $commune = Structure::where('id', $csps->parent_id)->first();
+        //$commune = Structure::where('id', $csps->parent_id)->first();
+
+        // DISTRICT
+        $district = Structure::where('id', $csps->parent_id)->first();
+
+        // PROVINCE
+        //$province = Structure::where('id', $district->parent_id)->first();
+
+        // DRS
+        $drs = Structure::where('id', $district->parent_id)->first();
 
         //QUALIFICATIONS
         $qualification = Valeur::where('id', $consult->qualification_prescripteur)->first();
-
-        // DISTRICT
-        $district = Structure::where('id', $commune->parent_id)->first();
-
-        // PROVINCE
-        $province = Structure::where('id', $district->parent_id)->first();
-
-        // DRS
-        $drs = Structure::where('id', $province->parent_id)->first();
 
         // PRODUITS
         $liste_prod =  explode(" ",$consult->liste_prod);
