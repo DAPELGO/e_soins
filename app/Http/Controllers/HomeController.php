@@ -364,7 +364,8 @@ class HomeController extends Controller
         $quantity_eq = explode(" ",$consult->quantity_eq);
         $amount_eq = explode(" ",$consult->montant_ex);
         $examens = Examen::whereIn('code_examen', $liste_eq)->get();
-        $typeprestation = (Valeur::where('id', $consult->type_prestation)->first())->libelle ? (Valeur::where('id', $consult->type_prestation)->first())->libelle : '';
+        $type_prest = Valeur::where('id', $consult->type_prestation)->first();
+        $typeprestation = $type_prest ? $type_prest->libelle : '';
 
         return view('esoins.fiche', compact('consult', 'cproducts', 'actes', 'examens', 'quantity_prod', 'quantity_act', 'quantity_eq', 'amount_prod', 'amount_act', 'amount_eq', 'csps', 'district', 'drs', 'typeprestation', 'structure', 'qualification', 'prestations'));
     }
