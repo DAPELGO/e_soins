@@ -7,9 +7,9 @@
     <div class="mb-4 bg-white mt-2 position-relative top-1 p-4" style="border: 1px solid #acacac;">
         <div class="row p-2 fs--1">
             <div class="col-8">
-                <div><span class="fw-black">DRS : </span>{{ $drs->nom_structure }}</div>
-                <div><span class="fw-black">DS : </span> {{ $consult->csps? $consult->district : $district->nom_structure }}</div>
-                <div><span class="fw-black">FS</span> : {{ $consult->csps? $consult->csps : $csps->nom_structure }}</div>
+                @if($drs!=null) <div><span class="fw-black">DRS : </span>{{ $drs->nom_structure }}</div>@endif
+                @if($district!=null) <div><span class="fw-black">DS : </span>{{ $district->nom_structure }}</div>@endif
+                @if($csps!=null) <div><span class="fw-black">FS : </span>{{ $csps->nom_structure }}</div>@endif
             </div>
             <div class="col-4">
                 <div><span class="fw-black">Date : </span> {{ \Carbon\Carbon::parse($consult->visit_date)->format('d/m/Y') }}</div>
