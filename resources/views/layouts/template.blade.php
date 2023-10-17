@@ -576,11 +576,11 @@
                     dataType: 'json',
                     error:function(data){alert("Erreur");},
                     success: function (data) {
-                        $("#total_med").text(data.data.total_med + " FCFA");
-                        $("#total_act").text(data.data.total_act + " FCFA");
-                        $("#total_ex").text(data.data.total_eq + " FCFA");
-                        $("#total_obs").text(data.data.total_obs + " FCFA");
-                        $("#total_ev").text(data.data.total_ev + " FCFA");
+                        $("#total_med").text(data.data.total_med.toLocaleString('fr-FR') + " FCFA");
+                        $("#total_act").text(data.data.total_act.toLocaleString('fr-FR') + " FCFA");
+                        $("#total_ex").text(data.data.total_eq.toLocaleString('fr-FR') + " FCFA");
+                        $("#total_obs").text(data.data.total_obs.toLocaleString('fr-FR') + " FCFA");
+                        $("#total_ev").text(data.data.total_ev.toLocaleString('fr-FR') + " FCFA");
                     }
             });
 
