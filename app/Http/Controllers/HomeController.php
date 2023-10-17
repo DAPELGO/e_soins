@@ -276,7 +276,6 @@ class HomeController extends Controller
                     array_push($array, $struct->id);
                 }
 
-
                 $nconsults = DB::table('feuille_soin')->whereIn('structures.id', $array)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
                             ->select('feuille_soin.*', 'structures.nom_structure')
@@ -290,7 +289,6 @@ class HomeController extends Controller
                 foreach ($structs as $struct) {
                     array_push($array, $struct->id);
                 }
-
 
                 $nconsults = DB::table('feuille_soin')->whereIn('structures.id', $array)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
@@ -343,8 +341,6 @@ class HomeController extends Controller
 
         // SRTUCTURE
         $structure = Structure::where('id', Auth::user()->structure_id)->first();
-
-        // CSPS
         $consult_struct = Structure::where('id', $consult->id_structure)->first();
 
         if($consult_struct->level_structure == env('LEVEL_FS')){
@@ -358,6 +354,11 @@ class HomeController extends Controller
             $drs = Structure::where('id', $district->parent_id)->first();
         }
         else if($consult_struct->level_structure == env('LEVEL_DRS')){
+            $csps = null;
+            $district = null;
+            $drs = $consult_struct;
+        }
+        else{
             $csps = null;
             $district = null;
             $drs = $consult_struct;
