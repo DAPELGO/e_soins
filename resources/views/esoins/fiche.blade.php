@@ -372,7 +372,7 @@
                 <span><u>Nom & Prénom du Gérant</u> <br><br> @if($consult->name_gerant) <b>{{ $consult->name_gerant }}</b>@endif</i>
             </div>
             <div class="col-6 pt-4 fs--1 text-center">
-                <span><u>Nom & Prénom du Prescripteur</u> <br><br> @if($consult->nom_prescripteur) <b>{{ $consult->nom_prescripteur }}</b> <br> @if($qualification->libelle) <i><span> {{ $qualification->libelle }}</span></i>@endif @endif</i>
+                <span><u>Nom & Prénom du Prescripteur</u> <br><br> @if($consult->nom_prescripteur) <b>{{ $consult->nom_prescripteur }}</b> <br> @if($qualification) <i><span> {{ $qualification->libelle }}</span></i>@endif @endif</i>
             </div>
         </div>
     </div>
