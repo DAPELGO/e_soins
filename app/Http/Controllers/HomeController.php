@@ -93,19 +93,23 @@ class HomeController extends Controller
                 $total_ev = $consults->sum('cout_evacuation');
                 break;
             case env('LEVEL_DISTRICT'):
+                $structs = $structure->getAllChildren();
+                $array = array();
+                foreach ($structs as $struct) {
+                    array_push($array, $struct->id);
+                }
+
                 $consults = DB::table('feuille_soin')
                                     ->join('structures', 'structures.id', 'feuille_soin.id_structure')
-                                    ->where('structures.parent_id', Auth::user()->structure_id)
+                                    ->whereIn('structures.id', $array)
                                     ->where('feuille_soin.is_delete', false)
                                     ->get();
-
                 $total_med = $consults->sum('cout_total_prod');
                 $total_act = $consults->sum('cout_total_act');
                 $total_eq = $consults->sum('cout_total_ex');
                 $total_obs = $consults->sum('cout_mise_en_observation');
                 $total_ev = $consults->sum('cout_evacuation');
                 break;
-
             default:
                 $consults = DB::table('feuille_soin')
                                 ->where('user_id', Auth::user()->id)
@@ -212,14 +216,19 @@ class HomeController extends Controller
                             ->get();
                 break;
             case env('LEVEL_DISTRICT'):
-                $nconsults = DB::table('feuille_soin')->where('feuille_soin.patient_id', '>', 0)->where('structures.parent_id', Auth::user()->structure_id)
+                $structs = $structure->getAllChildren();
+                $array = array();
+                foreach ($structs as $struct) {
+                    array_push($array, $struct->id);
+                }
+
+                $nconsults = DB::table('feuille_soin')->where('feuille_soin.patient_id', '>', 0)->whereIn('structures.id', $array)
                             ->join('patients', 'feuille_soin.patient_id', 'patients.id')
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
                             ->select('feuille_soin.*', 'patients.name', 'patients.birth_date')
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
                 break;
-
             default:
             $nconsults = DB::table('feuille_soin')->where('feuille_soin.patient_id', '>', 0)->where('feuille_soin.user_id', Auth::user()->id)
                             ->join('patients', 'feuille_soin.patient_id', 'patients.id')
@@ -276,14 +285,20 @@ class HomeController extends Controller
                             ->get();
                 break;
             case env('LEVEL_DISTRICT'):
-                $nconsults = DB::table('feuille_soin')->where('structures.parent_id', Auth::user()->structure_id)
+                $structs = $structure->getAllChildren();
+                $array = array();
+                foreach ($structs as $struct) {
+                    array_push($array, $struct->id);
+                }
+
+
+                $nconsults = DB::table('feuille_soin')->whereIn('structures.id', $array)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
                             ->select('feuille_soin.*', 'structures.nom_structure')
                             ->where('feuille_soin.is_delete', false)
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
                 break;
-
             default:
             $nconsults = DB::table('feuille_soin')->where('feuille_soin.user_id', Auth::user()->id)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
