@@ -10,6 +10,7 @@
     <h4 style="padding: 0.4rem 0 0.4rem 1rem; background-color: #004ebc; color: white !important; font-size: 0.8rem;">LISTE DES FACTURES</h4>
 </div>
   <div id="categories">
+    @if ($structure->level_structure == env("LEVEL_FS") || $structure->level_structure == env("LEVEL_FS_CM") || $structure->level_structure == env("LEVEL_FS_CMA"))
     <div class="row align-items-center justify-content-between g-3 mb-4">
       <div class="col col-auto">
       </div>
@@ -19,6 +20,7 @@
         </div>
       </div>
     </div>
+    @endif
     <table class="table w-100" style="font-size: .72rem;" id="dataTableFis-facture">
         <thead>
           <tr>
@@ -49,7 +51,9 @@
             <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->cout_total_prod + $nconsult->cout_total_act + $nconsult->cout_total_ex + $nconsult->cout_mise_en_observation + $nconsult->cout_evacuation }} FCFA</td>
             <td class="last_active align-middle white-space-nowrap text-700">
               <a href="{{ route('esoins.fiche', $nconsult->id) }}" title="Supprimer la facture" class="btn btn-soft-primary btn-sm btn-actions"><span class="text-900 fs-3" data-feather="eye"></span></a>
-              <a class="btn btn-soft-danger btn-sm btn-actions sweet-conf" href="{{ route('esoins.delete', $nconsult->id) }}" data="Voulez vous supprimer cette facture ?"><span class="text-900 fs-3" data-feather="trash-2"></span></a>
+              @if($nconsult->user_id == Auth::user()->id)
+                <a class="btn btn-soft-danger btn-sm btn-actions sweet-conf" href="{{ route('esoins.delete', $nconsult->id) }}" data="Voulez vous supprimer cette facture ?"><span class="text-900 fs-3" data-feather="trash-2"></span></a>
+              @endif
             </td>
           </tr>
           <?php $i++; ?>
