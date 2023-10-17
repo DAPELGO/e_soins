@@ -10,7 +10,7 @@
     <h4 style="padding: 0.4rem 0 0.4rem 1rem; background-color: #004ebc; color: white !important; font-size: 0.8rem;">LISTE DES FACTURES</h4>
 </div>
   <div id="categories">
-    @if ($structure->level_structure == env("LEVEL_FS") || $structure->level_structure == env("LEVEL_FS_CM") || $structure->level_structure == env("LEVEL_FS_CMA"))
+    @if ($structure->level_structure == env("LEVEL_FS") || $structure->level_structure == env("LEVEL_FS_CM") || $structure->level_structure == env("LEVEL_FS_CMA") || $structure->level_structure == env("LEVEL_TEST"))
     <div class="row align-items-center justify-content-between g-3 mb-4">
       <div class="col col-auto">
       </div>
