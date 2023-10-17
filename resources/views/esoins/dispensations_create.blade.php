@@ -381,7 +381,7 @@
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
                                                         <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="name_gerant">Nom et prénom du gérant</label>
-                                                        <input class="form-control input-border-bt" id="name_gerant" type="text" name="name_gerant" value="{{Auth::user()->name}}" required="required" />
+                                                        <input class="form-control input-border-bt" id="name_gerant" type="text" name="name_gerant" required="required" />
                                                     </div>
                                                     <div class="mb-3">
                                                         <span class="fas fa-asterisk fs--2 me-1 text-danger"></span><label class="col-form-label col-form-label-sm" for="contact_gerant">Contact du gérant</label>

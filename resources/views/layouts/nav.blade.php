@@ -28,25 +28,27 @@
                 </div>
               </a>
             </div>
-
-            <!-- parent pages-->
-            {{-- <div class="nav-item-wrapper @yield('dispensation')"><a class="nav-link label-1 @yield('dispensation')" href="{{ route('esoins.dispensation') }}" role="button" data-bs-toggle="" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-icon"><span data-feather="edit-3"></span></span><span class="nav-link-text-wrapper"><span class="nav-link-text">Dispensation de l'ordonnance</span></span>
-                </div>
-              </a>
-            </div> --}}
           </li>
-          <div class="form m-4 p-2 bg-white rounded-2" style="border: 1px solid #ccc;">
-            <select class="form-select" id="id_drs_filtre" name="id_drs_filtre" data-choices="data-choices" data-options='{"removeItemButton":true,"placeholder":true}' onchange="changeValue('id_drs_filtre', 'id_district_filtre', 'structure');">
-                <option value="">Select DRS</option>
-            </select>
-            <select class="form-select" id="id_district_filtre" name="id_district_filtre" data-options='{"removeItemButton":true,"placeholder":true}' onchange="changeValue('id_district_filtre', 'id_csps_filtre', 'structure');">
-                <option value="">Select District</option>
-            </select>
-            <select class="form-select mt-2" id="id_csps_filtre" name="id_csps_filtre">
-                <option value="">Select CSPS</option>
-            </select>
-          </div>
+          <hr>
+            @if($structure->level_structure != env('LEVEL_FS'))
+            <div class="form m-4 p-2 bg-white rounded-2" style="border: 1px solid #ccc;">
+                @if ($structure->level_structure == env('LEVEL_NATIONAL'))
+                <select class="form-select" id="id_drs_filtre" name="id_drs_filtre" data-choices="data-choices" data-options='{"removeItemButton":true,"placeholder":true}' onchange="changeValue('id_drs_filtre', 'id_district_filtre', 'structure');">
+                    <option value="">Select DRS</option>
+                </select>
+                @endif
+                @if ($structure->level_structure == env('LEVEL_NATIONAL') || $structure->level_structure == env('LEVEL_DRS'))
+                <select class="form-select" id="id_district_filtre" name="id_district_filtre" data-options='{"removeItemButton":true,"placeholder":true}' onchange="changeValue('id_district_filtre', 'id_csps_filtre', 'structure');">
+                    <option value="">Select District</option>
+                </select>
+                @endif
+                @if ($structure->level_structure == env('LEVEL_NATIONAL') || $structure->level_structure == env('LEVEL_DRS') || $structure->level_structure == env('LEVEL_DISTRICT'))
+                <select class="form-select mt-2" id="id_csps_filtre" name="id_csps_filtre">
+                    <option value="">Select CSPS</option>
+                </select>
+                @endif
+            </div>
+            @endif
           <div class="form m-4 mt-0 p-2 bg-white rounded-2" style="border: 1px solid #ccc;">
             <div class="mb-2">
                 <input class="form-control form-control-sm" id="sizingInputSm" type="date" placeholder=".form-control-sm" />
@@ -58,19 +60,22 @@
           <div class="d-grid gap-2 ms-4 me-4">
             <button class="btn btn-outline-primary btn-block btn-sm" id="data_filter"><span data-feather="filter" class="me-1" style="font-size: 12px"></span>Filtrer</button>
           </div>
-          <li class="nav-item">
-            <!-- label-->
-            <p class="navbar-vertical-label">Administration
-            </p>
-            <hr class="navbar-vertical-line" />
-            <!-- parent pages-->
+            <hr>
+            @if($structure->level_structure != env('LEVEL_FS'))
+            <li class="nav-item">
+                <!-- label-->
+                <p class="navbar-vertical-label">Administration
+                </p>
+                <hr class="navbar-vertical-line" />
+                <!-- parent pages-->
 
-            <div class="nav-item-wrapper @yield('user')"><a class="nav-link label-1 @yield('user')" href="{{ route('users.index') }}" role="button" data-bs-toggle="" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-icon"><span data-feather="user"></span></span><span class="nav-link-text-wrapper"><span class="nav-link-text">Users</span></span>
+                <div class="nav-item-wrapper @yield('user')"><a class="nav-link label-1 @yield('user')" href="{{ route('users.index') }}" role="button" data-bs-toggle="" aria-expanded="false">
+                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span data-feather="user"></span></span><span class="nav-link-text-wrapper"><span class="nav-link-text">Utilisateurs</span></span>
+                    </div>
+                </a>
                 </div>
-              </a>
-            </div>
-          </li>
+            </li>
+            @endif
         </ul>
       </div>
     </div>

@@ -130,9 +130,14 @@ class eSoinsController extends Controller
                             ->get();
                 break;
         }
+        // for all facture in factures set age_patient = calculate_age(age_patient)
+        foreach ($factures as $facture) {
+            $facture->age_patient = calculate_age($facture->age_patient);
+        }
 
         return response()->json($factures);
     }
+
 
     // COMPUTE WIH TWO PARAMS AND RETURN BIRTHDATE
     public function getBirthDate($age, $birth_date_item)
@@ -360,6 +365,149 @@ class eSoinsController extends Controller
         }
 
         return response()->json(['success'=>true, 'message'=>'Facture enregistrée avec succès']);
+    }
+
+    // RECEIVE AN ARRAY OF FACTURES AND STORE THEM
+    public function storeAllFacture(Request $request)
+    {
+        $request->validate([
+            'produits' => 'array',
+            'actes' => 'array',
+            'examens' => 'array',
+            'factures' => 'array'
+        ]);
+        $factures_errors = array();
+
+        foreach ($request->factures as $facture) {
+            // List prod with filter
+            $array_prod = array();
+            $arrayquantity_prod = array();
+            $arraymontant_prod = array();
+            $produits = array_filter($request->produits, function($produit) use ($facture){
+                return $produit['facture_id'] == $facture['facture_id'];
+            });
+            foreach ($produits as $produit) {
+                array_push($array_prod, $produit['produit_id']);
+                array_push($arrayquantity_prod, $produit['quantite']);
+                array_push($arraymontant_prod, $produit['montant']);
+            }
+            $liste_prod = implode(" ", $array_prod);
+            $quantity_prod = implode(" ", $arrayquantity_prod);
+            $montant_prod = implode(" ", $arraymontant_prod);
+
+
+            // List act with filter
+            $array_act = array();
+            $arrayquantity_act = array();
+            $arraymontant_act = array();
+            $actes = array_filter($request->actes, function($acte) use ($facture){
+                return $acte['facture_id'] == $facture['facture_id'];
+            });
+            foreach ($actes as $acte) {
+                array_push($array_act, $acte['acte_id']);
+                array_push($arrayquantity_act, $acte['quantite']);
+                array_push($arraymontant_act, $acte['montant']);
+            }
+            $liste_act = implode(" ", $array_act);
+            $quantity_act = implode(" ", $arrayquantity_act);
+            $montant_act = implode(" ", $arraymontant_act);
+
+            // List ex with filter
+            $array_ex = array();
+            $arrayquantity_ex = array();
+            $arraymontant_ex = array();
+            $examens = array_filter($request->examens, function($examen) use ($facture){
+                return $examen['facture_id'] == $facture['facture_id'];
+            });
+            foreach ($examens as $examen) {
+                array_push($array_ex, $examen['examen_id']);
+                array_push($arrayquantity_ex, $examen['quantite']);
+                array_push($arraymontant_ex, $examen['montant']);
+            }
+            $liste_ex = implode(" ", $array_ex);
+            $quantity_ex = implode(" ", $arrayquantity_ex);
+            $montant_ex = implode(" ", $arraymontant_ex);
+
+
+            // COUT MISE EN OBSERVATION
+            $cout_mise_en_observation = 0;
+            if($facture['cout_mise_en_observation'] !=''){
+                $cout_mise_en_observation = $facture['cout_mise_en_observation'];
+            }
+
+            // COUT EVACUATION
+            $cout_evacuation = $facture['cout_evacuation'];
+
+            // AGE PATIENT
+            $age = $facture['age'];
+            $birth_date_item = $facture['birth_date_item'];
+            $age_patient = $this->getBirthDate($age, $birth_date_item);
+
+            try{
+                // ENREGISTREMENT DE LA FACTURE
+                DB::table('feuille_soin')->insertOrIgnore([
+                    // GENERAL
+                    'id' => Time(),
+                    'nom_patient'=>$facture['nom_patient'],
+                    'village'=>$facture['village_patient'],
+                    'distance_village'=>$facture['distance_village_patient'],
+                    'age_patient'=>$age_patient,
+                    'sex' => $facture['sexe_patient'],
+                    'parent_name'=>$facture['parent_patient'],
+                    'tel'=>$facture['num_telephone'],
+                    'visit_date' => $facture['consultation_date'],
+                    'serie_number' => $facture['serie_number'],
+                    'registre_number' => $facture['registre_number'],
+                    'consultation_type' => $facture['patient_type'],
+                    'type_prestation' => $facture['type_prestation'],
+
+                    // PRODUCT
+                    'liste_prod' => $liste_prod,
+                    'quantity_prod' => $quantity_prod,
+                    'montant_prod' => $montant_prod,
+                    'cout_total_prod' => (double) $facture['cout_total_prod'],
+
+                    // ACTE
+                    'liste_act' => $liste_act,
+                    'quantity_act' => $quantity_act,
+                    'montant_act' => $montant_act,
+                    'cout_total_act' => (double) $facture['cout_total_act'],
+
+                    // EXAMEN
+                    'liste_ex' => $liste_ex,
+                    'quantity_ex' => $quantity_ex,
+                    'montant_ex' => $montant_ex,
+                    'cout_total_ex' => (double) $facture['cout_total_ex'],
+
+                    // OBSERVATION
+                    'type_observation'=>(double) $facture['type_observation'],
+                    'nbre_jours' => (double) $facture['nbre_jours'],
+                    'cout_mise_en_observation' => (double) $facture['cout_mise_en_observation'],
+
+                    // EVACUATION
+                    'cout_evacuation' => (double) $facture['cout_evacuation'],
+
+                    // GERANT / PRESCRIPTEUR
+                    'nom_prescripteur' => $facture['name_prescripteur'],
+                    'contact_prescripteur' => $facture['contact_prescripteur'],
+                    'qualification_prescripteur' => $facture['qualification_prescripteur'],
+                    'name_gerant' => $facture['name_gerant'],
+                    'contact_gerant' => $facture['contact_gerant'],
+                    'user_id' => $request->user()->id,
+                    'id_structure' => $request->user()->structure_id,
+                ]);
+            }
+            catch(\Exception $e){
+                array_push($factures_errors, $facture['facture_id'].' : '.$e->getMessage());
+            }
+        }
+
+        if(count($factures_errors)>0){
+            return response()->json(['success'=>false, 'message'=>'Une erreur est survenue lors de l\'enregistrement des factures.', 'errors'=>$factures_errors]);
+        }
+        else{
+            return response()->json(['success'=>true, 'message'=>'Factures enregistrées avec succès']);
+        }
     }
 
     /**
