@@ -50,9 +50,9 @@
             <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ \Carbon\Carbon::parse($nconsult->visit_date)->format('d/m/Y') }}</td>
             <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->cout_total_prod + $nconsult->cout_total_act + $nconsult->cout_total_ex + $nconsult->cout_mise_en_observation + $nconsult->cout_evacuation }} FCFA</td>
             <td class="last_active align-middle white-space-nowrap text-700">
-              <a href="{{ route('esoins.fiche', $nconsult->id) }}" title="Supprimer la facture" class="btn btn-soft-primary btn-sm btn-actions"><span class="text-900 fs-3" data-feather="eye"></span></a>
+              <a href="{{ route('esoins.fiche', $nconsult->id) }}" title="Voir la facture" class="btn btn-soft-primary btn-sm btn-actions"><span class="text-900 fs-3" data-feather="eye"></span></a>
               @if($nconsult->user_id == Auth::user()->id)
-                <a class="btn btn-soft-danger btn-sm btn-actions sweet-conf" href="{{ route('esoins.delete', $nconsult->id) }}" data="Voulez vous supprimer cette facture ?"><span class="text-900 fs-3" data-feather="trash-2"></span></a>
+                <a class="btn btn-soft-danger btn-sm btn-actions sweet-conf" href="{{ route('esoins.delete', $nconsult->id) }}" title="Supprimer la facture" data="Voulez vous supprimer cette facture ?"><span class="text-900 fs-3" data-feather="trash-2"></span></a>
               @endif
             </td>
           </tr>
