@@ -13,6 +13,7 @@ use App\Models\Product;
 use App\Models\Exercice;
 use App\Models\Paiement;
 use App\Models\Structure;
+use Illuminate\Support\Str;
 use App\Models\CreanceDette;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -310,7 +311,7 @@ class eSoinsController extends Controller
             // ENREGISTREMENT DE LA FACTURE
             DB::table('feuille_soin')->insertOrIgnore([
                 // GENERAL
-                'id' => Time(),
+                'id' => Str::uuid(),
                 'nom_patient'=>$request->nom_patient,
                 'village'=>$request->village_patient,
                 'distance_village'=>$request->distance_village_patient,
@@ -395,7 +396,6 @@ class eSoinsController extends Controller
             $quantity_prod = implode(" ", $arrayquantity_prod);
             $montant_prod = implode(" ", $arraymontant_prod);
 
-
             // List act with filter
             $array_act = array();
             $arrayquantity_act = array();
@@ -411,6 +411,7 @@ class eSoinsController extends Controller
             $liste_act = implode(" ", $array_act);
             $quantity_act = implode(" ", $arrayquantity_act);
             $montant_act = implode(" ", $arraymontant_act);
+
 
             // List ex with filter
             $array_ex = array();
@@ -447,7 +448,7 @@ class eSoinsController extends Controller
                 // ENREGISTREMENT DE LA FACTURE
                 DB::table('feuille_soin')->insertOrIgnore([
                     // GENERAL
-                    'id' => Time(),
+                    'id' => Str::uuid(),
                     'nom_patient'=>$facture['nom_patient'],
                     'village'=>$facture['village_patient'],
                     'distance_village'=>$facture['distance_village_patient'],
