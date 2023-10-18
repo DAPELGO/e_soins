@@ -12,6 +12,7 @@ use App\Models\Nproduct;
 use App\Models\Org_unit;
 use App\Models\Structure;
 use App\Models\Equipement;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -422,18 +423,6 @@ class HomeController extends Controller
             $drs = $consult_struct;
         }
 
-        // COMMUNES
-        //$commune = Structure::where('id', $csps->parent_id)->first();
-
-        // DISTRICT
-        //$district = Structure::where('id', $csps->parent_id)->first();
-
-        // PROVINCE
-        //$province = Structure::where('id', $district->parent_id)->first();
-
-        // DRS
-        //$drs = Structure::where('id', $district->parent_id)->first();
-
         //QUALIFICATIONS
         $qualification = Valeur::where('id', $consult->qualification_prescripteur)->first();
 
@@ -808,7 +797,7 @@ class HomeController extends Controller
             // ENREGISTREMENT DE LA FACTURE
             DB::table('feuille_soin')->insertOrIgnore([
                 // GENERAL
-                'id' => Time(),
+                'id' => Str::uuid(),
                 'nom_patient'=>$request->nom_patient,
                 'village'=>$request->village_patient,
                 'distance_village'=>$request->distance_village_patient,
@@ -961,7 +950,7 @@ class HomeController extends Controller
         // dd($request->cout_total_prod.' '.$request->cout_total_act.' '.$request->cout_tatol_examen);
         DB::table('feuille_soin')->insertOrIgnore([
             // GENERAL
-            'id' => Time(),
+            'id' => Str::uuid(),
             'nom_patient'=>$request->nom_patient,
             'village'=>$request->village_patient,
             'age_patient'=>$age_patient, // ALTER TABLE feuille_soin RENAME COLUMN qualification TO age_patient;
