@@ -17,7 +17,7 @@
                             </div>
                             <div class="col-12 col-xl-4">
                                 <div class="mb-2 mt-1">
-                                    <div class="alert alert-soft-success" role="alert" id="org_unit_name" style="display: none;"></div>
+                                    <div class="alert alert-soft-success d-none fw-bold" role="alert" id="org_unit_name"></div>
                                 </div>
                             </div>
                         </div>

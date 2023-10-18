@@ -44,6 +44,7 @@
     <link href="{{ asset('assets/css/user-rtl.min.css') }}" type="text/css" rel="stylesheet" id="user-style-rtl">
     <link href="{{ asset('assets/css/user.min.css') }}" type="text/css" rel="stylesheet" id="user-style-default">
     <link href="{{ asset('leaflet/leaflet.css') }}" type="text/css" rel="stylesheet" id="user-style-default">
+    <link href="{{ asset('assets/select2/css/select2.min.css') }}" rel="stylesheet">
     @yield('css')
     <script>
       var phoenixIsRTL = window.config.config.phoenixIsRTL;
@@ -69,6 +70,9 @@
         position: fixed;
         width:76%;
         z-index:9999;
+    }
+    .select2{
+        margin-bottom: 10px;
     }
   </style>
 
@@ -178,9 +182,10 @@
     <script src="{{ asset('assets/js/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('leaflet/leaflet.js') }}"></script>
     <script src="{{ asset('js/script4.js') }}"></script>
+    <script src="{{ asset('assets/select2/js/select2.min.js') }}"></script>
 
     <script>
-        $(function(){
+        $(document).ready(function() {
             // CHECK ORDONNANCE NUMBER
             $("#check-odonnance").click(function(){
                 var ordonnance_id = $("#ordonnance_id").val();
@@ -317,36 +322,105 @@
                 // alert('test');
             });
 
+            //if windows ready load filter form data
+            $(window).on('load', function() {
+                if($("#id_drs_filtre").length && $("#id_district_filtre").length && $("#id_csps_filtre").length){
+                   var value = 'drs';
+                   var parent = 'id_drs_filtre';
+                }
+                else if(!$("#id_drs_filtre").length && $("#id_district_filtre").length && $("#id_csps_filtre").length){
+                    var value = 'ds';
+                    var parent = 'id_district_filtre';
+                }
+                else if(!$("#id_drs_filtre").length && !$("#id_district_filtre").length && $("#id_csps_filtre").length){
+                    var value = 'fs';
+                    var parent = 'id_csps_filtre';
+                }
+                else{
+                    var value = 'none';
+                }
+
+                if(value!=='none'){
+                    $.ajax({
+                        url: "{{ route('data.loadfilter') }}",
+                        type: "POST",
+                        data: {"_token": "{{ csrf_token() }}", load_type:value },
+                        error:function(data){
+                            alert("Erreur");
+                        },
+                        success: function (data) {
+                            var data = data.data;
+                            var options = '<option value="" selected disabled>Choisir...</option>';
+                            for (var x = 0; x < data.length; x++) {
+                                if(data[x]['id'] !='') {
+                                    options += '<option value="' + data[x]['id'] + '">' + data[x]['nom_structure'] + '</option>';
+                                }
+                            }
+                            $('#'+parent).empty().append(options);
+                            $('#'+parent).select2();
+                            $('#'+parent).removeAttr('disabled');
+                        }
+                    });
+                }
+            });
+
             // DATA FILTER
             $("#data_filter").click(function(){
                 var id_drs_filtre = $("#id_drs_filtre").val();
                 var id_district_filtre = $("#id_district_filtre").val();
                 var id_csps_filtre = $("#id_csps_filtre").val();
+                var periode_debut = $("#periode_debut").val();
+                var periode_fin = $("#periode_fin").val();
+
                 $.ajax({
                         url: "{{ route('data.filter') }}",
                         type: 'POST',
-                        data: {"_token": "{{ csrf_token() }}", id_drs_filtre:id_drs_filtre, id_district_filtre:id_district_filtre, id_csps_filtre:id_csps_filtre },
+                        data: {"_token": "{{ csrf_token() }}", id_drs_filtre:id_drs_filtre, id_district_filtre:id_district_filtre, id_csps_filtre:id_csps_filtre, periode_debut:periode_debut, periode_fin:periode_fin },
                         error:function(data){
                             alert("Erreur");
                         },
                         success: function (data_filtre) {
                             // location.reload();
-                            $("#total_act").text(data_filtre.data.total_act+" FCFA");
-                            $("#total_eq").text(data_filtre.data.total_eq+" FCFA");
-                            $("#total_med").text(data_filtre.data.total_med+" FCFA");
-                            $("#total_ev").text(data_filtre.data.total_ev+" FCFA");
+                            console.log(data_filtre);
+                            $("#total_med").text(data_filtre.data.total_med.toLocaleString('fr-FR') + " FCFA");
+                            $("#total_act").text(data_filtre.data.total_act.toLocaleString('fr-FR') + " FCFA");
+                            $("#total_ex").text(data_filtre.data.total_eq.toLocaleString('fr-FR') + " FCFA");
+                            $("#total_obs").text(data_filtre.data.total_obs.toLocaleString('fr-FR') + " FCFA");
+                            $("#total_ev").text(data_filtre.data.total_ev.toLocaleString('fr-FR') + " FCFA");
                             $("#org_unit_name").text(data_filtre.data.org_unit_name);
-                            document.getElementById("org_unit_name").style.display = "block";
+                            $("#org_unit_name").removeClass("d-none").addClass("d-block");
+
                         }
                 });
             });
         });
 
+        function onChangeFilterValue(parent, child, table_item){
+            var idparent_val = $("#"+parent).val();
+            var table = table_item;
+            var url = '{{ route("root.selection") }}';
 
-
-
-
-
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: {idparent_val: idparent_val, table:table},
+                dataType: 'json',
+                error:function(data){alert("Erreur");},
+                success: function (data) {
+                    var data = data.data;
+                    console.log(data);
+                    var options = '<option value="" selected disabled>Choisir...</option>';
+                    for (var x = 0; x < data.length; x++) {
+                        if(data[x]['id'] !='') {
+                            options += '<option value="' + data[x]['id'] + '">' + data[x]['name'] + '</option>';
+                        }
+                    }
+                    $('#'+child).empty().append(options);
+                    $('#'+child).select2();
+                    $('#'+child).removeAttr('disabled');
+                }
+            });
+        }
 
         /************ BEGIN SELECT CHARGEMENT SOUS TABLES **************************/
             // Région

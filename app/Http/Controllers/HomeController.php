@@ -127,52 +127,110 @@ class HomeController extends Controller
         return response()->json($response);
     }
 
+    //LOAD FILTER DATA
+    public function getFilterData(Request $request){
+        if($request->load_type == 'drs'){
+            $structures = Structure::where(['is_delete'=>FALSE, 'level_structure'=>env('LEVEL_DRS')])->get();
+        }
+        else if($request->load_type == 'ds'){
+            $user_structure = Structure::where('id', Auth::user()->structure_id)->first();
+            $structures = Structure::where(['is_delete'=>FALSE, 'level_structure'=>env('LEVEL_DISTRICT'), 'parent_id'=>$user_structure->id])->get();
+        }
+        else if($request->load_type == 'fs'){
+            $user_structure = Structure::where('id', Auth::user()->structure_id)->first();
+            $structures = Structure::where(['is_delete'=>FALSE, 'parent_id'=>$user_structure->id])->get();
+        }
+
+        if($structures){
+            foreach ($structures as $structure)
+            {
+                $array[] = array("id" => $structure->id, "nom_structure" => $structure->nom_structure);
+            }
+            $response['data'] = $array;
+            return response()->json($response);
+        }
+        else{
+            $response['data'] = array("id" => '', "nom_structure" => '');
+        }
+    }
+
     // FILTER DATA
     public function dataFilter(Request $request)
     {
         // INIT VALUE
+        $total_med = 0;
         $total_act = 0;
         $total_eq = 0;
-        $total_med = 0;
+        $total_obs = 0;
         $total_ev = 0;
-        // STRUCTURE SELEECT
+
+        // STRUCTURE SELECT
         $id_drs_filtre = $request->id_drs_filtre;
         $id_district_filtre = $request->id_district_filtre;
         $id_csps_filtre = $request->id_csps_filtre;
+        $periode_debut = $request->periode_debut;
+        $periode_fin = $request->periode_fin;
+
+        $query = DB::table('feuille_soin')
+                            ->join('structures', 'structures.id', 'feuille_soin.id_structure')
+                            ->where('feuille_soin.is_delete', false);
 
         if($id_csps_filtre){
-            $consults = DB::table('feuille_soin')->where('id_structure', $id_csps_filtre)->get();
-            $structure = Structure::where('id', $id_csps_filtre)->first();
-        }elseif($id_district_filtre){
-            $consults = DB::table('feuille_soin')
-                                    ->join('structures', 'structures.id', 'feuille_soin.id_structure')
-                                    ->where('structures.parent_id', $id_district_filtre)
-                                    ->get();
-            $structure = Structure::where('id', $id_district_filtre)->first();
-
-        }else{
+            $query->where('structures.id', $id_csps_filtre);
+        }
+        elseif(!$id_csps_filtre && $id_district_filtre){
+            $structure = Structure::find($id_district_filtre);
+            $structures = $structure->getAllChildren();
+            $array = array();
+            foreach ($structures as $structure) {
+                array_push($array, $structure->id);
+            }
+            $query->whereIn('structures.id', $array);
+        }
+        elseif(!$id_csps_filtre && !$id_district_filtre && $id_drs_filtre){
             $structure = Structure::find($id_drs_filtre);
             $structures = $structure->getAllChildren();
             $array = array();
             foreach ($structures as $structure) {
                 array_push($array, $structure->id);
             }
-
-            $consults = DB::table('feuille_soin')
-                                ->join('structures', 'structures.id', 'feuille_soin.id_structure')
-                                ->whereIn('structures.id', $array)
-                                ->get();
-            $structure = Structure::where('id', $id_drs_filtre)->first();
+            $query->whereIn('structures.id', $array);
         }
 
-        foreach($consults as $consult){
-            $total_act = $total_act + Acte::whereIn('code_acte', explode(" ", $consult->liste_act))->get()->sum('price_pvp');
-            $total_eq = $total_eq + Equipement::whereIn('code_examen', explode(" ", $consult->liste_eq ))->get()->sum('unit_cost_pvp');
-            $total_med = $total_med + Product::whereIn('code_product', explode(" ", $consult->liste_prod))->get()->sum('prix_pvp');
-            $total_ev = $total_ev + Acte::whereIn('code_acte', explode(" ", $consult->liste_act))->get()->sum('price_pvp');
+        if($periode_debut && !$periode_fin){
+            $query->where('feuille_soin.created_at', '>=', $periode_debut);
         }
 
-        $response['data'] = array('total_act'=>floatval(round($total_act)), 'total_eq'=>floatval(round($total_eq)), 'total_med'=>floatval(round($total_med)), 'total_ev'=>floatval(round($total_ev)), 'org_unit_name'=>$structure->nom_structure);
+        if(!$periode_debut && $periode_fin){
+            $query->where('feuille_soin.created_at', '<=', $periode_fin);
+        }
+
+        if($periode_debut && $periode_fin){
+            $query->whereBetween('feuille_soin.created_at', [$periode_debut, $periode_fin]);
+        }
+
+        $consults = $query->get();
+
+        if($periode_debut && $periode_fin){
+            $nom_structure = $consults->first() ? $consults->first()->nom_structure.' (Du '.Carbon::parse($periode_debut)->format('d/m/Y').' au '.Carbon::parse($periode_fin)->format('d/m/Y').')' : '';
+        }
+        elseif($periode_debut && !$periode_fin){
+            $nom_structure = $consults->first() ? $consults->first()->nom_structure.' (Du '.Carbon::parse($periode_debut)->format('d/m/Y').' au '.Carbon::now()->format('d/m/Y').')' : '';
+        }
+        elseif(!$periode_debut && $periode_fin){
+            $nom_structure = $consults->first() ? $consults->first()->nom_structure.' (Du '.Carbon::now()->format('d/m/Y').' au '.Carbon::parse($periode_fin)->format('d/m/Y').')' : '';
+        }
+        else{
+            $nom_structure = $consults->first() ? $consults->first()->nom_structure : '';
+        }
+
+        $total_med = $consults->sum('cout_total_prod');
+        $total_act = $consults->sum('cout_total_act');
+        $total_eq = $consults->sum('cout_total_ex');
+        $total_obs = $consults->sum('cout_mise_en_observation');
+        $total_ev = $consults->sum('cout_evacuation');
+
+        $response['data'] = array('total_med'=>floatval(round($total_med)), 'total_act'=>floatval(round($total_act)), 'total_eq'=>floatval(round($total_eq)), 'total_obs'=>floatval(round($total_obs)), 'total_ev'=>floatval(round($total_ev)), 'org_unit_name'=>$nom_structure);
         return response()->json($response);
     }
     // INDEX CONSULTATION
@@ -1082,32 +1140,5 @@ class HomeController extends Controller
 
             // return $datae;
         }
-    }
-
-    public function getBirthDat($birth_date_unknow, $birth_date_item)
-    {
-        if($birth_date_item == 'day'){
-            $currentDate = Carbon::now();
-            $patient_date = $currentDate->subDays(intval($birth_date_unknow));
-
-            // $day = intval(date('d'))-intval($birth_date_unknow);
-            // $patient_date = date($day.'-m-Y');
-        }else if($birth_date_item == 'month'){
-            $currentDate = Carbon::now();
-            $patient_date = $currentDate->subMonths(intval($birth_date_unknow));
-
-            // $month = intval(date('m'))-intval($birth_date_unknow);
-            // //dd($month);
-            // $patient_date = date('d-'.$month.'-Y');
-        }else if($birth_date_item == 'year'){
-            $currentDate = Carbon::now();
-            $patient_date = $currentDate->subYears(intval($birth_date_unknow));
-
-            // $year = intval(date('Y'))-intval($birth_date_unknow);
-            // $newformat = date('d-m-'.$year);
-            // $patient_date = date('d-m-'.$year);
-        }
-
-        return $patient_date;
     }
 }

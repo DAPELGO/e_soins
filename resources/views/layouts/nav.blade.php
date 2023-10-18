@@ -28,36 +28,38 @@
                 </div>
               </a>
             </div>
-
-            <!-- parent pages-->
-            {{-- <div class="nav-item-wrapper @yield('dispensation')"><a class="nav-link label-1 @yield('dispensation')" href="{{ route('esoins.dispensation') }}" role="button" data-bs-toggle="" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-icon"><span data-feather="edit-3"></span></span><span class="nav-link-text-wrapper"><span class="nav-link-text">Dispensation de l'ordonnance</span></span>
-                </div>
-              </a>
-            </div> --}}
           </li>
+          @if(route('home') == url()->current())
+          @if($structure->level_structure != env("LEVEL_FS") && $structure->level_structure != env("LEVEL_FS_CM") && $structure->level_structure != env("LEVEL_FS_CMA") && $structure->level_structure != env("LEVEL_TEST"))
           <div class="form m-4 p-2 bg-white rounded-2" style="border: 1px solid #ccc;">
-            <select class="form-select" id="id_drs_filtre" name="id_drs_filtre" data-choices="data-choices" data-options='{"removeItemButton":true,"placeholder":true}' onchange="changeValue('id_drs_filtre', 'id_district_filtre', 'structure');">
-                <option value="">Select DRS</option>
+            @if($structure->level_structure == env("LEVEL_NATIONAL"))
+            <select class="form-select select_drs" id="id_drs_filtre" name="id_drs_filtre" disabled onchange="onChangeFilterValue('id_drs_filtre', 'id_district_filtre', 'structure');">
+                <option value="">DRS...</option>
             </select>
-            <select class="form-select" id="id_district_filtre" name="id_district_filtre" data-options='{"removeItemButton":true,"placeholder":true}' onchange="changeValue('id_district_filtre', 'id_csps_filtre', 'structure');">
-                <option value="">Select District</option>
+            @endif
+            @if($structure->level_structure == env("LEVEL_NATIONAL") || $structure->level_structure == env("LEVEL_DRS"))
+            <select class="form-select mt-2 select_district" id="id_district_filtre" name="id_district_filtre" disabled onchange="onChangeFilterValue('id_district_filtre', 'id_csps_filtre', 'structure');">
+                <option value="">District...</option>
             </select>
-            <select class="form-select mt-2" id="id_csps_filtre" name="id_csps_filtre">
-                <option value="">Select CSPS</option>
+            @endif
+            <select class="form-select mt-2 select_csps" id="id_csps_filtre" disabled name="id_csps_filtre">
+                <option value="">FS...</option>
             </select>
           </div>
+          @endif
           <div class="form m-4 mt-0 p-2 bg-white rounded-2" style="border: 1px solid #ccc;">
             <div class="mb-2">
-                <input class="form-control form-control-sm" id="sizingInputSm" type="date" placeholder=".form-control-sm" />
+                <input class="form-control form-control-sm" id="periode_debut" type="date" placeholder=".form-control-sm" />
               </div>
               <div class="mb-0">
-                <input class="form-control form-control-sm" id="sizingInputSm" type="date" placeholder=".form-control-sm" />
+                <input class="form-control form-control-sm" id="periode_fin" type="date" placeholder=".form-control-sm" />
               </div>
           </div>
           <div class="d-grid gap-2 ms-4 me-4">
             <button class="btn btn-outline-primary btn-block btn-sm" id="data_filter"><span data-feather="filter" class="me-1" style="font-size: 12px"></span>Filtrer</button>
           </div>
+          @endif
+          @if($structure->level_structure == env("LEVEL_NATIONAL"))
           <li class="nav-item">
             <!-- label-->
             <p class="navbar-vertical-label">Administration
@@ -71,6 +73,7 @@
               </a>
             </div>
           </li>
+          @endif
         </ul>
       </div>
     </div>

@@ -32,6 +32,7 @@ Route::get('/netsigl', 'HomeController@datanetsigl')->name('esoins.nets');
 Route::get('/dispensation', 'HomeController@dispensation')->name('esoins.dispensation');
 Route::get('/ckeck-ordonnance', 'HomeController@checkOrdonnance')->name('ordonnance.check');
 Route::get('/get-stat', 'HomeController@getStat')->name('data.stat');
+Route::post('/filter/getdata', 'HomeController@getFilterData')->name('data.loadfilter');
 Route::post('/filter', 'HomeController@dataFilter')->name('data.filter');
 Route::get('/', [LoginController::class, 'userLogin'])->name('user.login');
 
