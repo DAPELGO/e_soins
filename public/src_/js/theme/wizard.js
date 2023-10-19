@@ -12,6 +12,7 @@ const wizardInit = () => {
     CONFIRM_PASSWORD_INPUT: '[data-wizard-confirm-password]',
     NEXT_BTN: '[data-wizard-next-btn]',
     PREV_BTN: '[data-wizard-prev-btn]',
+    SUBMIT_BTN: '[data-wizard-submit-btn]',
     FOOTER: '[data-wizard-footer]'
   };
 
@@ -111,11 +112,14 @@ const wizardInit = () => {
             }
           }
           // card footer remove at last step
-          if (count > tabToggleButtonEl.length - 2) {
-            wizardFooter.classList.add('d-none');
-          } else {
-            wizardFooter.classList.remove('d-none');
-          }
+            if (count > tabToggleButtonEl.length - 2) {
+                nextButton.classList.add('d-none');
+                submitButton.classList.remove('d-none');
+            }
+            else {
+                nextButton.classList.remove('d-none');
+                submitButton.classList.add('d-none');
+            }
           // prev-button removing
           if (count > 0) {
             prevButton.classList.remove('d-none');

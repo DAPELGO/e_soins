@@ -431,18 +431,40 @@ class HomeController extends Controller
         $quantity_prod =  explode(" ",$consult->quantity_prod);
         $amount_prod =  explode(" ",$consult->montant_prod);
         $cproducts = Product::whereIn('code_product', $liste_prod)->get();
+        if($cproducts->count() != 0){
+            $productsMap = $cproducts->keyBy('code_product')->toArray();
+            $sortedProducts = array_map(function ($codeProduct) use ($productsMap) {
+                return $productsMap[$codeProduct];
+            }, $liste_prod);
+            $cproducts = collect($sortedProducts);
+        }
 
         // ACTES
         $liste_act =  explode(" ",$consult->liste_act);
         $quantity_act =  explode(" ",$consult->quantity_act);
         $amount_act = explode(" ",$consult->montant_act);
         $actes = Acte::whereIn('code_acte', $liste_act)->get();
+        if($actes->count() != 0){
+            $actesMap = $actes->keyBy('code_acte')->toArray();
+            $sortedActes = array_map(function ($codeActe) use ($actesMap) {
+                return $actesMap[$codeActe];
+            }, $liste_act);
+            $actes = collect($sortedActes);
+        }
 
         // EQUIPEMENT
         $liste_eq = explode(" ",$consult->liste_eq);
         $quantity_eq = explode(" ",$consult->quantity_eq);
         $amount_eq = explode(" ",$consult->montant_ex);
         $examens = Examen::whereIn('code_examen', $liste_eq)->get();
+        if($examens->count() != 0){
+            $examensMap = $examens->keyBy('code_examen')->toArray();
+            $sortedExamens = array_map(function ($codeExamen) use ($examensMap) {
+                return $examensMap[$codeExamen];
+            }, $liste_eq);
+            $examens = collect($sortedExamens);
+        }
+
         $type_prest = Valeur::where('id', $consult->type_prestation)->first();
         $typeprestation = $type_prest ? $type_prest->libelle : '';
 

@@ -474,9 +474,6 @@
                                             </tbody>
                                             </table>
                                         </div>
-                                        <div class="pt-3 pb-3">
-                                            <button class="btn btn-primary px-6" id="save-form">Valider</button>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -485,6 +482,7 @@
                                     <button class="d-none btn btn-secondary" type="button" data-wizard-prev-btn="data-wizard-prev-btn"><span class="fas fa-chevron-left me-1" data-fa-transform="shrink-3"></span>Précédent</button>
                                     <div class="flex-1 text-end">
                                     <button class="btn btn-primary px-6 px-sm-6" type="submit" data-wizard-next-btn="data-wizard-next-btn">Suivant<span class="fas fa-chevron-right ms-1" data-fa-transform="shrink-3"> </span></button>
+                                    <button class="btn btn-primary px-6 d-none" type="submit" data-wizard-submit-btn="data-wizard-submit-btn" id="save-form">Valider</button>
                                     </div>
                                 </div>
                             </div>
