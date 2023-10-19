@@ -185,7 +185,7 @@
     <script src="{{ asset('assets/select2/js/select2.min.js') }}"></script>
 
     <script>
-        $(document).ready(function() {
+        $(function() {
             // CHECK ORDONNANCE NUMBER
             $("#check-odonnance").click(function(){
                 var ordonnance_id = $("#ordonnance_id").val();
