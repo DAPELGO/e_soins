@@ -379,6 +379,12 @@ class eSoinsController extends Controller
         ]);
         $factures_errors = array();
 
+        $return_data = new stdClass();
+        $return_data->factures = array();
+        $return_data->produits = array();
+        $return_data->actes = array();
+        $return_data->examens = array();
+
         foreach ($request->factures as $facture) {
             // List prod with filter
             $array_prod = array();
@@ -391,6 +397,10 @@ class eSoinsController extends Controller
                 array_push($array_prod, $produit['produit_id']);
                 array_push($arrayquantity_prod, $produit['quantite']);
                 array_push($arraymontant_prod, $produit['montant']);
+                $old_new_facture_id = new stdClass();
+                $old_new_facture_id->old_facture_id = $produit['facture_id'];
+                $old_new_facture_id->new_facture_id = null;
+                array_push($return_data->produits, $old_new_facture_id);
             }
             $liste_prod = implode(" ", $array_prod);
             $quantity_prod = implode(" ", $arrayquantity_prod);
@@ -403,10 +413,15 @@ class eSoinsController extends Controller
             $actes = array_filter($request->actes, function($acte) use ($facture){
                 return $acte['facture_id'] == $facture['facture_id'];
             });
+
             foreach ($actes as $acte) {
                 array_push($array_act, $acte['acte_id']);
                 array_push($arrayquantity_act, $acte['quantite']);
                 array_push($arraymontant_act, $acte['montant']);
+                $old_new_facture_id = new stdClass();
+                $old_new_facture_id->old_facture_id = $acte['facture_id'];
+                $old_new_facture_id->new_facture_id = null;
+                array_push($return_data->actes, $old_new_facture_id);
             }
             $liste_act = implode(" ", $array_act);
             $quantity_act = implode(" ", $arrayquantity_act);
@@ -424,6 +439,10 @@ class eSoinsController extends Controller
                 array_push($array_ex, $examen['examen_id']);
                 array_push($arrayquantity_ex, $examen['quantite']);
                 array_push($arraymontant_ex, $examen['montant']);
+                $old_new_facture_id = new stdClass();
+                $old_new_facture_id->old_facture_id = $examen['facture_id'];
+                $old_new_facture_id->new_facture_id = null;
+                array_push($return_data->examens, $old_new_facture_id);
             }
             $liste_ex = implode(" ", $array_ex);
             $quantity_ex = implode(" ", $arrayquantity_ex);
@@ -445,10 +464,12 @@ class eSoinsController extends Controller
             $age_patient = $this->getBirthDate($age, $birth_date_item);
 
             try{
+                $new_facture_id = Str::uuid();
+
                 // ENREGISTREMENT DE LA FACTURE
                 DB::table('feuille_soin')->insertOrIgnore([
                     // GENERAL
-                    'id' => Str::uuid(),
+                    'id' => $new_facture_id,
                     'nom_patient'=>$facture['nom_patient'],
                     'village'=>$facture['village_patient'],
                     'distance_village'=>$facture['distance_village_patient'],
@@ -497,17 +518,39 @@ class eSoinsController extends Controller
                     'user_id' => $request->user()->id,
                     'id_structure' => $request->user()->structure_id,
                 ]);
+
+                $old_new_facture_id = new stdClass();
+                $old_new_facture_id->old_facture_id = $facture['facture_id'];
+                $old_new_facture_id->new_facture_id = $new_facture_id;
+                array_push($return_data->factures, $old_new_facture_id);
+
+                foreach ($return_data->produits as $produit) {
+                    if($produit->old_facture_id == $facture['facture_id']){
+                        $produit->new_facture_id = $new_facture_id;
+                    }
+                }
+                foreach ($return_data->actes as $acte) {
+                    if($acte->old_facture_id == $facture['facture_id']){
+                        $acte->new_facture_id = $new_facture_id;
+                    }
+                }
+                foreach ($return_data->examens as $examen) {
+                    if($examen->old_facture_id == $facture['facture_id']){
+                        $examen->new_facture_id = $new_facture_id;
+                    }
+                }
             }
             catch(\Exception $e){
-                array_push($factures_errors, $facture['facture_id'].' : '.$e->getMessage());
+                //array_push($factures_errors, $facture['facture_id'].' : '.$e->getMessage());
+                array_push($factures_errors, $facture['facture_id']);
             }
         }
 
-        if(count($factures_errors)>0){
+        if(count($factures_errors) == count($request->factures)){
             return response()->json(['success'=>false, 'message'=>'Une erreur est survenue lors de l\'enregistrement des factures.', 'errors'=>$factures_errors]);
         }
         else{
-            return response()->json(['success'=>true, 'message'=>'Factures enregistrées avec succès']);
+            return response()->json(['success'=>true, 'message'=>'Factures enregistrées avec succès', 'data'=>$return_data, 'errors'=>$factures_errors]);
         }
     }
 
