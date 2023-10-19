@@ -178,10 +178,13 @@ class HomeController extends Controller
 
         if($id_csps_filtre){
             $query->where('structures.id', $id_csps_filtre);
+            $struct_name = Structure::find($id_csps_filtre)->nom_structure;
+
         }
         elseif(!$id_csps_filtre && $id_district_filtre){
             $structure = Structure::find($id_district_filtre);
             $structures = $structure->getAllChildren();
+            $struct_name = $structure->nom_structure;
             $array = array();
             foreach ($structures as $structure) {
                 array_push($array, $structure->id);
@@ -191,6 +194,7 @@ class HomeController extends Controller
         elseif(!$id_csps_filtre && !$id_district_filtre && $id_drs_filtre){
             $structure = Structure::find($id_drs_filtre);
             $structures = $structure->getAllChildren();
+            $struct_name = $structure->nom_structure;
             $array = array();
             foreach ($structures as $structure) {
                 array_push($array, $structure->id);
@@ -213,16 +217,16 @@ class HomeController extends Controller
         $consults = $query->get();
 
         if($periode_debut && $periode_fin){
-            $nom_structure = $consults->first() ? $consults->first()->nom_structure.' (Du '.Carbon::parse($periode_debut)->format('d/m/Y').' au '.Carbon::parse($periode_fin)->format('d/m/Y').')' : '';
+            $nom_structure = $struct_name.' (Du '.Carbon::parse($periode_debut)->format('d/m/Y').' au '.Carbon::parse($periode_fin)->format('d/m/Y').')';
         }
         elseif($periode_debut && !$periode_fin){
-            $nom_structure = $consults->first() ? $consults->first()->nom_structure.' (Du '.Carbon::parse($periode_debut)->format('d/m/Y').' au '.Carbon::now()->format('d/m/Y').')' : '';
+            $nom_structure = $struct_name.' (Du '.Carbon::parse($periode_debut)->format('d/m/Y').' au '.Carbon::now()->format('d/m/Y').')';
         }
         elseif(!$periode_debut && $periode_fin){
-            $nom_structure = $consults->first() ? $consults->first()->nom_structure.' (Du '.Carbon::now()->format('d/m/Y').' au '.Carbon::parse($periode_fin)->format('d/m/Y').')' : '';
+            $nom_structure = $struct_name.' (Du '.Carbon::now()->format('d/m/Y').' au '.Carbon::parse($periode_fin)->format('d/m/Y').')';
         }
         else{
-            $nom_structure = $consults->first() ? $consults->first()->nom_structure : '';
+            $nom_structure = $struct_name;
         }
 
         $total_med = $consults->sum('cout_total_prod');
