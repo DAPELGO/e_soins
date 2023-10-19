@@ -5628,6 +5628,7 @@
       CONFIRM_PASSWORD_INPUT: '[data-wizard-confirm-password]',
       NEXT_BTN: '[data-wizard-next-btn]',
       PREV_BTN: '[data-wizard-prev-btn]',
+      SUBMIT_BTN: '[data-wizard-submit-btn]',
       FOOTER: '[data-wizard-footer]'
     };
 
@@ -5651,7 +5652,7 @@
       );
       const nextButton = wizard.querySelector(selectors.NEXT_BTN);
       const prevButton = wizard.querySelector(selectors.PREV_BTN);
-      const wizardFooter = wizard.querySelector(selectors.FOOTER);
+      const submitButton = wizard.querySelector(selectors.SUBMIT_BTN);
       const submitEvent = new Event(events.SUBMIT, {
         bubbles: true,
         cancelable: true
@@ -5723,13 +5724,13 @@
           });
           item.addEventListener(events.SHOWN, () => {
             count = index;
-            // can't go back tab
-            if (count === tabToggleButtonEl.length - 1) {
-              tabToggleButtonEl.forEach(tab => {
-                tab.setAttribute('data-bs-toggle', 'modal');
-                tab.setAttribute('data-bs-target', '#error-modal');
-              });
-            }
+            // // can't go back tab
+            // if (count === tabToggleButtonEl.length - 1) {
+            //   tabToggleButtonEl.forEach(tab => {
+            //     tab.setAttribute('data-bs-toggle', 'modal');
+            //     tab.setAttribute('data-bs-target', '#error-modal');
+            //   });
+            // }
             // add done class
             for (let i = 0; i < count; i += 1) {
               tabToggleButtonEl[i].classList.add('done');
@@ -5744,17 +5745,20 @@
                 tabToggleButtonEl[j - 1].classList.remove('complete');
               }
             }
-            // card footer remove at last step
-            if (count > tabToggleButtonEl.length - 2) {
-              wizardFooter.classList.add('d-none');
+           // card footer remove at last step
+            if (count === tabToggleButtonEl.length - 1) {
+                nextButton.classList.add('d-none');
+                submitButton.classList.remove('d-none');
             } else {
-              wizardFooter.classList.remove('d-none');
+                nextButton.classList.remove('d-none');
+                submitButton.classList.add('d-none');
             }
+
             // prev-button removing
             if (count > 0) {
-              prevButton.classList.remove('d-none');
+                prevButton.classList.remove('d-none');
             } else {
-              prevButton.classList.add('d-none');
+                prevButton.classList.add('d-none');
             }
           });
         });

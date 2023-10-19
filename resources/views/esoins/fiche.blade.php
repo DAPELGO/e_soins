@@ -67,7 +67,7 @@
             </div>
             <div class="col-4">
                 {{-- <div><span class="text-black fw-bold">N° </span><small><i>(sur le Registre de consultation)</i></small> : {{ $consult->registre_number }}</div> --}}
-                <div><span class="text-black fw-bold">Diagnostic: </span>{{ $typeprestation }}</div>
+                <div><span class="text-black fw-bold">Type de prestation : </span>{{ $typeprestation }}</div>
             </div>
         </div>
         <div class="row p-2 fs--1">
@@ -90,12 +90,12 @@
                         </tr>
                       </thead>
                       <tbody class="list">
-                        <?php $i = 0; $total_act = 0; $quantity_acte = 0; ?>
+                        <?php $i = 0; ?>
                         @foreach($actes as $acte)
                         <tr>
                           <td class="white-space-nowrap ps-0" style="width:32%">
                             <div class="d-flex align-items-center">
-                              <h6 class="mb-0 me-3">{{ $acte->description }}</h6><a href="#!">
+                              <h6 class="mb-0 me-3">{{ $acte['description'] }}</h6><a href="#!">
                               </a>
                             </div>
                           </td>
@@ -142,12 +142,12 @@
                         </tr>
                       </thead>
                       <tbody class="list">
-                        <?php $i = 0; $total_eq = 0; $quantity_examen = 0; ?>
+                        <?php $i = 0; ?>
                         @foreach($examens as $examen)
                         <tr>
                           <td class="white-space-nowrap ps-0" style="width:32%">
                             <div class="d-flex align-items-center">
-                              <h6 class="mb-0 me-3">{{ $examen->description }}</h6><a href="#!">
+                              <h6 class="mb-0 me-3">{{ $examen['description'] }}</h6><a href="#!">
                               </a>
                             </div>
                           </td>
@@ -196,12 +196,12 @@
                         </tr>
                       </thead>
                       <tbody class="list">
-                        <?php $i = 0; $total_prod = 0; $quantity_product = 0; ?>
+                        <?php $i = 0; ?>
                         @foreach ($cproducts as $cproduct )
                         <tr>
                           <td class="align-middle">
                             <div class="d-flex align-items-center">
-                              <h6 class="mb-0 me-3">{{ $cproduct->name }}</h6><a href="#!">
+                              <h6 class="mb-0 me-3">{{ $cproduct['name'] }}</h6><a href="#!">
                               </a>
                             </div>
                           </td>
