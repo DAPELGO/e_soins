@@ -201,6 +201,16 @@ class HomeController extends Controller
             }
             $query->whereIn('structures.id', $array);
         }
+        elseif(!$id_csps_filtre && !$id_district_filtre && !$id_drs_filtre){
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
+            $structures = $structure->getAllChildren();
+            $struct_name = $structure->nom_structure;
+            $array = array();
+            foreach ($structures as $structure) {
+                array_push($array, $structure->id);
+            }
+            $query->whereIn('structures.id', $array);
+        }
 
         if($periode_debut && !$periode_fin){
             $query->where('feuille_soin.created_at', '>=', $periode_debut);
