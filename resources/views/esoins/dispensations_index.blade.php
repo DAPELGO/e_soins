@@ -70,6 +70,7 @@
         $(document).ready(function() {
             $('[id^="dataTableFis-"]').DataTable({
                 retrieve: true,
+                dom: 'Qfrtip',
                 "pagingType": "full_numbers",
                 "lengthMenu": [
                     [10, 25, 50, -1],
@@ -80,6 +81,29 @@
                 language: {
                     search: "_INPUT_",
                     searchPlaceholder: "Rechercher...",
+                    searchBuilder: {
+                        title: 'Filtre avancé',
+                        add: 'Nouveau filtre',
+                        button: 'Filtrer',
+                        clearAll: 'Tout effacer',
+                        value: 'Valeur',
+                        condition: 'Condition',
+                        data: 'Critère',
+                        conditions :{
+                            string: {
+                                contains: 'Contient',
+                                empty: 'Vide',
+                                endsWith: 'Se termine par',
+                                equals: 'Egal à',
+                                not: 'Différent de',
+                                notContains: 'Ne contient pas',
+                                notEmpty: 'Non vide',
+                                notEndsWith: 'Ne se termine pas par',
+                                notStartsWith: 'Ne commence pas par',
+                                startsWith: 'Commence par'
+                            }
+                        }
+                    },
                     "decimal":        "",
                     "emptyTable":     "Aucune donnée disponible dans ce tableau",
                     "info":           "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
