@@ -815,15 +815,6 @@ class HomeController extends Controller
         }
         $montant_ex = implode(" ", $arraymontant_ex);
 
-        // COUT MISE EN OBSERVATION
-        $cout_mise_en_observation = 0;
-        if($request->cout_mise_en_observation !=''){
-            $cout_mise_en_observation = $request->cout_mise_en_observation;
-        }
-
-        // COUT EVACUATION
-        $cout_evacuation = $request->cout_evacuation;
-
         // AGE PATIENT
         $age = $request->age;
         $birth_date_item = $request->birth_date_item;
@@ -868,10 +859,10 @@ class HomeController extends Controller
                 // OBSERVATION
                 'type_observation'=>(double) $request->type_observation,
                 'nbre_jours' => (double) $request->nbre_jours,
-                'cout_mise_en_observation' => (double) $request->observation_montant,
+                'cout_mise_en_observation' => (double) $request->cout_mise_en_observation,
 
                 // EVACUATION
-                'cout_evacuation' => (double) $request->evacuation_montant,
+                'cout_evacuation' => (double) $request->cout_evacuation,
 
                 // GERANT / PRESCRIPTEUR
                 'nom_prescripteur' => $request->name_prescripteur,
