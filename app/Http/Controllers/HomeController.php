@@ -48,6 +48,7 @@ class HomeController extends Controller
         $total_eq = 0;
         $total_obs = 0;
         $total_ev = 0;
+        $total_facture = 0;
 
         $structure = Structure::where('id', Auth::user()->structure_id)->first();
         $user = DB::table('users')
@@ -55,6 +56,7 @@ class HomeController extends Controller
                         ->select('users.*', 'structures.nom_structure', 'structures.level_structure')
                         ->where('users.id', Auth::user()->id)
                         ->first();
+
         switch ($user->level_structure) {
             case env ('LEVEL_NATIONAL'):
                 $structs = $structure->getAllChildren();
@@ -74,6 +76,7 @@ class HomeController extends Controller
                 $total_eq = $consults->sum('cout_total_ex');
                 $total_obs = $consults->sum('cout_mise_en_observation');
                 $total_ev = $consults->sum('cout_evacuation');
+                $total_facture = count($consults);
                 break;
             case env('LEVEL_DRS'):
                 $structs = $structure->getAllChildren();
@@ -92,6 +95,7 @@ class HomeController extends Controller
                 $total_eq = $consults->sum('cout_total_ex');
                 $total_obs = $consults->sum('cout_mise_en_observation');
                 $total_ev = $consults->sum('cout_evacuation');
+                $total_facture = count($consults);
                 break;
             case env('LEVEL_DISTRICT'):
                 $structs = $structure->getAllChildren();
@@ -110,6 +114,7 @@ class HomeController extends Controller
                 $total_eq = $consults->sum('cout_total_ex');
                 $total_obs = $consults->sum('cout_mise_en_observation');
                 $total_ev = $consults->sum('cout_evacuation');
+                $total_facture = count($consults);
                 break;
             default:
                 $consults = DB::table('feuille_soin')
@@ -121,10 +126,11 @@ class HomeController extends Controller
                 $total_eq = $consults->sum('cout_total_ex');
                 $total_obs = $consults->sum('cout_mise_en_observation');
                 $total_ev = $consults->sum('cout_evacuation');
+                $total_facture = count($consults);
                 break;
         }
 
-        $response['data'] = array('total_med'=>floatval(round($total_med)), 'total_act'=>floatval(round($total_act)), 'total_eq'=>floatval(round($total_eq)), 'total_obs'=>floatval(round($total_obs)), 'total_ev'=>floatval(round($total_ev)));
+        $response['data'] = array('total_med'=>floatval(round($total_med)), 'total_act'=>floatval(round($total_act)), 'total_eq'=>floatval(round($total_eq)), 'total_obs'=>floatval(round($total_obs)), 'total_ev'=>floatval(round($total_ev)), 'total_facture' => $total_facture);
         return response()->json($response);
     }
 

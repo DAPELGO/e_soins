@@ -69,6 +69,15 @@
                                             </div>
                                           </div>
                                       </div>
+                                      <div class="col-sm-3">
+                                        <div class="d-sm-block d-inline-flex d-md-flex flex-xl-column flex-xxl-row align-items-center align-items-xl-start align-items-xxl-center bg-white ms-2 mt-1 p-2 pb-1 ps-3" style="min-height: 5rem;">
+                                            <div>
+                                              <p class="mb-1">Factures</p>
+                                              <hr style="margin: 0.5rem 0;">
+                                              <h4 class="fw-bolder text-nowrap" id="total_facture">En cours ...</h4>
+                                            </div>
+                                          </div>
+                                      </div>
                                     </div>
                                 </div>
                             </div>
@@ -77,10 +86,11 @@
                 </div>
             </div>
         </div>
+        @if($structure->level_structure != env("LEVEL_FS") && $structure->level_structure != env("LEVEL_FS_CM") && $structure->level_structure != env("LEVEL_FS_CMA"))
         <div class="bg-200 p-2">
             <div class='load_map' id="loader_map" style="display: none;"></div>
             <div id="map" style="width: 100%; height:34rem; border: 5px solid #FFF;"></div>
         </div>
-
+        @endif
     </div>
 @endsection
