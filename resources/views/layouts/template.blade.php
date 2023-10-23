@@ -387,6 +387,7 @@
                             $("#total_ex").text(data_filtre.data.total_eq.toLocaleString('fr-FR') + " FCFA");
                             $("#total_obs").text(data_filtre.data.total_obs.toLocaleString('fr-FR') + " FCFA");
                             $("#total_ev").text(data_filtre.data.total_ev.toLocaleString('fr-FR') + " FCFA");
+                            $("#total_facture").text(data_filtre.data.total_facture);
                             $("#org_unit_name").text(data_filtre.data.org_unit_name);
                             $("#org_unit_name").removeClass("d-none").addClass("d-block");
 
