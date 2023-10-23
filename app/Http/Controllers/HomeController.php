@@ -484,7 +484,7 @@ class HomeController extends Controller
                         $drs = Structure::where('id', $nconsult->struct_id)->first();
                     }
                     else{
-                        $csps = null;
+                        $fs = null;
                         $district = null;
                         $drs = null;
                     }
