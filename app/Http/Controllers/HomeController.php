@@ -475,22 +475,22 @@ class HomeController extends Controller
         }
 
         // EQUIPEMENT
-        $liste_eq = explode(" ",$consult->liste_eq);
-        $quantity_eq = explode(" ",$consult->quantity_eq);
-        $amount_eq = explode(" ",$consult->montant_ex);
-        $examens = Examen::whereIn('code_examen', $liste_eq)->get();
+        $liste_ex = explode(" ",$consult->liste_ex);
+        $quantity_ex = explode(" ",$consult->quantity_ex);
+        $amount_ex = explode(" ",$consult->montant_ex);
+        $examens = Examen::whereIn('code_examen', $liste_ex)->get();
         if($examens->count() != 0){
             $examensMap = $examens->keyBy('code_examen')->toArray();
             $sortedExamens = array_map(function ($codeExamen) use ($examensMap) {
                 return $examensMap[$codeExamen];
-            }, $liste_eq);
+            }, $liste_ex);
             $examens = collect($sortedExamens);
         }
 
         $type_prest = Valeur::where('id', $consult->type_prestation)->first();
         $typeprestation = $type_prest ? $type_prest->libelle : '';
 
-        return view('esoins.fiche', compact('consult', 'cproducts', 'actes', 'examens', 'quantity_prod', 'quantity_act', 'quantity_eq', 'amount_prod', 'amount_act', 'amount_eq', 'csps', 'district', 'drs', 'typeprestation', 'structure', 'qualification', 'prestations'));
+        return view('esoins.fiche', compact('consult', 'cproducts', 'actes', 'examens', 'quantity_prod', 'quantity_act', 'quantity_ex', 'amount_prod', 'amount_act', 'amount_ex', 'csps', 'district', 'drs', 'typeprestation', 'structure', 'qualification', 'prestations'));
     }
 
     //DELETE FACTURE

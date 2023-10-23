@@ -435,6 +435,7 @@ class eSoinsController extends Controller
             $examens = array_filter($request->examens, function($examen) use ($facture){
                 return $examen['facture_id'] == $facture['facture_id'];
             });
+
             foreach ($examens as $examen) {
                 array_push($array_ex, $examen['examen_id']);
                 array_push($arrayquantity_ex, $examen['quantite']);

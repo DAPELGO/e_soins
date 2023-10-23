@@ -147,7 +147,7 @@
                         <tr>
                           <td class="white-space-nowrap ps-0" style="width:32%">
                             <div class="d-flex align-items-center">
-                              <h6 class="mb-0 me-3">{{ $examen['description'] }}</h6><a href="#!">
+                              <h6 class="mb-0 me-3">{{ $examen['nom_examen'] }}</h6><a href="#!">
                               </a>
                             </div>
                           </td>
