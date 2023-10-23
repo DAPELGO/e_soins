@@ -28,7 +28,9 @@
             <th style="min-width:10px; color: #004ebc;">ID</th>
             <th style="color: #004ebc;">PATIENTS</th>
             <th style="color: #004ebc;">ÂGE</th>
-            <th style="color: #004ebc;">CSPS/CM</th>
+            <th style="color: #004ebc;">DRS</th>
+            <th style="color: #004ebc;">DS</th>
+            <th style="color: #004ebc;">FS</th>
             <th style="color: #004ebc;">DATE CONSULT.</th>
             <th style="color: #004ebc;">MONTANT</th>
             <th style="color: #004ebc;">ACTIONS</th>
@@ -46,7 +48,9 @@
             <td class="id align-middle white-space-nowrap fw-bold">{{ $i }}</td>
             <td class="livre_name align-middle white-space-nowrap text-td"><a class="fw-bold" href="{{ route('esoins.fiche', $nconsult->id) }}">{{ $nconsult->nom_patient }}</a></td>
             <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ calculate_age($nconsult->age_patient) }}</td>
-            <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->nom_structure}}</td>
+            <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->drs ? $nconsult->drs->nom_structure : '-'}}</td>
+            <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->district ? $nconsult->district->nom_structure : '-'}}</td>
+            <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->fs ? $nconsult->fs->nom_structure : '-'}}</td>
             <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ \Carbon\Carbon::parse($nconsult->visit_date)->format('d/m/Y') }}</td>
             <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->cout_total_prod + $nconsult->cout_total_act + $nconsult->cout_total_ex + $nconsult->cout_mise_en_observation + $nconsult->cout_evacuation }} FCFA</td>
             <td class="last_active align-middle white-space-nowrap text-700">

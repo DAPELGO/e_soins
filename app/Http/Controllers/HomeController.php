@@ -345,11 +345,38 @@ class HomeController extends Controller
 
                 $nconsults = DB::table('feuille_soin')->whereIn('structures.id', $array)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
-                            ->select('feuille_soin.*', 'structures.nom_structure')
+                            ->select('feuille_soin.*', 'structures.id as struct_id', 'structures.nom_structure', 'structures.level_structure')
                             ->where('feuille_soin.is_delete', false)
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
-                break;
+
+                foreach ($nconsults as $nconsult) {
+                    if($nconsult->level_structure == env('LEVEL_FS') || $nconsult->level_structure == env('LEVEL_FS_CM') || $nconsult->level_structure == env('LEVEL_FS_CMA')){
+                        $fs = Structure::where('id', $nconsult->struct_id)->first();
+                        $district = Structure::where('id', $fs->parent_id)->first();
+                        $drs = Structure::where('id', $district->parent_id)->first();
+                    }
+                    else if($nconsult->level_structure == env('LEVEL_DISTRICT')){
+                        $fs = null;
+                        $district = Structure::where('id', $nconsult->struct_id)->first();
+                        $drs = Structure::where('id', $district->parent_id)->first();
+                    }
+                    else if($nconsult->level_structure == env('LEVEL_DRS')){
+                        $fs = null;
+                        $district = null;
+                        $drs = Structure::where('id', $nconsult->struct_id)->first();
+                    }
+                    else{
+                        $csps = null;
+                        $district = null;
+                        $drs = null;
+                    }
+
+                    $nconsult->fs = $fs;
+                    $nconsult->district = $district;
+                    $nconsult->drs = $drs;
+                }
+            break;
             case env('LEVEL_DRS'):
                 $structs = $structure->getAllChildren();
                 $array = array();
@@ -359,11 +386,38 @@ class HomeController extends Controller
 
                 $nconsults = DB::table('feuille_soin')->whereIn('structures.id', $array)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
-                            ->select('feuille_soin.*', 'structures.nom_structure')
+                            ->select('feuille_soin.*', 'structures.id as struct_id', 'structures.nom_structure', 'structures.level_structure')
                             ->where('feuille_soin.is_delete', false)
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
-                break;
+
+                foreach ($nconsults as $nconsult) {
+                    if($nconsult->level_structure == env('LEVEL_FS') || $nconsult->level_structure == env('LEVEL_FS_CM') || $nconsult->level_structure == env('LEVEL_FS_CMA')){
+                        $fs = Structure::where('id', $nconsult->struct_id)->first();
+                        $district = Structure::where('id', $fs->parent_id)->first();
+                        $drs = Structure::where('id', $district->parent_id)->first();
+                    }
+                    else if($nconsult->level_structure == env('LEVEL_DISTRICT')){
+                        $fs = null;
+                        $district = Structure::where('id', $nconsult->struct_id)->first();
+                        $drs = Structure::where('id', $district->parent_id)->first();
+                    }
+                    else if($nconsult->level_structure == env('LEVEL_DRS')){
+                        $fs = null;
+                        $district = null;
+                        $drs = Structure::where('id', $nconsult->struct_id)->first();
+                    }
+                    else{
+                        $csps = null;
+                        $district = null;
+                        $drs = null;
+                    }
+
+                    $nconsult->fs = $fs;
+                    $nconsult->district = $district;
+                    $nconsult->drs = $drs;
+                }
+            break;
             case env('LEVEL_DISTRICT'):
                 $structs = $structure->getAllChildren();
                 $array = array();
@@ -373,19 +427,73 @@ class HomeController extends Controller
 
                 $nconsults = DB::table('feuille_soin')->whereIn('structures.id', $array)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
-                            ->select('feuille_soin.*', 'structures.nom_structure')
+                            ->select('feuille_soin.*', 'structures.id as struct_id', 'structures.nom_structure', 'structures.level_structure')
                             ->where('feuille_soin.is_delete', false)
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
-                break;
+
+                foreach ($nconsults as $nconsult) {
+                    if($nconsult->level_structure == env('LEVEL_FS') || $nconsult->level_structure == env('LEVEL_FS_CM') || $nconsult->level_structure == env('LEVEL_FS_CMA')){
+                        $fs = Structure::where('id', $nconsult->struct_id)->first();
+                        $district = Structure::where('id', $fs->parent_id)->first();
+                        $drs = Structure::where('id', $district->parent_id)->first();
+                    }
+                    else if($nconsult->level_structure == env('LEVEL_DISTRICT')){
+                        $fs = null;
+                        $district = Structure::where('id', $nconsult->struct_id)->first();
+                        $drs = Structure::where('id', $district->parent_id)->first();
+                    }
+                    else if($nconsult->level_structure == env('LEVEL_DRS')){
+                        $fs = null;
+                        $district = null;
+                        $drs = Structure::where('id', $nconsult->struct_id)->first();
+                    }
+                    else{
+                        $csps = null;
+                        $district = null;
+                        $drs = null;
+                    }
+
+                    $nconsult->fs = $fs;
+                    $nconsult->district = $district;
+                    $nconsult->drs = $drs;
+                }
+            break;
             default:
-            $nconsults = DB::table('feuille_soin')->where('feuille_soin.user_id', Auth::user()->id)
+                $nconsults = DB::table('feuille_soin')->where('feuille_soin.user_id', Auth::user()->id)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
-                            ->select('feuille_soin.*', 'structures.nom_structure')
+                            ->select('feuille_soin.*', 'structures.id as struct_id', 'structures.nom_structure', 'structures.level_structure')
                             ->where('feuille_soin.is_delete', false)
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
-                break;
+
+                foreach ($nconsults as $nconsult) {
+                    if($nconsult->level_structure == env('LEVEL_FS') || $nconsult->level_structure == env('LEVEL_FS_CM') || $nconsult->level_structure == env('LEVEL_FS_CMA')){
+                        $fs = Structure::where('id', $nconsult->struct_id)->first();
+                        $district = Structure::where('id', $fs->parent_id)->first();
+                        $drs = Structure::where('id', $district->parent_id)->first();
+                    }
+                    else if($nconsult->level_structure == env('LEVEL_DISTRICT')){
+                        $fs = null;
+                        $district = Structure::where('id', $nconsult->struct_id)->first();
+                        $drs = Structure::where('id', $district->parent_id)->first();
+                    }
+                    else if($nconsult->level_structure == env('LEVEL_DRS')){
+                        $fs = null;
+                        $district = null;
+                        $drs = Structure::where('id', $nconsult->struct_id)->first();
+                    }
+                    else{
+                        $csps = null;
+                        $district = null;
+                        $drs = null;
+                    }
+
+                    $nconsult->fs = $fs;
+                    $nconsult->district = $district;
+                    $nconsult->drs = $drs;
+                }
+            break;
         }
 
         return view('esoins.dispensations_index', compact('nconsults', 'structure'));
@@ -424,7 +532,7 @@ class HomeController extends Controller
         $structure = Structure::where('id', Auth::user()->structure_id)->first();
         $consult_struct = Structure::where('id', $consult->id_structure)->first();
 
-        if($consult_struct->level_structure == env('LEVEL_FS')){
+        if($consult_struct->level_structure == env('LEVEL_FS') || $consult_struct->level_structure == env('LEVEL_FS_CM') || $consult_struct->level_structure == env('LEVEL_FS_CMA')){
             $csps = $consult_struct;
             $district = Structure::where('id', $csps->parent_id)->first();
             $drs = Structure::where('id', $district->parent_id)->first();
