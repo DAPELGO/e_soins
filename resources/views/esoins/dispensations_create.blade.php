@@ -64,7 +64,7 @@
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="col-form-label col-form-label-sm" for="age">Age du patient</label>
-                                                        <input class="form-control input-border-bt" id="age" min="1" type="number" name="age" />
+                                                        <input class="form-control input-border-bt" id="age" min="1" max="100" type="number" name="age" />
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="col-form-label col-form-label-sm">Âge en ...</label>

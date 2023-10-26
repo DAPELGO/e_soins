@@ -12,7 +12,8 @@
                 @if($csps!=null) <div><span class="fw-black">FS : </span>{{ $csps->nom_structure }}</div>@endif
             </div>
             <div class="col-4">
-                <div><span class="fw-black">Date : </span> {{ \Carbon\Carbon::parse($consult->visit_date)->format('d/m/Y') }}</div>
+                <div><span class="fw-black">Date de saisie : </span> {{ \Carbon\Carbon::parse($consult->created_at)->format('d/m/Y à H:m') }}</div>
+                <div><span class="fw-black">Date de consultation : </span> {{ \Carbon\Carbon::parse($consult->visit_date)->format('d/m/Y') }}</div>
                 <div><span class="fw-black">N° de serie sur l'ordonnance</span> : {{ $consult->serie_number }}</div>
                 <div><span class="fw-black">N° </span><small><i>(Sur le registre de consultation)</i></small> : {{ $consult->registre_number }}</div>
             </div>

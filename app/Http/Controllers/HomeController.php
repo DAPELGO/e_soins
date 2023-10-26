@@ -936,66 +936,75 @@ class HomeController extends Controller
         $birth_date_item = $request->birth_date_item;
         $age_patient = $this->getBirthDate($age, $birth_date_item);
 
-        try{
-            // ENREGISTREMENT DE LA FACTURE
-            DB::table('feuille_soin')->insertOrIgnore([
-                // GENERAL
-                'id' => Str::uuid(),
-                'nom_patient'=>$request->nom_patient,
-                'village'=>$request->village_patient,
-                'distance_village'=>$request->distance_village_patient,
-                'age_patient'=>$age_patient,
-                'sex' => $request->sexe_patient,
-                'parent_name'=>$request->parent_patient,
-                'tel'=>$request->num_telephone,
-                'visit_date' => $request->consultation_date,
-                'serie_number' => $request->serie_number,
-                'registre_number' => $request->registre_number,
-                'consultation_type' => $request->patient_type,
-                'type_prestation' => $request->type_prestation,
+        // verify if facture exist with same visit_date, registre_number and id_structure
 
-                // PRODUCT
-                'liste_prod' => $liste_prod,
-                'quantity_prod' => $quantity_prod,
-                'montant_prod' => $montant_prod,
-                'cout_total_prod' => (double) $request->cout_total_prod,
+        $verif_facture = DB::table('feuille_soin')->where(['visit_date'=>$request->consultation_date, 'registre_number'=>$request->registre_number, 'liste_prod'=>$liste_prod, 'id_structure'=>Auth::user()->structure_id])->first();
 
-                // ACTE
-                'liste_act' => $liste_act,
-                'quantity_act' => $quantity_act,
-                'montant_act' => $montant_act,
-                'cout_total_act' => (double) $request->cout_total_act,
-
-                // EXAMEN
-                'liste_ex' => $liste_ex,
-                'quantity_ex' => $quantity_ex,
-                'montant_ex' => $montant_ex,
-                'cout_total_ex' => (double) $request->cout_total_ex,
-
-                // OBSERVATION
-                'type_observation'=>(double) $request->type_observation,
-                'nbre_jours' => (double) $request->nbre_jours,
-                'cout_mise_en_observation' => (double) $request->cout_mise_en_observation,
-
-                // EVACUATION
-                'cout_evacuation' => (double) $request->cout_evacuation,
-
-                // GERANT / PRESCRIPTEUR
-                'nom_prescripteur' => $request->name_prescripteur,
-                'contact_prescripteur' => $request->contact_prescripteur,
-                'qualification_prescripteur' => $request->qualification_prescripteur,
-                'name_gerant' => $request->name_gerant,
-                'contact_gerant' => $request->contact_gerant,
-                'user_id' => Auth::user()->id,
-                'id_structure' => Auth::user()->structure_id,
-            ]);
+        if($verif_facture){
+            toastr()->error('Cette facture existe déjà');
         }
-        catch(\Exception $e){
-            //dd($e->getMessage());
-            toastr()->error('Erreur d\'enregistrement de la facture');
-        }
+        else{
+            try{
+                // ENREGISTREMENT DE LA FACTURE
+                DB::table('feuille_soin')->insertOrIgnore([
+                    // GENERAL
+                    'id' => Str::uuid(),
+                    'nom_patient'=>$request->nom_patient,
+                    'village'=>$request->village_patient,
+                    'distance_village'=>$request->distance_village_patient,
+                    'age_patient'=>$age_patient,
+                    'sex' => $request->sexe_patient,
+                    'parent_name'=>$request->parent_patient,
+                    'tel'=>$request->num_telephone,
+                    'visit_date' => $request->consultation_date,
+                    'serie_number' => $request->serie_number,
+                    'registre_number' => $request->registre_number,
+                    'consultation_type' => $request->patient_type,
+                    'type_prestation' => $request->type_prestation,
 
-        toastr()->success('Enregistrement effectué avec succès');
+                    // PRODUCT
+                    'liste_prod' => $liste_prod,
+                    'quantity_prod' => $quantity_prod,
+                    'montant_prod' => $montant_prod,
+                    'cout_total_prod' => (double) $request->cout_total_prod,
+
+                    // ACTE
+                    'liste_act' => $liste_act,
+                    'quantity_act' => $quantity_act,
+                    'montant_act' => $montant_act,
+                    'cout_total_act' => (double) $request->cout_total_act,
+
+                    // EXAMEN
+                    'liste_ex' => $liste_ex,
+                    'quantity_ex' => $quantity_ex,
+                    'montant_ex' => $montant_ex,
+                    'cout_total_ex' => (double) $request->cout_total_ex,
+
+                    // OBSERVATION
+                    'type_observation'=>(double) $request->type_observation,
+                    'nbre_jours' => (double) $request->nbre_jours,
+                    'cout_mise_en_observation' => (double) $request->cout_mise_en_observation,
+
+                    // EVACUATION
+                    'cout_evacuation' => (double) $request->cout_evacuation,
+
+                    // GERANT / PRESCRIPTEUR
+                    'nom_prescripteur' => $request->name_prescripteur,
+                    'contact_prescripteur' => $request->contact_prescripteur,
+                    'qualification_prescripteur' => $request->qualification_prescripteur,
+                    'name_gerant' => $request->name_gerant,
+                    'contact_gerant' => $request->contact_gerant,
+                    'user_id' => Auth::user()->id,
+                    'id_structure' => Auth::user()->structure_id,
+                ]);
+
+                toastr()->success('Enregistrement effectué avec succès');
+            }
+            catch(\Exception $e){
+                //dd($e->getMessage());
+                toastr()->error('Erreur d\'enregistrement de la facture');
+            }
+        }
     }
 
     // STORE CONSULTATION
