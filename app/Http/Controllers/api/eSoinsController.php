@@ -307,6 +307,12 @@ class eSoinsController extends Controller
         $birth_date_item = $request->birth_date_item;
         $age_patient = $this->getBirthDate($age, $birth_date_item);
 
+        $verif_facture = DB::table('feuille_soin')->where(['visit_date'=>$request->consultation_date, 'registre_number'=>$request->registre_number, 'liste_prod'=>$liste_prod, 'id_structure'=>$request->user()->structure_id])->first();
+
+        if($verif_facture){
+            return response()->json(['success'=>false, 'message'=>'Une facture avec le même numéro de registre et la même date de consultation existe déjà.']);
+        }
+
         try{
             // ENREGISTREMENT DE LA FACTURE
             DB::table('feuille_soin')->insertOrIgnore([
@@ -463,6 +469,13 @@ class eSoinsController extends Controller
             $age = $facture['age'];
             $birth_date_item = $facture['birth_date_item'];
             $age_patient = $this->getBirthDate($age, $birth_date_item);
+
+            $verif_facture = DB::table('feuille_soin')->where(['visit_date'=>$facture['consultation_date'], 'registre_number'=>$facture['registre_number'], 'liste_prod'=>$liste_prod, 'id_structure'=>$request->user()->structure_id])->first();
+
+            if($verif_facture){
+                array_push($factures_errors, $facture['facture_id'].' : Une facture avec le même numéro de registre et la même date de consultation existe déjà.');
+                continue;
+            }
 
             try{
                 $new_facture_id = Str::uuid();

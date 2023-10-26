@@ -294,7 +294,6 @@
                         },
                         error:function(){alert("Erreur");},
                         success: function () {
-                            // location.reload();
                             document.location.href = "{{ route('app.factures') }}";
                         }
                 });
