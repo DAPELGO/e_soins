@@ -48,7 +48,8 @@ class HomeController extends Controller
         $total_eq = 0;
         $total_obs = 0;
         $total_ev = 0;
-        $total_facture = 0;
+        $total_global = 0;
+        $nombre_facture = 0;
 
         $structure = Structure::where('id', Auth::user()->structure_id)->first();
         $user = DB::table('users')
@@ -76,7 +77,8 @@ class HomeController extends Controller
                 $total_eq = $consults->sum('cout_total_ex');
                 $total_obs = $consults->sum('cout_mise_en_observation');
                 $total_ev = $consults->sum('cout_evacuation');
-                $total_facture = count($consults);
+                $total_global = $total_med + $total_act + $total_eq + $total_obs + $total_ev;
+                $nombre_facture = count($consults);
                 break;
             case env('LEVEL_DRS'):
                 $structs = $structure->getAllChildren();
@@ -95,7 +97,8 @@ class HomeController extends Controller
                 $total_eq = $consults->sum('cout_total_ex');
                 $total_obs = $consults->sum('cout_mise_en_observation');
                 $total_ev = $consults->sum('cout_evacuation');
-                $total_facture = count($consults);
+                $total_global = $total_med + $total_act + $total_eq + $total_obs + $total_ev;
+                $nombre_facture = count($consults);
                 break;
             case env('LEVEL_DISTRICT'):
                 $structs = $structure->getAllChildren();
@@ -114,7 +117,8 @@ class HomeController extends Controller
                 $total_eq = $consults->sum('cout_total_ex');
                 $total_obs = $consults->sum('cout_mise_en_observation');
                 $total_ev = $consults->sum('cout_evacuation');
-                $total_facture = count($consults);
+                $total_global = $total_med + $total_act + $total_eq + $total_obs + $total_ev;
+                $nombre_facture = count($consults);
                 break;
             default:
                 $consults = DB::table('feuille_soin')
@@ -126,11 +130,12 @@ class HomeController extends Controller
                 $total_eq = $consults->sum('cout_total_ex');
                 $total_obs = $consults->sum('cout_mise_en_observation');
                 $total_ev = $consults->sum('cout_evacuation');
-                $total_facture = count($consults);
+                $total_global = $total_med + $total_act + $total_eq + $total_obs + $total_ev;
+                $nombre_facture = count($consults);
                 break;
         }
 
-        $response['data'] = array('total_med'=>floatval(round($total_med)), 'total_act'=>floatval(round($total_act)), 'total_eq'=>floatval(round($total_eq)), 'total_obs'=>floatval(round($total_obs)), 'total_ev'=>floatval(round($total_ev)), 'total_facture' => $total_facture);
+        $response['data'] = array('total_med'=>floatval(round($total_med)), 'total_act'=>floatval(round($total_act)), 'total_eq'=>floatval(round($total_eq)), 'total_obs'=>floatval(round($total_obs)), 'total_ev'=>floatval(round($total_ev)), 'total_global'=>floatval(round($total_global)), 'nombre_facture' => $nombre_facture);
         return response()->json($response);
     }
 
@@ -170,7 +175,8 @@ class HomeController extends Controller
         $total_eq = 0;
         $total_obs = 0;
         $total_ev = 0;
-        $total_facture = 0;
+        $total_global = 0;
+        $nombre_facture = 0;
 
         // STRUCTURE SELECT
         $id_drs_filtre = $request->id_drs_filtre;
@@ -251,9 +257,10 @@ class HomeController extends Controller
         $total_eq = $consults->sum('cout_total_ex');
         $total_obs = $consults->sum('cout_mise_en_observation');
         $total_ev = $consults->sum('cout_evacuation');
-        $total_facture = count($consults);
+        $total_global = $total_med + $total_act + $total_eq + $total_obs + $total_ev;
+        $nombre_facture = count($consults);
 
-        $response['data'] = array('total_med'=>floatval(round($total_med)), 'total_act'=>floatval(round($total_act)), 'total_eq'=>floatval(round($total_eq)), 'total_obs'=>floatval(round($total_obs)), 'total_ev'=>floatval(round($total_ev)), 'org_unit_name'=>$nom_structure, 'total_facture'=>$total_facture);
+        $response['data'] = array('total_med'=>floatval(round($total_med)), 'total_act'=>floatval(round($total_act)), 'total_eq'=>floatval(round($total_eq)), 'total_obs'=>floatval(round($total_obs)), 'total_ev'=>floatval(round($total_ev)), 'total_global'=> $total_global, 'org_unit_name'=>$nom_structure, 'nombre_facture'=>$nombre_facture);
         return response()->json($response);
     }
     // INDEX CONSULTATION

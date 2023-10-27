@@ -386,7 +386,8 @@
                             $("#total_ex").text(data_filtre.data.total_eq.toLocaleString('fr-FR') + " FCFA");
                             $("#total_obs").text(data_filtre.data.total_obs.toLocaleString('fr-FR') + " FCFA");
                             $("#total_ev").text(data_filtre.data.total_ev.toLocaleString('fr-FR') + " FCFA");
-                            $("#total_facture").text(data_filtre.data.total_facture);
+                            $("#total_global").text(data_filtre.data.total_global.toLocaleString('fr-FR') + " FCFA");
+                            $("#nombre_facture").text(data_filtre.data.nombre_facture);
                             $("#org_unit_name").text(data_filtre.data.org_unit_name);
                             $("#org_unit_name").removeClass("d-none").addClass("d-block");
 
@@ -655,7 +656,8 @@
                         $("#total_ex").text(data.data.total_eq.toLocaleString('fr-FR') + " FCFA");
                         $("#total_obs").text(data.data.total_obs.toLocaleString('fr-FR') + " FCFA");
                         $("#total_ev").text(data.data.total_ev.toLocaleString('fr-FR') + " FCFA");
-                        $("#total_facture").text(data.data.total_facture);
+                        $("#total_global").text(data.data.total_global.toLocaleString('fr-FR') + " FCFA");
+                        $("#nombre_facture").text(data.data.nombre_facture);
                     }
             });
 
