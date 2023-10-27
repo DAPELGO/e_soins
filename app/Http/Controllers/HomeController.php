@@ -945,7 +945,7 @@ class HomeController extends Controller
 
         // verify if facture exist with same visit_date, registre_number and id_structure
 
-        $verif_facture = DB::table('feuille_soin')->where(['visit_date'=>$request->consultation_date, 'registre_number'=>$request->registre_number, 'liste_prod'=>$liste_prod, 'id_structure'=>Auth::user()->structure_id])->first();
+        $verif_facture = DB::table('feuille_soin')->where(['visit_date'=>$request->consultation_date, 'registre_number'=>$request->registre_number, 'liste_prod'=>$liste_prod, 'is_delete'=>false, 'id_structure'=>Auth::user()->structure_id])->first();
 
         if($verif_facture){
             toastr()->error('Cette facture existe déjà');
