@@ -10,9 +10,8 @@
                     <div class="text-dark bg-light p-4 pt-2">
                         <div class="row gx-6">
                             <div class="col-12 col-xl-8">
-                              <div class="mb-2 mt-1">
-                                <h3>Évolution des soins gratuits</h3>
-                                <p class="text-700 mb-0">Valeurs financières des biens et services</p>
+                              <div class="mb-4 mt-1">
+                                <h3>Valeurs financières des biens et services gratuité</h3>
                               </div>
                             </div>
                             <div class="col-12 col-xl-4">
@@ -72,9 +71,18 @@
                                       <div class="col-sm-3">
                                         <div class="d-sm-block d-inline-flex d-md-flex flex-xl-column flex-xxl-row align-items-center align-items-xl-start align-items-xxl-center bg-white ms-2 mt-1 p-2 pb-1 ps-3" style="min-height: 5rem;">
                                             <div>
-                                              <p class="mb-1">Factures</p>
+                                              <p class="mb-1">Total des biens et services</p>
                                               <hr style="margin: 0.5rem 0;">
-                                              <h4 class="fw-bolder text-nowrap" id="total_facture">En cours ...</h4>
+                                              <h4 class="fw-bolder text-nowrap" id="total_global">En cours ...</h4>
+                                            </div>
+                                          </div>
+                                      </div>
+                                      <div class="col-sm-3">
+                                        <div class="d-sm-block d-inline-flex d-md-flex flex-xl-column flex-xxl-row align-items-center align-items-xl-start align-items-xxl-center bg-white ms-2 mt-1 p-2 pb-1 ps-3" style="min-height: 5rem;">
+                                            <div>
+                                              <p class="mb-1">Nombre de factures saisie</p>
+                                              <hr style="margin: 0.5rem 0;">
+                                              <h4 class="fw-bolder text-nowrap" id="nombre_facture">En cours ...</h4>
                                             </div>
                                           </div>
                                       </div>
