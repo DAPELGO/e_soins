@@ -24,7 +24,6 @@
     <table class="table w-100" style="font-size: .72rem;" id="dataTableFis-facture">
         <thead>
           <tr>
-            <th class="white-space-nowrap fs--1 align-middle ps-0"></th>
             <th style="min-width:10px; color: #004ebc;">ID</th>
             <th style="color: #004ebc;">PATIENTS</th>
             <th style="color: #004ebc;">ÂGE</th>
@@ -36,32 +35,7 @@
             <th style="color: #004ebc;">ACTIONS</th>
           </tr>
         </thead>
-        <tbody>
-          <?php $i = 1; ?>
-          @foreach($nconsults as $nconsult)
-          <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-            <td class="fs--1 align-middle ps-0 py-3">
-              <div class="form-check mb-0 fs-0">
-                  <input class="form-check-input" type="checkbox" name="livre[]" id="{{ $i }}" />
-              </div>
-            </td>
-            <td class="id align-middle white-space-nowrap fw-bold">{{ $i }}</td>
-            <td class="livre_name align-middle white-space-nowrap text-td"><a class="fw-bold" href="{{ route('esoins.fiche', $nconsult->id) }}">{{ $nconsult->nom_patient }}</a></td>
-            <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ calculate_age($nconsult->age_patient) }}</td>
-            <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->drs ? $nconsult->drs->nom_structure : '-'}}</td>
-            <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->district ? $nconsult->district->nom_structure : '-'}}</td>
-            <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->fs ? $nconsult->fs->nom_structure : '-'}}</td>
-            <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ \Carbon\Carbon::parse($nconsult->visit_date)->format('d/m/Y') }}</td>
-            <td class="livre_name align-middle white-space-nowrap fw-bold text-td">{{ $nconsult->cout_total_prod + $nconsult->cout_total_act + $nconsult->cout_total_ex + $nconsult->cout_mise_en_observation + $nconsult->cout_evacuation }} FCFA</td>
-            <td class="last_active align-middle white-space-nowrap text-700">
-              <a href="{{ route('esoins.fiche', $nconsult->id) }}" title="Voir la facture" class="btn btn-soft-primary btn-sm btn-actions"><span class="text-900 fs-3" data-feather="eye"></span></a>
-              @if($nconsult->user_id == Auth::user()->id)
-                <a class="btn btn-soft-danger btn-sm btn-actions sweet-conf" href="{{ route('esoins.delete', $nconsult->id) }}" title="Supprimer la facture" data="Voulez vous supprimer cette facture ?"><span class="text-900 fs-3" data-feather="trash-2"></span></a>
-              @endif
-            </td>
-          </tr>
-          <?php $i++; ?>
-          @endforeach
+        <tbody class="align-middle white-space-nowrap fw-bold text-td">
         </tbody>
       </table>
   </div>
@@ -74,13 +48,27 @@
         $(document).ready(function() {
             $('[id^="dataTableFis-"]').DataTable({
                 retrieve: true,
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('factures.list') }}",
                 dom: 'Qfrtip',
                 "pagingType": "full_numbers",
                 "lengthMenu": [
                     [10, 25, 50, -1],
                     [10, 25, 50, "Toutes"]
                 ],
-                "order": [],
+                columns: [
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false},
+                    {data: 'nom_patient', name:'nom_patient'},
+                    {data: 'age_patient', name:'age_patient'},
+                    {data: 'drs.nom_structure', name:'drs'},
+                    {data: 'district.nom_structure', name:'district'},
+                    {data: 'fs.nom_structure', name:'fs'},
+                    {data: 'visit_date', name:'visit_date'},
+                    {data: 'total_facture', name:'total_facture'},
+                    {data: 'action', name: 'action', orderable: false, searchable: false}
+                ],
+                deferRender: true,
                 responsive: true,
                 language: {
                     search: "_INPUT_",
@@ -131,12 +119,7 @@
                     }
                 }
             });
-
-            // $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-            //     $($.fn.dataTable.tables(true)).DataTable()
-            //         .columns.adjust()
-            //         .responsive.recalc();
-            // });
         });
     </script>
+    <script src="{{asset('assets/DataTables/plugins/filtering/type-based/accent-neutralise.js')}}"></script>
 @endsection

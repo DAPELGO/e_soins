@@ -533,13 +533,8 @@
                 }
             }
         });
-
-        // $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-        //     $($.fn.dataTable.tables(true)).DataTable()
-        //         .columns.adjust()
-        //         .responsive.recalc();
-        // });
     });
   </script>
+  <script src="{{asset('assets/DataTables/plugins/filtering/type-based/accent-neutralise.js')}}"></script>
 @endsection
 
