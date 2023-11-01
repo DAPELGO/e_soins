@@ -356,7 +356,7 @@
                   <tr>
                     <td class="white-space-nowrap ps-0">
                       <div class="d-flex align-items-center">
-                        <h6 class="mb-0 me-3">TOTAL CONSULTATION</h6><a href="#!">
+                        <h6 class="mb-0 me-3 text-uppercase">Total biens et services gratuits</h6><a href="#!">
                         </a>
                       </div>
                     </td>

@@ -15,6 +15,7 @@ use App\Http\Controllers\Auth\LoginController;
 */
 Auth::routes(['register' => false]);
 Route::get('/factures', 'HomeController@factures')->name('app.factures');
+Route::get('/factures/list', 'HomeController@facturesList')->name('factures.list');
 Route::get('/factures/add', 'HomeController@addFacture')->name('factures.add');
 Route::post('/factures/store', 'HomeController@storeFacture')->name('factures.store');
 Route::get('/{id_consultation}/fiche', 'HomeController@efiche')->name('esoins.fiche');
