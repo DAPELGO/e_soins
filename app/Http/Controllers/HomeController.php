@@ -528,7 +528,7 @@ class HomeController extends Controller
 
                 $nconsults = DB::table('feuille_soin')->whereIn('structures.id', $array)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
-                            ->select('feuille_soin.*', 'structures.id as struct_id', 'structures.nom_structure', 'structures.level_structure')
+                            ->select('feuille_soin.id', 'feuille_soin.nom_patient', 'feuille_soin.age_patient', 'feuille_soin.visit_date', 'feuille_soin.cout_total_prod', 'feuille_soin.cout_total_act', 'feuille_soin.cout_total_ex', 'feuille_soin.cout_mise_en_observation', 'feuille_soin.cout_evacuation', 'feuille_soin.user_id', 'structures.id as struct_id', 'structures.nom_structure', 'structures.level_structure')
                             ->where('feuille_soin.is_delete', false)
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
@@ -555,7 +555,7 @@ class HomeController extends Controller
                         $drs = null;
                     }
 
-                    $nconsult->total_facture = $nconsult->cout_total_prod + $nconsult->cout_total_act + $nconsult->cout_total_ex + $nconsult->cout_mise_en_observation + $nconsult->cout_evacuation;
+                    $nconsult->total_facture = $nconsult->cout_total_prod + $nconsult->cout_total_act + $nconsult->cout_total_ex + $nconsult->cout_mise_en_observation + $nconsult->cout_evacuation. ' FCFA';
                     $nconsult->fs = $fs;
                     $nconsult->district = $district;
                     $nconsult->drs = $drs;
@@ -570,7 +570,7 @@ class HomeController extends Controller
 
                 $nconsults = DB::table('feuille_soin')->whereIn('structures.id', $array)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
-                            ->select('feuille_soin.*', 'structures.id as struct_id', 'structures.nom_structure', 'structures.level_structure')
+                            ->select('feuille_soin.id', 'feuille_soin.nom_patient', 'feuille_soin.age_patient', 'feuille_soin.visit_date', 'feuille_soin.cout_total_prod', 'feuille_soin.cout_total_act', 'feuille_soin.cout_total_ex', 'feuille_soin.cout_mise_en_observation', 'feuille_soin.cout_evacuation', 'feuille_soin.user_id', 'structures.id as struct_id', 'structures.nom_structure', 'structures.level_structure')
                             ->where('feuille_soin.is_delete', false)
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
@@ -597,7 +597,7 @@ class HomeController extends Controller
                         $drs = null;
                     }
 
-                    $nconsult->total_facture = $nconsult->cout_total_prod + $nconsult->cout_total_act + $nconsult->cout_total_ex + $nconsult->cout_mise_en_observation + $nconsult->cout_evacuation;
+                    $nconsult->total_facture = $nconsult->cout_total_prod + $nconsult->cout_total_act + $nconsult->cout_total_ex + $nconsult->cout_mise_en_observation + $nconsult->cout_evacuation. ' FCFA';
                     $nconsult->fs = $fs;
                     $nconsult->district = $district;
                     $nconsult->drs = $drs;
@@ -612,7 +612,7 @@ class HomeController extends Controller
 
                 $nconsults = DB::table('feuille_soin')->whereIn('structures.id', $array)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
-                            ->select('feuille_soin.*', 'structures.id as struct_id', 'structures.nom_structure', 'structures.level_structure')
+                            ->select('feuille_soin.id', 'feuille_soin.nom_patient', 'feuille_soin.age_patient', 'feuille_soin.visit_date', 'feuille_soin.cout_total_prod', 'feuille_soin.cout_total_act', 'feuille_soin.cout_total_ex', 'feuille_soin.cout_mise_en_observation', 'feuille_soin.cout_evacuation', 'feuille_soin.user_id', 'structures.id as struct_id', 'structures.nom_structure', 'structures.level_structure')
                             ->where('feuille_soin.is_delete', false)
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
@@ -639,7 +639,7 @@ class HomeController extends Controller
                         $drs = null;
                     }
 
-                    $nconsult->total_facture = $nconsult->cout_total_prod + $nconsult->cout_total_act + $nconsult->cout_total_ex + $nconsult->cout_mise_en_observation + $nconsult->cout_evacuation;
+                    $nconsult->total_facture = $nconsult->cout_total_prod + $nconsult->cout_total_act + $nconsult->cout_total_ex + $nconsult->cout_mise_en_observation + $nconsult->cout_evacuation. ' FCFA';
                     $nconsult->fs = $fs;
                     $nconsult->district = $district;
                     $nconsult->drs = $drs;
@@ -648,7 +648,7 @@ class HomeController extends Controller
             default:
                 $nconsults = DB::table('feuille_soin')->where('feuille_soin.user_id', Auth::user()->id)
                             ->join('structures', 'feuille_soin.id_structure', 'structures.id')
-                            ->select('feuille_soin.*', 'structures.id as struct_id', 'structures.nom_structure', 'structures.level_structure')
+                            ->select('feuille_soin.id', 'feuille_soin.nom_patient', 'feuille_soin.age_patient', 'feuille_soin.visit_date', 'feuille_soin.cout_total_prod', 'feuille_soin.cout_total_act', 'feuille_soin.cout_total_ex', 'feuille_soin.cout_mise_en_observation', 'feuille_soin.cout_evacuation', 'feuille_soin.user_id', 'structures.id as struct_id', 'structures.nom_structure', 'structures.level_structure')
                             ->where('feuille_soin.is_delete', false)
                             ->orderBy('feuille_soin.created_at', 'desc')
                             ->get();
@@ -675,7 +675,7 @@ class HomeController extends Controller
                         $drs = null;
                     }
 
-                    $nconsult->total_facture = $nconsult->cout_total_prod + $nconsult->cout_total_act + $nconsult->cout_total_ex + $nconsult->cout_mise_en_observation + $nconsult->cout_evacuation;
+                    $nconsult->total_facture = $nconsult->cout_total_prod + $nconsult->cout_total_act + $nconsult->cout_total_ex + $nconsult->cout_mise_en_observation + $nconsult->cout_evacuation. ' FCFA';
                     $nconsult->fs = $fs;
                     $nconsult->district = $district;
                     $nconsult->drs = $drs;
