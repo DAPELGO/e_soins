@@ -92,7 +92,7 @@
                     {data: 'total_facture', name:'total_facture'},
                     {data: 'action', name: 'action', orderable: false, searchable: false}
                 ], */
-                deferRender: true,
+                //deferRender: true,
                 responsive: true,
                 language: {
                     search: "_INPUT_",
