@@ -42,11 +42,11 @@
             @foreach ($nconsults as $nconsult)
             <tr>
                 <td>{{ $i }}</td>
-                <td>{{ $nconsult->nom_patient }}</td>
+                <td><a class="fw-bold" href="{{ route('esoins.fiche', $nconsult->id) }}">{{ $nconsult->nom_patient }}</a></td>
                 <td>{{ calculate_age($nconsult->age_patient) }}</td>
-                <td>{{ $nconsult->drs->nom_structure }}</td>
-                <td>{{ $nconsult->district->nom_structure }}</td>
-                <td>{{ $nconsult->fs->nom_structure }}</td>
+                <td>{{ $nconsult->drs ? $nconsult->drs->nom_structure : '-'}}</td>
+                <td>{{ $nconsult->district ? $nconsult->district->nom_structure : '-'}}</td>
+                <td>{{ $nconsult->fs ? $nconsult->fs->nom_structure : '-'}}</td>
                 <td>{{ \Carbon\Carbon::parse($nconsult->visit_date)->format('d/m/Y') }}</td>
                 <td>{{ $nconsult->total_facture }}</td>
                 <td>
