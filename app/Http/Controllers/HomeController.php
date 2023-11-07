@@ -186,6 +186,7 @@ class HomeController extends Controller
         $periode_debut = $request->periode_debut;
         $periode_fin = $request->periode_fin;
 
+
         $query = DB::table('feuille_soin')
                             ->join('structures', 'structures.id', 'feuille_soin.id_structure')
                             ->where('feuille_soin.is_delete', false);
@@ -227,15 +228,15 @@ class HomeController extends Controller
         }
 
         if($periode_debut && !$periode_fin){
-            $query->where('feuille_soin.created_at', '>=', $periode_debut);
+            $query->where('feuille_soin.visit_date', '>=', $periode_debut);
         }
 
         if(!$periode_debut && $periode_fin){
-            $query->where('feuille_soin.created_at', '<=', $periode_fin);
+            $query->where('feuille_soin.visit_date', '<=', $periode_fin);
         }
 
         if($periode_debut && $periode_fin){
-            $query->whereBetween('feuille_soin.created_at', [$periode_debut, $periode_fin]);
+            $query->whereBetween('feuille_soin.visit_date', [$periode_debut, $periode_fin]);
         }
 
         $consults = $query->get();
