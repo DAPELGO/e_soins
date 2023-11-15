@@ -36,30 +36,6 @@
           </tr>
         </thead>
         <tbody class="align-middle white-space-nowrap fw-bold text-td">
-            @php
-                $i = 1;
-            @endphp
-            @foreach ($nconsults as $nconsult)
-            <tr>
-                <td>{{ $i }}</td>
-                <td><a class="fw-bold" href="{{ route('esoins.fiche', $nconsult->id) }}">{{ $nconsult->nom_patient }}</a></td>
-                <td>{{ calculate_age($nconsult->age_patient) }}</td>
-                <td>{{ $nconsult->drs ? $nconsult->drs->nom_structure : '-'}}</td>
-                <td>{{ $nconsult->district ? $nconsult->district->nom_structure : '-'}}</td>
-                <td>{{ $nconsult->fs ? $nconsult->fs->nom_structure : '-'}}</td>
-                <td>{{ \Carbon\Carbon::parse($nconsult->visit_date)->format('d/m/Y') }}</td>
-                <td>{{ $nconsult->total_facture }}</td>
-                <td>
-                    <a href="{{ route('esoins.fiche', $nconsult->id) }}" title="Voir la facture" class="btn btn-soft-primary btn-sm btn-actions"><span class="text-900 fs-3" data-feather="eye"></span></a>
-                    @if($nconsult->user_id == Auth::user()->id)
-                        <a class="btn btn-soft-danger btn-sm btn-actions sweet-conf" href="{{ route('esoins.delete', $nconsult->id) }}" title="Supprimer la facture" data="Voulez vous supprimer cette facture ?"><span class="text-900 fs-3" data-feather="trash-2"></span></a>
-                    @endif
-                </td>
-            </tr>
-            @endforeach
-            @php
-                $i++;
-            @endphp
         </tbody>
       </table>
   </div>
@@ -72,17 +48,23 @@
         $(document).ready(function() {
             $('[id^="dataTableFis-"]').DataTable({
                 retrieve: true,
-                //processing: true,
-                //serverSide: true,
-                //ajax: "{{ route('factures.list') }}",
+                // processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('factures.list') }}",
+                    type: "GET",
+                    "data": function (d) {
+                        d.start = d.start || 0;
+                    }
+                },
                 dom: 'Qfrtip',
                 "pagingType": "full_numbers",
                 "lengthMenu": [
                     [10, 25, 50, -1],
                     [10, 25, 50, "Toutes"]
                 ],
-                /* columns: [
-                    {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false},
+                columns: [
+                    // {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false},
                     {data: 'nom_patient', name:'nom_patient'},
                     {data: 'age_patient', name:'age_patient'},
                     {data: 'drs.nom_structure', name:'drs'},
@@ -90,9 +72,9 @@
                     {data: 'fs.nom_structure', name:'fs'},
                     {data: 'visit_date', name:'visit_date'},
                     {data: 'total_facture', name:'total_facture'},
-                    {data: 'action', name: 'action', orderable: false, searchable: false}
-                ], */
-                //deferRender: true,
+                    // {data: 'action', name: 'action', orderable: false, searchable: false}
+                ],
+                deferRender: true,
                 responsive: true,
                 language: {
                     search: "_INPUT_",
@@ -145,5 +127,5 @@
             });
         });
     </script>
-    <script src="{{asset('assets/DataTables/plugins/filtering/type-based/accent-neutralise.js')}}"></script>
+    {{-- <script src="{{asset('assets/DataTables/plugins/filtering/type-based/accent-neutralise.js')}}"></script> --}}
 @endsection
