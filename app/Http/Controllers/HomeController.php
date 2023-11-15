@@ -460,7 +460,7 @@ class HomeController extends Controller
                     $nconsult->actions = '
                         <div class="btn-group">
                             <a href="'.route('esoins.fiche', $nconsult->id).'" class="btn btn-sm btn-info" title="Voir la facture"><i class="fa fa-eye"></i></a>
-                            <a href="'.route('esoins.delete', $nconsult->id).'" class="btn btn-sm btn-danger sweet-conf" title="Supprimer la facture" data="Voulez vous supprimer cette facture ?"><i class="fa fa-trash"></i></a>
+                            <a class="btn btn-sm btn-delete btn-danger" href="'.route('esoins.delete', $nconsult->id).'" title="Supprimer la facture"><i class="fa fa-trash"></i></a>
                         </div>
                     ';
                 }

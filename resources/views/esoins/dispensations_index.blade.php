@@ -198,4 +198,23 @@
         });
     </script>
     {{-- <script src="{{asset('assets/DataTables/plugins/filtering/type-based/accent-neutralise.js')}}"></script> --}}
+    <script>
+        $('[id^="dataTableFis-"] tbody').on('click', '.btn-delete', function(e) {
+            e.preventDefault();
+            swal({
+                title: 'Attention !',
+                text: "Voulez vous supprimer cette facture ?",
+                icon: 'warning',
+                buttons: {
+                    cancel: "Annuler",
+                    confirm:"confirmer"
+                },
+            })
+            .then((willDelete) =>{
+                if (willDelete) {
+                    window.location = $(this).attr('href');
+                }
+            });
+        });
+    </script>
 @endsection
