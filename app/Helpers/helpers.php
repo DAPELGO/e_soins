@@ -52,11 +52,15 @@ if(!function_exists('get_structure_level')){
 }
 
 // Calculate patient age
-if(!function_exists('calculate_age')){
-    function calculate_age($birthDate){
-        $birthDate = new DateTime($birthDate);
-        $currentDate = new DateTime();
+if (!function_exists('calculate_age')) {
+    function calculate_age($birthDate) {
+        try {
+            $birthDate = new DateTime($birthDate);
+        } catch (Exception $e) {
+            return 'ND';
+        }
 
+        $currentDate = new DateTime();
         $interval = $currentDate->diff($birthDate);
 
         if ($interval->y > 0) {
@@ -68,6 +72,41 @@ if(!function_exists('calculate_age')){
         }
 
         return $age;
+    }
+}
+
+
+if (!function_exists('calculate_birth_date')) {
+    function calculate_birth_date($age) {
+        $currentDate = new DateTime();
+
+        $age = preg_replace('/\s+/', '', $age);
+
+        $matches = [];
+        preg_match('/^(\d+)\s*(an|mois|jour)s?$/', $age, $matches);
+
+        if (empty($matches)) {
+            return null;
+        }
+
+        $quantity = intval($matches[1]);
+        $unit = $matches[2];
+
+        switch ($unit) {
+            case 'an':
+                $birthDate = $currentDate->sub(new DateInterval("P{$quantity}Y"));
+                break;
+            case 'mois':
+                $birthDate = $currentDate->sub(new DateInterval("P{$quantity}M"));
+                break;
+            case 'jour':
+                $birthDate = $currentDate->sub(new DateInterval("P{$quantity}D"));
+                break;
+            default:
+                return null;
+        }
+
+        return $birthDate->format('d-m-Y');
     }
 }
 

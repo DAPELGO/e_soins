@@ -343,102 +343,150 @@ class HomeController extends Controller
     // LIST DISPENSATIONS FOR DATATABLES
     public function facturesList(Request $request)
     {
-        $start = $request->input('start');
-        $length = $request->input('length');
+        if ($request->ajax()) {
+            $structure = Structure::where('id', Auth::user()->structure_id)->first();
 
-        $structure = Structure::where('id', Auth::user()->structure_id)->first();
+            $user = DB::table('users')
+                            ->join('structures', 'users.structure_id', 'structures.id')
+                            ->select('users.*', 'structures.nom_structure', 'structures.level_structure')
+                            ->where('users.id', Auth::user()->id)
+                            ->first();
 
-        $user = DB::table('users')
-                        ->join('structures', 'users.structure_id', 'structures.id')
-                        ->select('users.*', 'structures.nom_structure', 'structures.level_structure')
-                        ->where('users.id', Auth::user()->id)
-                        ->first();
+            $query = DB::table('feuille_soin')
+                ->where('feuille_soin.is_delete', false)
+                ->join('structures as fs', 'feuille_soin.id_structure', 'fs.id')
+                ->leftJoin('structures as district', 'fs.parent_id', 'district.id')
+                ->leftJoin('structures as drs', 'district.parent_id', 'drs.id')
+                ->select(
+                    'feuille_soin.id',
+                    'feuille_soin.nom_patient',
+                    'feuille_soin.age_patient',
+                    'feuille_soin.visit_date',
+                    'feuille_soin.user_id',
+                    'fs.level_structure as level_fs',
+                    'fs.id as id_fs',
+                    'fs.nom_structure as nom_fs',
+                    'district.nom_structure as nom_district',
+                    'drs.nom_structure as nom_drs',
+                    DB::raw('feuille_soin.cout_total_prod + feuille_soin.cout_total_act + feuille_soin.cout_total_ex + feuille_soin.cout_mise_en_observation + feuille_soin.cout_evacuation as total_facture')
+                )
+                ->where('feuille_soin.is_delete', false)
+                ->orderBy('feuille_soin.created_at', 'desc');
 
-        $structs = $structure->getAllChildren();
-        $array = array();
-        foreach ($structs as $struct) {
-            array_push($array, $struct->id);
-        }
-
-        switch ($user->level_structure) {
-            case env ('LEVEL_NATIONAL'):
-                $nconsults = DB::table('feuille_soin')->whereIn('structures.id', $array)
-                            ->join('structures', 'feuille_soin.id_structure', 'structures.id')
-                            ->select('feuille_soin.id', 'feuille_soin.nom_patient', 'feuille_soin.age_patient', 'feuille_soin.visit_date', 'feuille_soin.cout_total_prod', 'feuille_soin.cout_total_act', 'feuille_soin.cout_total_ex', 'feuille_soin.cout_mise_en_observation', 'feuille_soin.cout_evacuation', 'feuille_soin.user_id', 'structures.id as struct_id', 'structures.nom_structure', 'structures.level_structure')
-                            ->where('feuille_soin.is_delete', false)
-                            ->orderBy('feuille_soin.created_at', 'desc')
-                            ->skip($start)
-                            ->take($length)
-                            ->get();
-                break;
-            case env('LEVEL_DRS'):
-                $nconsults = DB::table('feuille_soin')->whereIn('structures.id', $array)
-                            ->join('structures', 'feuille_soin.id_structure', 'structures.id')
-                            ->select('feuille_soin.id', 'feuille_soin.nom_patient', 'feuille_soin.age_patient', 'feuille_soin.visit_date', 'feuille_soin.cout_total_prod', 'feuille_soin.cout_total_act', 'feuille_soin.cout_total_ex', 'feuille_soin.cout_mise_en_observation', 'feuille_soin.cout_evacuation', 'feuille_soin.user_id', 'structures.id as struct_id', 'structures.nom_structure', 'structures.level_structure')
-                            ->where('feuille_soin.is_delete', false)
-                            ->orderBy('feuille_soin.created_at', 'desc')
-                            ->skip($start)
-                            ->take($length)
-                            ->get();
-                break;
-            case env('LEVEL_DISTRICT'):
-                $nconsults = DB::table('feuille_soin')->whereIn('structures.id', $array)
-                            ->join('structures', 'feuille_soin.id_structure', 'structures.id')
-                            ->select('feuille_soin.id', 'feuille_soin.nom_patient', 'feuille_soin.age_patient', 'feuille_soin.visit_date', 'feuille_soin.cout_total_prod', 'feuille_soin.cout_total_act', 'feuille_soin.cout_total_ex', 'feuille_soin.cout_mise_en_observation', 'feuille_soin.cout_evacuation', 'feuille_soin.user_id', 'structures.id as struct_id', 'structures.nom_structure', 'structures.level_structure')
-                            ->where('feuille_soin.is_delete', false)
-                            ->orderBy('feuille_soin.created_at', 'desc')
-                            ->skip($start)
-                            ->take($length)
-                            ->get();
-                break;
-            default:
-                $nconsults = DB::table('feuille_soin')->where('feuille_soin.user_id', Auth::user()->id)
-                            ->join('structures', 'feuille_soin.id_structure', 'structures.id')
-                            ->select('feuille_soin.id', 'feuille_soin.nom_patient', 'feuille_soin.age_patient', 'feuille_soin.visit_date', 'feuille_soin.cout_total_prod', 'feuille_soin.cout_total_act', 'feuille_soin.cout_total_ex', 'feuille_soin.cout_mise_en_observation', 'feuille_soin.cout_evacuation', 'feuille_soin.user_id', 'structures.id as struct_id', 'structures.nom_structure', 'structures.level_structure')
-                            ->where('feuille_soin.is_delete', false)
-                            ->orderBy('feuille_soin.created_at', 'desc')
-                            ->skip($start)
-                            ->take($length)
-                            ->get();
-                break;
-        }
-
-        foreach ($nconsults as $nconsult) {
-            if($nconsult->level_structure == env('LEVEL_FS') || $nconsult->level_structure == env('LEVEL_FS_CM') || $nconsult->level_structure == env('LEVEL_FS_CMA')){
-                $fs = Structure::where('id', $nconsult->struct_id)->first();
-                $district = Structure::where('id', $fs->parent_id)->first();
-                $drs = Structure::where('id', $district->parent_id)->first();
-            }
-            else if($nconsult->level_structure == env('LEVEL_DISTRICT')){
-                $fs = null;
-                $district = Structure::where('id', $nconsult->struct_id)->first();
-                $drs = Structure::where('id', $district->parent_id)->first();
-            }
-            else if($nconsult->level_structure == env('LEVEL_DRS')){
-                $fs = null;
-                $district = null;
-                $drs = Structure::where('id', $nconsult->struct_id)->first();
+            if($user->level_structure == env('LEVEL_NATIONAL') OR $user->level_structure == env('LEVEL_DRS') OR $user->level_structure == env('LEVEL_DISTRICT')){
+                $structs = $structure->getAllChildren();
+                $array = $structs->pluck('id')->toArray();
+                $query->whereIn('fs.id', $array);
             }
             else{
-                $fs = null;
-                $district = null;
-                $drs = null;
+                $query->where('feuille_soin.user_id', Auth::user()->id);
             }
 
-            $nconsult->total_facture = $nconsult->cout_total_prod + $nconsult->cout_total_act + $nconsult->cout_total_ex + $nconsult->cout_mise_en_observation + $nconsult->cout_evacuation. ' FCFA';
-            $nconsult->fs = $fs;
-            $nconsult->district = $district;
-            $nconsult->drs = $drs;
+            if ($request->has('searchBuilder')) {
+                $searchBuilder = $request->input('searchBuilder');
+
+                foreach ($searchBuilder['criteria'] as $criteria) {
+                    $condition = $criteria['condition'];
+                    $data = $criteria['data'];
+                    $origData = $criteria['origData'];
+                    $type = $criteria['type'];
+                    $values = $criteria['value'];
+
+                    if($origData == 'nom_patient'){
+                        $origData = 'feuille_soin.nom_patient';
+                    }
+                    elseif($origData == 'age_patient'){
+                        $origData = 'feuille_soin.age_patient';
+                    }
+                    elseif($origData == 'nom_fs'){
+                        $origData = 'fs.nom_structure';
+                    }
+                    elseif($origData == 'nom_district'){
+                        $origData = 'district.nom_structure';
+                    }
+                    elseif($origData == 'nom_drs'){
+                        $origData = 'drs.nom_structure';
+                    }
+                    elseif($origData == 'visit_date'){
+                        $origData = 'feuille_soin.visit_date';
+                    }
+
+                    if($condition == '='){
+                        $condition = 'ILIKE';
+                    }
+                    elseif($condition == '!='){
+                        $condition = 'NOT ILIKE';
+                    }
+
+                    if($origData && $condition && $values){
+                        if( $origData == 'feuille_soin.visit_date' AND preg_match('/[0-9]{2}\/[0-9]{2}\/[0-9]{4}/', $values[0]) ){
+                            $values[0] = Carbon::createFromFormat('d/m/Y', $values[0])->format('Y-m-d');
+                            $query->where($origData, $condition, $values[0]);
+                        }
+                        elseif($origData != 'feuille_soin.visit_date'){
+                            $query->where($origData, $condition, $values[0]);
+                        }
+                    }
+                }
+            }
+
+            $nconsults = $query->get();
+
+            $filteredRecords = $totalRecords = $nconsults->count();
+
+            if ($request->has('search') && !empty($request->input('search.value'))) {
+                $searchValue = $request->input('search.value');
+                $nconsults = $nconsults->filter(function ($nconsult) use ($searchValue) {
+                    return stripos($nconsult->nom_patient, $searchValue) !== false ||
+                        stripos($nconsult->age_patient, $searchValue) !== false ||
+                        stripos($nconsult->visit_date, $searchValue) !== false ||
+                        stripos($nconsult->total_facture, $searchValue) !== false ||
+                        stripos($nconsult->nom_fs, $searchValue) !== false ||
+                        stripos($nconsult->nom_district, $searchValue) !== false ||
+                        stripos($nconsult->nom_drs, $searchValue) !== false;
+                });
+
+                $filteredRecords = $nconsults->count();
+            }
+
+            $nconsults = $nconsults->skip($request->input('start'))->take($request->input('length'))->values();
+
+            $nconsults->transform(function ($nconsult, $key) {
+                $nconsult->nom_patient = '<a class="fw-bold" href="'.route('esoins.fiche', $nconsult->id).'">'.$nconsult->nom_patient.'</a>';
+                $nconsult->age_patient = calculate_age($nconsult->age_patient);
+                $nconsult->visit_date = Carbon::parse($nconsult->visit_date)->format('d/m/Y');
+                $nconsult->total_facture = $nconsult->total_facture . ' FCFA';
+                if(Auth::user()->id == $nconsult->user_id){
+                    $nconsult->actions = '
+                        <div class="btn-group">
+                            <a href="'.route('esoins.fiche', $nconsult->id).'" class="btn btn-sm btn-info" title="Voir la facture"><i class="fa fa-eye"></i></a>
+                            <a href="'.route('esoins.delete', $nconsult->id).'" class="btn btn-sm btn-danger sweet-conf" title="Supprimer la facture" data="Voulez vous supprimer cette facture ?"><i class="fa fa-trash"></i></a>
+                        </div>
+                    ';
+                }
+                else{
+                    $nconsult->actions = '
+                        <div class="btn-group">
+                            <a href="'.route('esoins.fiche', $nconsult->id).'" class="btn btn-sm btn-info" title="Voir la fiche"><i class="fa fa-eye"></i></a>
+                        </div>
+                    ';
+                }
+
+                return $nconsult;
+            });
+
+            return Datatables::of($nconsults)->addIndexColumn()
+                ->with([
+                    'draw' => $request->input('draw'),
+                    'recordsTotal' => $totalRecords,
+                    'recordsFiltered' => $filteredRecords,
+                ])
+                ->rawColumns(['nom_patient', 'actions'])
+                ->setTotalRecords($totalRecords)
+                ->setFilteredRecords($filteredRecords)
+                ->skipPaging()
+                ->make(true);
         }
-
-        $totalData = count($nconsults);
-
-        return response()->json([
-            'draw' => $request->input('draw'),
-            'recordsTotal' => $totalData,
-            'recordsFiltered' => $totalData,
-            'data' => $nconsults
-        ]);
     }
 
     // CREATE DISPENSATION
