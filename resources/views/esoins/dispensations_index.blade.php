@@ -36,30 +36,6 @@
           </tr>
         </thead>
         <tbody class="align-middle white-space-nowrap fw-bold text-td">
-            @php
-                $i = 1;
-            @endphp
-            @foreach ($nconsults as $nconsult)
-            <tr>
-                <td>{{ $i }}</td>
-                <td><a class="fw-bold" href="{{ route('esoins.fiche', $nconsult->id) }}">{{ $nconsult->nom_patient }}</a></td>
-                <td>{{ calculate_age($nconsult->age_patient) }}</td>
-                <td>{{ $nconsult->drs ? $nconsult->drs->nom_structure : '-'}}</td>
-                <td>{{ $nconsult->district ? $nconsult->district->nom_structure : '-'}}</td>
-                <td>{{ $nconsult->fs ? $nconsult->fs->nom_structure : '-'}}</td>
-                <td>{{ \Carbon\Carbon::parse($nconsult->visit_date)->format('d/m/Y') }}</td>
-                <td>{{ $nconsult->total_facture }}</td>
-                <td>
-                    <a href="{{ route('esoins.fiche', $nconsult->id) }}" title="Voir la facture" class="btn btn-soft-primary btn-sm btn-actions"><span class="text-900 fs-3" data-feather="eye"></span></a>
-                    @if($nconsult->user_id == Auth::user()->id)
-                        <a class="btn btn-soft-danger btn-sm btn-actions sweet-conf" href="{{ route('esoins.delete', $nconsult->id) }}" title="Supprimer la facture" data="Voulez vous supprimer cette facture ?"><span class="text-900 fs-3" data-feather="trash-2"></span></a>
-                    @endif
-                </td>
-            </tr>
-            @endforeach
-            @php
-                $i++;
-            @endphp
         </tbody>
       </table>
   </div>
@@ -72,27 +48,103 @@
         $(document).ready(function() {
             $('[id^="dataTableFis-"]').DataTable({
                 retrieve: true,
-                //processing: true,
-                //serverSide: true,
-                //ajax: "{{ route('factures.list') }}",
-                dom: 'Qfrtip',
+                serverSide: true,
+                ajax: "{{ route('factures.list') }}",
+                ajax: {
+                    "url": "{{ route('factures.list') }}",
+                    "error": function (xhr, error, code)
+                    {
+                        if(xhr.status === 403 || xhr.status === 401){
+                            window.location.href = "{{ route('logout') }}";
+                        }
+                        else{
+                            console.log('Erreur datatable: code ' + xhr.status + ' ' + xhr.responseText);
+                            msg = "Une erreur s'est produite lors du traitement du tableau. Veuillez verifier votre connexion et recharger la page";
+
+                            swal({
+                                title: 'Erreur !',
+                                text: msg,
+                                icon: 'warning',
+                                confirmButtonText: 'Fermer'
+                            });
+                        }
+                    }
+                },
+                searchBuilder: {
+                    columns: [1,3,4,5,6],
+                    depthLimit: 1,
+                    conditions:{
+                        string: {
+                            '!null': null,
+                            'not': null,
+                            '>=': null,
+                            '>': null,
+                            '<=': null,
+                            '<': null,
+                            'null': null,
+                            'between': null,
+                            '!between': null,
+                            'starts': null,
+                            '!starts': null,
+                            'contains': null,
+                            '!contains': null,
+                            'ends': null,
+                            '!ends': null
+                        },
+                        num: {
+                            '!null': null,
+                            'not': null,
+                            '>=': null,
+                            '>': null,
+                            '<=': null,
+                            '<': null,
+                            'null': null,
+                            'between': null,
+                            '!between': null,
+                            'starts': null,
+                            '!starts': null,
+                            'contains': null,
+                            '!contains': null,
+                            'ends': null,
+                            '!ends': null
+                        },
+                        html: {
+                            '!null': null,
+                            'not': null,
+                            '>=': null,
+                            '>': null,
+                            '<=': null,
+                            '<': null,
+                            'null': null,
+                            'between': null,
+                            '!between': null,
+                            'starts': null,
+                            '!starts': null,
+                            'contains': null,
+                            '!contains': null,
+                            'ends': null,
+                            '!ends': null
+                        },
+                    }
+                },
+                dom: 'Qlfrtip',
                 "pagingType": "full_numbers",
                 "lengthMenu": [
                     [10, 25, 50, -1],
                     [10, 25, 50, "Toutes"]
                 ],
-                /* columns: [
-                    {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false},
-                    {data: 'nom_patient', name:'nom_patient'},
-                    {data: 'age_patient', name:'age_patient'},
-                    {data: 'drs.nom_structure', name:'drs'},
-                    {data: 'district.nom_structure', name:'district'},
-                    {data: 'fs.nom_structure', name:'fs'},
-                    {data: 'visit_date', name:'visit_date'},
-                    {data: 'total_facture', name:'total_facture'},
-                    {data: 'action', name: 'action', orderable: false, searchable: false}
-                ], */
-                //deferRender: true,
+                columns: [
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
+                    { data: 'nom_patient', name: 'nom_patient', orderable: true, searchable: true },
+                    { data: 'age_patient', name: 'age_patient', orderable: true, searchable: true },
+                    { data: 'nom_drs', name: 'nom_drs', defaultContent: '-', orderable: true, searchable: true },
+                    { data: 'nom_district', name: 'nom_district', defaultContent: '-', orderable: true, searchable: true },
+                    { data: 'nom_fs', name: 'nom_fs', defaultContent: '-', orderable: true, searchable: true },
+                    { data: 'visit_date', name: 'visit_date', orderable: true, searchable: true },
+                    { data: 'total_facture', name: 'total_facture', orderable: true, searchable: true },
+                    { data: 'actions', name: 'actions', orderable: false, searchable: false}
+                ],
+                deferRender: true,
                 responsive: true,
                 language: {
                     search: "_INPUT_",
@@ -145,5 +197,24 @@
             });
         });
     </script>
-    <script src="{{asset('assets/DataTables/plugins/filtering/type-based/accent-neutralise.js')}}"></script>
+    {{-- <script src="{{asset('assets/DataTables/plugins/filtering/type-based/accent-neutralise.js')}}"></script> --}}
+    <script>
+        $('[id^="dataTableFis-"] tbody').on('click', '.btn-delete', function(e) {
+            e.preventDefault();
+            swal({
+                title: 'Attention !',
+                text: "Voulez vous supprimer cette facture ?",
+                icon: 'warning',
+                buttons: {
+                    cancel: "Annuler",
+                    confirm:"confirmer"
+                },
+            })
+            .then((willDelete) =>{
+                if (willDelete) {
+                    window.location = $(this).attr('href');
+                }
+            });
+        });
+    </script>
 @endsection
