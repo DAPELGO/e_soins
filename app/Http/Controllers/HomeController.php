@@ -353,7 +353,6 @@ class HomeController extends Controller
                             ->first();
 
             $query = DB::table('feuille_soin')
-                ->where('feuille_soin.is_delete', false)
                 ->join('structures as fs', 'feuille_soin.id_structure', 'fs.id')
                 ->leftJoin('structures as district', 'fs.parent_id', 'district.id')
                 ->leftJoin('structures as drs', 'district.parent_id', 'drs.id')
