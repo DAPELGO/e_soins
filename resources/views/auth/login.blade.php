@@ -81,11 +81,14 @@
                       <!--/.bg-holder-->
 
                       <div class="position-relative px-4 px-lg-7 pt-7 pb-7 pb-sm-5 text-center text-md-start pb-lg-7 pb-md-7">
-                        <h3 class="mb-3 text-black fs-1">FEUILLE DE SOINS</h3>
-                        <p class="text-700">Feuille de soins des patients</p>
+                        <h3 class="mb-3 text-black fs-1 text-uppercase">Factures de soins gratuité</h3>
+                        <p class="text-700">Valeurs financières des biens et services gratuité</p>
                         <ul class="list-unstyled mb-0 w-max-content w-md-auto mx-auto">
-                          <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Actes de consultation</span></li>
-                          <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Produits prescrits</span></li>
+                          <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Médicaments et consommables</span></li>
+                          <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Actes</span></li>
+                          <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Examens</span></li>
+                          <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Mise en observation</span></li>
+                          <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Évacuations sanitaires</span></li>
                         </ul>
                       </div>
                       <div class="position-relative z-index--1 mb-6 d-none d-md-block text-center mt-md-15"><img class="auth-title-box-img d-dark-none" src="{{ asset('/assets/img/spot-illustrations/15.png') }}" alt="" /><img class="auth-title-box-img d-light-none" src="../../../assets/img/spot-illustrations/auth-dark.png" alt="" /></div>
