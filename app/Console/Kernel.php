@@ -19,7 +19,10 @@ class Kernel extends ConsoleKernel
      ];
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('netsigl:data')->everyFiveMinutes();
+        //$schedule->command('netsigl:data')->everyFiveMinutes();
+        $schedule->command('backup:clean')->weekly()->at('01:00');
+        $schedule->command('backup:run')->daily()->at('05:00');
+        $schedule->command('backup:monitor')->daily()->at('06:00');
     }
 
     /**

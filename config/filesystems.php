@@ -53,6 +53,15 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
         ],
 
+        'sftp' => [
+            'driver' => 'sftp',
+            'host' => env('BACKUP_FTP_HOST'),
+            'username' => env('BACKUP_FTP_USERNAME'),
+            'password' => env('BACKUP_FTP_PASSWORD'),
+            'port' => env('BACKUP_FTP_PORT'),
+            'root' => env('BACKUP_FTP_PATH'),
+            'timeout' => 30
+        ],
     ],
 
     /*
